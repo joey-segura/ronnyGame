@@ -1,5 +1,5 @@
-# Object file
-*.o
+Library/
 
-# Ada Library Information
-*.ali
+Project1/Assets/Plugins/Editor/JetBrains/
+
+Project1/.idea/.idea.Project1/.idea/
