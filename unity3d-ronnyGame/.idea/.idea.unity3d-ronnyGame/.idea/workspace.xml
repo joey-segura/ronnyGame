@@ -14,12 +14,16 @@
   <component name="HighlightingSettingsPerFile">
     <setting file="file://$PROJECT_DIR$/Assets/Scripts/walkScript.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Scripts/playerMovement.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/Scripts/followCamera.cs" root0="FORCE_HIGHLIGHTING" />
   </component>
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
         <option value="$PROJECT_DIR$/Assets/walkScript.cs" />
+        <option value="$PROJECT_DIR$/Assets/cameraFollow.cs" />
         <option value="$PROJECT_DIR$/Assets/Scripts/playerMovement.cs" />
+        <option value="$PROJECT_DIR$/Assets/Scripts/cameraFollow.cs" />
+        <option value="$PROJECT_DIR$/Assets/Scripts/followCamera.cs" />
       </list>
     </option>
   </component>
@@ -71,6 +75,7 @@
       <updated>1581556513839</updated>
       <workItem from="1581556516706" duration="32000" />
       <workItem from="1581557300724" duration="4356000" />
+      <workItem from="1581725198143" duration="2365000" />
     </task>
     <servers />
   </component>
