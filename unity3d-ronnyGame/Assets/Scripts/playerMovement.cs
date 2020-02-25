@@ -8,13 +8,16 @@ public class playerMovement : MonoBehaviour
     public float moveSpeed = 2f;
 
     public Rigidbody rb;
-    public Animation anim;
+    public Animator anim;
 
     private Vector3 movement;
     void Update()
     {
         movement.x = Input.GetAxisRaw("Horizontal");
         movement.z = Input.GetAxisRaw("Vertical");
+
+        anim.SetFloat("Horizontal", movement.x);
+        anim.SetFloat("Speed", movement.sqrMagnitude);
     }
 
     private void FixedUpdate()
