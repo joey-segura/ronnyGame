@@ -12,9 +12,11 @@
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
   </component>
   <component name="HighlightingSettingsPerFile">
+    <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.ide.rider@1.1.4/Rider/Editor/RiderInitializer.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Scripts/walkScript.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Scripts/playerMovement.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Scripts/followCamera.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/Scripts/cameraRotation.cs" root0="FORCE_HIGHLIGHTING" />
   </component>
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
@@ -24,6 +26,7 @@
         <option value="$PROJECT_DIR$/Assets/Scripts/cameraFollow.cs" />
         <option value="$PROJECT_DIR$/Assets/Scripts/followCamera.cs" />
         <option value="$PROJECT_DIR$/Assets/Scripts/playerMovement.cs" />
+        <option value="$PROJECT_DIR$/Assets/Scripts/cameraRotation.cs" />
       </list>
     </option>
   </component>
@@ -34,6 +37,7 @@
     <property name="Rider.DefaultBreakpoints.AreToggled" value="true" />
     <property name="Rider.ProjectViewActivator.IsNotFirstRun" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="settings.editor.selected.configurable" value="preferences.customizations" />
   </component>
   <component name="RunDashboard">
     <option name="ruleStates">
@@ -76,6 +80,7 @@
       <workItem from="1581556516706" duration="32000" />
       <workItem from="1581557300724" duration="4356000" />
       <workItem from="1581725198143" duration="4624000" />
+      <workItem from="1584673996401" duration="2673000" />
     </task>
     <servers />
   </component>
@@ -99,6 +104,10 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="LOCAL_CHANGES_DETAILS_PREVIEW_SHOWN" value="true" />
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="-2577" y="356" key="SettingsEditor" />
+    <state x="-2577" y="356" key="SettingsEditor/3840.2160/3840.2160" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

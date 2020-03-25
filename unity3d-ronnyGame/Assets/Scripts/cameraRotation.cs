@@ -4,10 +4,18 @@ using UnityEngine;
 
 public class cameraRotation : MonoBehaviour
 {
-    public float speed = 10f;
+    public float speed = 100f;
 
 void Update()
     {
-        transform.Rotate(0, speed * Time.deltaTime, 0);
+        if (Input.GetKey(KeyCode.E))
+        {
+            transform.Rotate(0, -speed * Time.deltaTime, 0);
+        }
+        
+        if (Input.GetKey(KeyCode.Q))
+        {
+            transform.Rotate(0, speed * Time.deltaTime, 0);
+        }
     }
 }
