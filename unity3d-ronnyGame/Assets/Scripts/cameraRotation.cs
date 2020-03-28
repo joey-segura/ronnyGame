@@ -9,10 +9,10 @@ public class cameraRotation : MonoBehaviour
 
 void Update()
     {
-        if (Input.GetKey(KeyCode.A))
+        if (Input.GetKey(KeyCode.Q))
         {
             speed = 50f;
-        } else if (Input.GetKey(KeyCode.D))
+        } else if (Input.GetKey(KeyCode.E))
         {
             speed = -50f;
         } else if (Input.GetMouseButton(1))
