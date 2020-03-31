@@ -12,10 +12,18 @@ void Update()
         {
             transform.Rotate(0, -speed * Time.deltaTime, 0);
         }
+        else
+        {
+            transform.Rotate(0, 0, 0);
+        }
         
         if (Input.GetKey(KeyCode.Q))
         {
             transform.Rotate(0, speed * Time.deltaTime, 0);
+        }
+        else
+        {
+            transform.Rotate(0, 0, 0);
         }
     }
 }

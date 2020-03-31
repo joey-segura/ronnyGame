@@ -25,8 +25,8 @@
         <option value="$PROJECT_DIR$/Assets/cameraFollow.cs" />
         <option value="$PROJECT_DIR$/Assets/Scripts/cameraFollow.cs" />
         <option value="$PROJECT_DIR$/Assets/Scripts/followCamera.cs" />
-        <option value="$PROJECT_DIR$/Assets/Scripts/cameraRotation.cs" />
         <option value="$PROJECT_DIR$/Assets/Scripts/playerMovement.cs" />
+        <option value="$PROJECT_DIR$/Assets/Scripts/cameraRotation.cs" />
       </list>
     </option>
   </component>
@@ -82,7 +82,7 @@
       <workItem from="1581725198143" duration="4624000" />
       <workItem from="1584673996401" duration="2725000" />
       <workItem from="1585184642855" duration="1218000" />
-      <workItem from="1585317187968" duration="3160000" />
+      <workItem from="1585317187968" duration="3783000" />
     </task>
     <servers />
   </component>
