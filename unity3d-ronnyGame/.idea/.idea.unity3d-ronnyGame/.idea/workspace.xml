@@ -12,6 +12,7 @@
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
   </component>
   <component name="HighlightingSettingsPerFile">
+    <setting file="file://$PROJECT_DIR$/Assets/Scripts/displayText.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.ide.rider@1.1.4/Rider/Editor/RiderInitializer.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Scripts/walkScript.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Scripts/playerMovement.cs" root0="FORCE_HIGHLIGHTING" />
@@ -82,7 +83,7 @@
       <workItem from="1581725198143" duration="4624000" />
       <workItem from="1584673996401" duration="2725000" />
       <workItem from="1585184642855" duration="1218000" />
-      <workItem from="1585317187968" duration="3783000" />
+      <workItem from="1585317187968" duration="5106000" />
     </task>
     <servers />
   </component>
