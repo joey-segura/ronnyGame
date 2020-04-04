@@ -18,39 +18,25 @@ void Update()
         } else if (Input.GetMouseButton(1))
         {
             Vector3 mousePos = Input.mousePosition;
-            if (lastMousePos != null)
+            if (lastMousePos != null && lastMousePos != mousePos)
             {
-                if (mousePos.x > lastMousePos.x || mousePos.x > Screen.width - (Screen.width / 6))
+                if (mousePos.x > lastMousePos.x)
                 {
-                    speed = 50f;
-                } else if (mousePos.x < lastMousePos.x || mousePos.x < Screen.width / 6)
+                    speed = (mousePos.x - lastMousePos.x) * 25;
+                } else if (mousePos.x < lastMousePos.x)
                 {
-                    speed = -50f;
-                } else
-                {
-                    if (Mathf.Abs(speed) < 2)
-                    {
-                        speed = 0f;
-                    } else
-                    {
-                        speed = speed / 1.009f;
-                    }
-                }
+                    speed = (mousePos.x - lastMousePos.x) * 25;
+                } 
                 lastMousePos = mousePos;
             } else
             {
                 lastMousePos = mousePos;
+                speed = 0f;
             }
         } else
         {
-            if (Mathf.Abs(speed) < 2)
-            {
-                speed = 0f;
-            }
-            else
-            {
-                speed = speed / 1.009f;
-            }
+            lastMousePos = Input.mousePosition;
+            speed = 0f;
         }
         transform.Rotate(0, speed * Time.deltaTime, 0);
     }
