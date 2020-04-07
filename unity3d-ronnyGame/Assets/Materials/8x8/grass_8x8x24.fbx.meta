@@ -1,14 +1,9 @@
 fileFormatVersion: 2
-guid: 8b9961498979c7e4595263934bd0de87
+guid: f01eefbb71ffa124d8c25a46227a7fb0
 ModelImporter:
   serializedVersion: 19300
   internalIDToNameTable: []
-  externalObjects:
-  - first:
-      type: UnityEngine:Texture2D
-      assembly: UnityEngine.CoreModule
-      name: floor_test1
-    second: {fileID: 2800000, guid: 7f0c08be85cdb2941a4a3784882d1a18, type: 3}
+  externalObjects: {}
   materials:
     materialImportMode: 1
     materialName: 0
