@@ -10,14 +10,12 @@ public class playerMovement : MonoBehaviour
 {
     [SerializeField] 
     public Transform cam;
-    public Rigidbody rb;
     private Vector3 movement;
     public float moveSpeed = 1f, speedEqualizer = 1.2f;
     public Animator anim;
 
     private void Start()
     {
-        rb = GetComponent<Rigidbody>();
         cam = GameObject.Find("Main Camera").GetComponent<Transform>();
     }
 
