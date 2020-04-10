@@ -8,7 +8,7 @@ public class cameraRotation : MonoBehaviour
 
 void Update()
     {
-        if (Input.GetKey(KeyCode.E))
+        if (Input.GetKey(KeyCode.Q))
         {
             transform.Rotate(0, -speed * Time.deltaTime, 0);
         }
@@ -17,7 +17,7 @@ void Update()
             transform.Rotate(0, 0, 0);
         }
         
-        if (Input.GetKey(KeyCode.Q))
+        if (Input.GetKey(KeyCode.E))
         {
             transform.Rotate(0, speed * Time.deltaTime, 0);
         }
