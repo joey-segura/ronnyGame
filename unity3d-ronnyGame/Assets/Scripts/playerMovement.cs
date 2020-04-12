@@ -33,7 +33,7 @@ public class playerMovement : MonoBehaviour
         {
             transform.position += movement.normalized * moveSpeed * Time.deltaTime;
         }
-
+        
         movement.y = 0f;
 
         anim.SetFloat("Horizontal", movement.x);
