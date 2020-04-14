@@ -13,6 +13,7 @@
   </component>
   <component name="HighlightingSettingsPerFile">
     <setting file="file://$PROJECT_DIR$/Assets/Scripts/displayText.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/Scripts/companionFollow.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.ide.rider@1.1.4/Rider/Editor/RiderInitializer.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Scripts/playerMovement.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Scripts/followCamera.cs" root0="FORCE_HIGHLIGHTING" />
@@ -28,6 +29,9 @@
         <option value="$PROJECT_DIR$/Assets/Scripts/displayText.cs" />
         <option value="$PROJECT_DIR$/Assets/Scripts/cameraRotation.cs" />
         <option value="$PROJECT_DIR$/Assets/Scripts/playerMovement.cs" />
+        <option value="$PROJECT_DIR$/Assets/Scripts/compFollow.cs" />
+        <option value="$PROJECT_DIR$/Assets/Scripts/compionFollow.cs" />
+        <option value="$PROJECT_DIR$/Assets/Scripts/companionFollow.cs" />
       </list>
     </option>
   </component>
@@ -88,6 +92,7 @@
       <workItem from="1586492701550" duration="4447000" />
       <workItem from="1586551362831" duration="621000" />
       <workItem from="1586662533275" duration="292000" />
+      <workItem from="1586903748730" duration="4402000" />
     </task>
     <servers />
   </component>

@@ -8,6 +8,7 @@
       <e p="Assets" t="Include">
         <e p="Scripts" t="Include">
           <e p="cameraRotation.cs" t="Include" />
+          <e p="companionFollow.cs" t="Include" />
           <e p="displayText.cs" t="Include" />
           <e p="followCamera.cs" t="Include" />
           <e p="playerMovement.cs" t="Include" />

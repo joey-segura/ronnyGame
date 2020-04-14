@@ -59,6 +59,7 @@
   </ItemGroup>
   <ItemGroup>
      <Compile Include="Assets\Scripts\cameraRotation.cs" />
+     <Compile Include="Assets\Scripts\companionFollow.cs" />
      <Compile Include="Assets\Scripts\displayText.cs" />
      <Compile Include="Assets\Scripts\followCamera.cs" />
      <Compile Include="Assets\Scripts\playerMovement.cs" />
