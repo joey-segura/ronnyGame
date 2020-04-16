@@ -5,8 +5,7 @@ using UnityEngine;
 public class companionFollow : MonoBehaviour
 {
     public GameObject ronny;
-    public float targetDistance, allowedDistance = 1, followSpeed;
-    public GameObject companion1, companion2;
+    public float targetDistance, allowedDistance = 1, followSpeed = 0.1f;
     public RaycastHit ray;
     
     void FixedUpdate()
@@ -14,7 +13,7 @@ public class companionFollow : MonoBehaviour
         transform.LookAt(ronny.transform);
         transform.rotation = Quaternion.LookRotation(Vector3.left, Vector3.up) * transform.rotation;
 
-        if (Physics.Raycast(transform.position, transform.TransformDirection(Vector3.forward),out ray))
+        if (Physics.Raycast(transform.position, transform.TransformDirection(Vector3.left),out ray))
         {
             targetDistance = ray.distance;
             if (targetDistance >= allowedDistance)
