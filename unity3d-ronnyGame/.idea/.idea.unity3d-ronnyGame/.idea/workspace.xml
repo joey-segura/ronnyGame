@@ -28,10 +28,10 @@
         <option value="$PROJECT_DIR$/Assets/Scripts/followCamera.cs" />
         <option value="$PROJECT_DIR$/Assets/Scripts/displayText.cs" />
         <option value="$PROJECT_DIR$/Assets/Scripts/cameraRotation.cs" />
-        <option value="$PROJECT_DIR$/Assets/Scripts/playerMovement.cs" />
         <option value="$PROJECT_DIR$/Assets/Scripts/compFollow.cs" />
         <option value="$PROJECT_DIR$/Assets/Scripts/compionFollow.cs" />
         <option value="$PROJECT_DIR$/Assets/Scripts/companionFollow.cs" />
+        <option value="$PROJECT_DIR$/Assets/Scripts/playerMovement.cs" />
       </list>
     </option>
   </component>
@@ -93,6 +93,7 @@
       <workItem from="1586551362831" duration="621000" />
       <workItem from="1586662533275" duration="292000" />
       <workItem from="1586903748730" duration="7183000" />
+      <workItem from="1587092927925" duration="451000" />
     </task>
     <servers />
   </component>
