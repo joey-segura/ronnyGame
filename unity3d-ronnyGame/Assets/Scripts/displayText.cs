@@ -9,7 +9,7 @@ public class displayText : MonoBehaviour
 
     private void Start()
     {
-        GameObject.Find("ritter");
+        GameObject.Find("textBox");
         //ritter.SetActive(false);
     }
 
