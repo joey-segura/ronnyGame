@@ -1886,7 +1886,7 @@ GameObject:
   - component: {fileID: 1789973745}
   - component: {fileID: 1789973744}
   m_Layer: 0
-  m_Name: ritter_stlR_01
+  m_Name: ritter
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
