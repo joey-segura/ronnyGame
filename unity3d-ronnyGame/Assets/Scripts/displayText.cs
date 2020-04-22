@@ -6,23 +6,20 @@ using UnityEngine;
 
 public class displayText : MonoBehaviour
 {
-
-    private void Start()
+    public GameObject displayTextPrefab;
+    void OnTriggerEnter(Collider other)
     {
-        GameObject.Find("textBox");
-        //ritter.SetActive(false);
-    }
-
-    private void OnTriggerEnter(Collider other)
-    {
-        if (other.gameObject.tag == "Player")
+        if (displayTextPrefab && other.gameObject.name == "sign_01")
         {
-            //ritter.SetActive(true);
+            ShowpopUpText();
+            
+            Debug.Log("Hit");
         }
     }
-
-    void Update()
+    private void ShowpopUpText()
     {
-        
+        {
+            Instantiate(displayTextPrefab, transform.position, Quaternion.identity, transform);
+        }
     }
 }
