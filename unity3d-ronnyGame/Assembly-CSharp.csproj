@@ -62,6 +62,7 @@
      <Compile Include="Assets\Scripts\companionFollow.cs" />
      <Compile Include="Assets\Scripts\displayText.cs" />
      <Compile Include="Assets\Scripts\followCamera.cs" />
+     <Compile Include="Assets\Scripts\playerHealth.cs" />
      <Compile Include="Assets\Scripts\playerMovement.cs" />
      <Compile Include="Assets\interact.cs" />
  <Reference Include="Unity.Timeline.Editor">
