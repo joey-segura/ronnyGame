@@ -34,6 +34,7 @@
         <option value="$PROJECT_DIR$/Assets/Scripts/playerMovement.cs" />
         <option value="$PROJECT_DIR$/Assets/Scripts/displayText.cs" />
         <option value="$PROJECT_DIR$/Assets/Scripts/playerHealth.cs" />
+        <option value="$PROJECT_DIR$/Assets/Scripts/UIcontroller.cs" />
       </list>
     </option>
   </component>
@@ -101,6 +102,7 @@
       <workItem from="1587504698326" duration="71000" />
       <workItem from="1587534623113" duration="775000" />
       <workItem from="1588134615148" duration="34000" />
+      <workItem from="1588398179707" duration="336000" />
     </task>
     <servers />
   </component>
