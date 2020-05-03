@@ -1898,8 +1898,9 @@ GameObject:
   m_Component:
   - component: {fileID: 1476999595}
   - component: {fileID: 1476999596}
+  - component: {fileID: 1476999597}
   m_Layer: 5
-  m_Name: Slider
+  m_Name: Health
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1977,6 +1978,19 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &1476999597
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1476999594}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8ceac0f79ecf3fe4096b92c607c644fe, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  health: {fileID: 1476999596}
 --- !u!1001 &1514092683
 PrefabInstance:
   m_ObjectHideFlags: 0
