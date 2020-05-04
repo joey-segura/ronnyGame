@@ -14,11 +14,11 @@ public class playerHealth : MonoBehaviour
     
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.O))
+        if (Input.GetKey(KeyCode.P))
         {
             health.value += 1;
         }
-        if (Input.GetKeyDown(KeyCode.P))
+        if (Input.GetKey(KeyCode.O))
         {
             health.value -= 1;
         }

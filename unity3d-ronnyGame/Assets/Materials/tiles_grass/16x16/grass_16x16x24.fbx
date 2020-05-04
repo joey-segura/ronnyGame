@@ -7,12 +7,12 @@ FBXHeaderExtension:  {
 	CreationTimeStamp:  {
 		Version: 1000
 		Year: 2020
-		Month: 4
-		Day: 6
-		Hour: 22
-		Minute: 36
-		Second: 49
-		Millisecond: 514
+		Month: 5
+		Day: 3
+		Hour: 18
+		Minute: 29
+		Second: 21
+		Millisecond: 209
 	}
 	Creator: "FBX SDK/FBX Plugins version 2018.1.1"
 	SceneInfo: "SceneInfo::GlobalInfo", "UserData" {
@@ -28,21 +28,21 @@ FBXHeaderExtension:  {
 			Comment: ""
 		}
 		Properties70:  {
-			P: "DocumentUrl", "KString", "Url", "", "C:\Users\otejp\Documents\maya\projects\ronnyGame\sourceimages\3dPaintTextures\16x16x24.fbx"
-			P: "SrcDocumentUrl", "KString", "Url", "", "C:\Users\otejp\Documents\maya\projects\ronnyGame\sourceimages\3dPaintTextures\16x16x24.fbx"
+			P: "DocumentUrl", "KString", "Url", "", "C:\Users\otejp\Documents\maya\projects\ronnyGame\scenes\grass_16x16x24.fbx"
+			P: "SrcDocumentUrl", "KString", "Url", "", "C:\Users\otejp\Documents\maya\projects\ronnyGame\scenes\grass_16x16x24.fbx"
 			P: "Original", "Compound", "", ""
 			P: "Original|ApplicationVendor", "KString", "", "", "Autodesk"
 			P: "Original|ApplicationName", "KString", "", "", "Maya"
 			P: "Original|ApplicationVersion", "KString", "", "", "201800"
-			P: "Original|DateTime_GMT", "DateTime", "", "", "07/04/2020 04:36:49.512"
-			P: "Original|FileName", "KString", "", "", "C:\Users\otejp\Documents\maya\projects\ronnyGame\sourceimages\3dPaintTextures\16x16x24.fbx"
+			P: "Original|DateTime_GMT", "DateTime", "", "", "04/05/2020 00:29:21.206"
+			P: "Original|FileName", "KString", "", "", "C:\Users\otejp\Documents\maya\projects\ronnyGame\scenes\grass_16x16x24.fbx"
 			P: "LastSaved", "Compound", "", ""
 			P: "LastSaved|ApplicationVendor", "KString", "", "", "Autodesk"
 			P: "LastSaved|ApplicationName", "KString", "", "", "Maya"
 			P: "LastSaved|ApplicationVersion", "KString", "", "", "201800"
-			P: "LastSaved|DateTime_GMT", "DateTime", "", "", "07/04/2020 04:36:49.512"
-			P: "Original|ApplicationActiveProject", "KString", "", "", "C:\Users\otejp\Documents\maya\projects\ronnyGame\sourceimages\3dPaintTextures"
-			P: "Original|ApplicationNativeFile", "KString", "", "", "C:\Users\otejp\Documents\maya\projects\ronnyGame\scenes\platform_test.mb"
+			P: "LastSaved|DateTime_GMT", "DateTime", "", "", "04/05/2020 00:29:21.206"
+			P: "Original|ApplicationActiveProject", "KString", "", "", "C:\Users\otejp\Documents\maya\projects\ronnyGame\scenes"
+			P: "Original|ApplicationNativeFile", "KString", "", "", "C:\Users\otejp\Documents\maya\projects\ronnyGame\scenes\grass_tiles.mb"
 		}
 	}
 }
@@ -60,7 +60,7 @@ GlobalSettings:  {
 		P: "UnitScaleFactor", "double", "Number", "",1
 		P: "OriginalUnitScaleFactor", "double", "Number", "",1
 		P: "AmbientColor", "ColorRGB", "Color", "",0,0,0
-		P: "DefaultCamera", "KString", "", "", "Producer Left"
+		P: "DefaultCamera", "KString", "", "", "Producer Perspective"
 		P: "TimeMode", "enum", "", "",11
 		P: "TimeProtocol", "enum", "", "",2
 		P: "SnapOnFrameMode", "enum", "", "",0
@@ -77,7 +77,7 @@ GlobalSettings:  {
 
 Documents:  {
 	Count: 1
-	Document: 2006602131712, "", "Scene" {
+	Document: 2085713755552, "", "Scene" {
 		Properties70:  {
 			P: "SourceObject", "object", "", ""
 			P: "ActiveAnimStackName", "KString", "", "", "Take 001"
@@ -97,7 +97,7 @@ References:  {
 
 Definitions:  {
 	Version: 100
-	Count: 8
+	Count: 10
 	ObjectType: "GlobalSettings" {
 		Count: 1
 	}
@@ -129,68 +129,18 @@ Definitions:  {
 			}
 		}
 	}
-	ObjectType: "Geometry" {
+	ObjectType: "NodeAttribute" {
 		Count: 1
-		PropertyTemplate: "FbxMesh" {
+		PropertyTemplate: "FbxNull" {
 			Properties70:  {
 				P: "Color", "ColorRGB", "Color", "",0.8,0.8,0.8
-				P: "BBoxMin", "Vector3D", "Vector", "",0,0,0
-				P: "BBoxMax", "Vector3D", "Vector", "",0,0,0
-				P: "Primary Visibility", "bool", "", "",1
-				P: "Casts Shadows", "bool", "", "",1
-				P: "Receive Shadows", "bool", "", "",1
-			}
-		}
-	}
-	ObjectType: "Material" {
-		Count: 1
-		PropertyTemplate: "FbxSurfaceLambert" {
-			Properties70:  {
-				P: "ShadingModel", "KString", "", "", "Lambert"
-				P: "MultiLayer", "bool", "", "",0
-				P: "EmissiveColor", "Color", "", "A",0,0,0
-				P: "EmissiveFactor", "Number", "", "A",1
-				P: "AmbientColor", "Color", "", "A",0.2,0.2,0.2
-				P: "AmbientFactor", "Number", "", "A",1
-				P: "DiffuseColor", "Color", "", "A",0.8,0.8,0.8
-				P: "DiffuseFactor", "Number", "", "A",1
-				P: "Bump", "Vector3D", "Vector", "",0,0,0
-				P: "NormalMap", "Vector3D", "Vector", "",0,0,0
-				P: "BumpFactor", "double", "Number", "",1
-				P: "TransparentColor", "Color", "", "A",0,0,0
-				P: "TransparencyFactor", "Number", "", "A",0
-				P: "DisplacementColor", "ColorRGB", "Color", "",0,0,0
-				P: "DisplacementFactor", "double", "Number", "",1
-				P: "VectorDisplacementColor", "ColorRGB", "Color", "",0,0,0
-				P: "VectorDisplacementFactor", "double", "Number", "",1
-			}
-		}
-	}
-	ObjectType: "Texture" {
-		Count: 1
-		PropertyTemplate: "FbxFileTexture" {
-			Properties70:  {
-				P: "TextureTypeUse", "enum", "", "",0
-				P: "Texture alpha", "Number", "", "A",1
-				P: "CurrentMappingType", "enum", "", "",0
-				P: "WrapModeU", "enum", "", "",0
-				P: "WrapModeV", "enum", "", "",0
-				P: "UVSwap", "bool", "", "",0
-				P: "PremultiplyAlpha", "bool", "", "",1
-				P: "Translation", "Vector", "", "A",0,0,0
-				P: "Rotation", "Vector", "", "A",0,0,0
-				P: "Scaling", "Vector", "", "A",1,1,1
-				P: "TextureRotationPivot", "Vector3D", "Vector", "",0,0,0
-				P: "TextureScalingPivot", "Vector3D", "Vector", "",0,0,0
-				P: "CurrentTextureBlendMode", "enum", "", "",1
-				P: "UVSet", "KString", "", "", "default"
-				P: "UseMaterial", "bool", "", "",0
-				P: "UseMipMap", "bool", "", "",0
+				P: "Size", "double", "Number", "",100
+				P: "Look", "enum", "", "",1
 			}
 		}
 	}
 	ObjectType: "Model" {
-		Count: 1
+		Count: 2
 		PropertyTemplate: "FbxNode" {
 			Properties70:  {
 				P: "QuaternionInterpolate", "enum", "", "",0
@@ -267,6 +217,66 @@ Definitions:  {
 			}
 		}
 	}
+	ObjectType: "Geometry" {
+		Count: 1
+		PropertyTemplate: "FbxMesh" {
+			Properties70:  {
+				P: "Color", "ColorRGB", "Color", "",0.8,0.8,0.8
+				P: "BBoxMin", "Vector3D", "Vector", "",0,0,0
+				P: "BBoxMax", "Vector3D", "Vector", "",0,0,0
+				P: "Primary Visibility", "bool", "", "",1
+				P: "Casts Shadows", "bool", "", "",1
+				P: "Receive Shadows", "bool", "", "",1
+			}
+		}
+	}
+	ObjectType: "Material" {
+		Count: 1
+		PropertyTemplate: "FbxSurfaceLambert" {
+			Properties70:  {
+				P: "ShadingModel", "KString", "", "", "Lambert"
+				P: "MultiLayer", "bool", "", "",0
+				P: "EmissiveColor", "Color", "", "A",0,0,0
+				P: "EmissiveFactor", "Number", "", "A",1
+				P: "AmbientColor", "Color", "", "A",0.2,0.2,0.2
+				P: "AmbientFactor", "Number", "", "A",1
+				P: "DiffuseColor", "Color", "", "A",0.8,0.8,0.8
+				P: "DiffuseFactor", "Number", "", "A",1
+				P: "Bump", "Vector3D", "Vector", "",0,0,0
+				P: "NormalMap", "Vector3D", "Vector", "",0,0,0
+				P: "BumpFactor", "double", "Number", "",1
+				P: "TransparentColor", "Color", "", "A",0,0,0
+				P: "TransparencyFactor", "Number", "", "A",0
+				P: "DisplacementColor", "ColorRGB", "Color", "",0,0,0
+				P: "DisplacementFactor", "double", "Number", "",1
+				P: "VectorDisplacementColor", "ColorRGB", "Color", "",0,0,0
+				P: "VectorDisplacementFactor", "double", "Number", "",1
+			}
+		}
+	}
+	ObjectType: "Texture" {
+		Count: 1
+		PropertyTemplate: "FbxFileTexture" {
+			Properties70:  {
+				P: "TextureTypeUse", "enum", "", "",0
+				P: "Texture alpha", "Number", "", "A",1
+				P: "CurrentMappingType", "enum", "", "",0
+				P: "WrapModeU", "enum", "", "",0
+				P: "WrapModeV", "enum", "", "",0
+				P: "UVSwap", "bool", "", "",0
+				P: "PremultiplyAlpha", "bool", "", "",1
+				P: "Translation", "Vector", "", "A",0,0,0
+				P: "Rotation", "Vector", "", "A",0,0,0
+				P: "Scaling", "Vector", "", "A",1,1,1
+				P: "TextureRotationPivot", "Vector3D", "Vector", "",0,0,0
+				P: "TextureScalingPivot", "Vector3D", "Vector", "",0,0,0
+				P: "CurrentTextureBlendMode", "enum", "", "",1
+				P: "UVSet", "KString", "", "", "default"
+				P: "UseMaterial", "bool", "", "",0
+				P: "UseMipMap", "bool", "", "",0
+			}
+		}
+	}
 	ObjectType: "Video" {
 		Count: 1
 		PropertyTemplate: "FbxVideo" {
@@ -300,9 +310,15 @@ Definitions:  {
 ;------------------------------------------------------------------
 
 Objects:  {
-	Geometry: 2004245870208, "Geometry::", "Mesh" {
+	NodeAttribute: 2085484121120, "NodeAttribute::", "Null" {
+		Properties70:  {
+			P: "Look", "enum", "", "",0
+		}
+		TypeFlags: "Null"
+	}
+	Geometry: 2085940718208, "Geometry::", "Mesh" {
 		Vertices: *24 {
-			a: 1,-6,-1,5,-6,-1,1,0,-1,5,0,-1,1,0,-5,5,0,-5,1,-6,-5,5,-6,-5
+			a: 0.99999988079071,-6,-1,5,-6,-1,1,0,-1,5,0,-1,1,0,-5,5,0,-5,0.99999988079071,-6,-5,5,-6,-5
 		} 
 		PolygonVertexIndex: *24 {
 			a: 0,1,3,-3,2,3,5,-5,4,5,7,-7,6,7,1,-1,1,7,5,-4,6,0,2,-5
@@ -317,7 +333,7 @@ Objects:  {
 			MappingInformationType: "ByPolygonVertex"
 			ReferenceInformationType: "Direct"
 			Normals: *72 {
-				a: 0,0,1,0,0,1,0,0,1,0,0,1,0,1,0,0,1,0,0,1,0,0,1,0,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,-1,0,0,-1,0,0,-1,0,0,-1,0,1,0,0,1,0,0,1,0,0,1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0
+				a: 0,0,1,0,0,1,0,0,1,0,0,1,0,1,0,0,1,0,0,1,0,0,1,0,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,-1,0,0,-1,0,0,-1,0,0,-1,0,1,0,0,1,0,0,1,0,0,1,0,0,-1,1.98682155172492e-08,0,-1,1.98682155172492e-08,0,-1,1.98682155172492e-08,0,-1,1.98682155172492e-08,0
 			} 
 			NormalsW: *24 {
 				a: 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
@@ -328,11 +344,11 @@ Objects:  {
 			Name: "map1"
 			MappingInformationType: "ByPolygonVertex"
 			ReferenceInformationType: "IndexToDirect"
-			UV: *40 {
-				a: 0.71875,0.71875,0.96875,0.71875,0.96875,0.96875,0.71875,0.96875,0.71875,0.328125,0.96875,0.328125,0.96875,0.703125,0.71875,0.703125,0.96875,0.703125,0.71875,0.703125,0.71875,0.328125,0.96875,0.328125,0.71875,0.328125,0.96875,0.328125,0.96875,0.703125,0.71875,0.703125,0.71875,0.328125,0.96875,0.328125,0.96875,0.703125,0.71875,0.703125
+			UV: *48 {
+				a: 0.71875,0.328125,0.96875,0.328125,0.96875,0.703125,0.71875,0.703125,0.71875,0.328125,0.96875,0.328125,0.96875,0.703125,0.71875,0.703125,0.71875,0.328125,0.96875,0.328125,0.96875,0.703125,0.71875,0.703125,0.96875,0.71875,0.96875,0.96875,0.71875,0.96875,0.71875,0.71875,0.71875,0.703125,0.71875,0.328125,0.96875,0.328125,0.96875,0.703125,0.96875,0.0625,0.96875,0.3125,0.71875,0.0625,0.71875,0.3125
 			} 
 			UVIndex: *24 {
-				a: 12,13,14,15,0,1,2,3,8,9,10,11,-1,-1,-1,-1,4,5,6,7,16,17,18,19
+				a: 8,9,10,11,15,12,13,14,19,16,17,18,22,20,21,23,0,1,2,3,4,5,6,7
 			} 
 		}
 		LayerElementMaterial: 0 {
@@ -360,7 +376,20 @@ Objects:  {
 			}
 		}
 	}
-	Model: 2005865897936, "Model::pCube8", "Mesh" {
+	Model: 2085722811616, "Model::group", "Null" {
+		Version: 232
+		Properties70:  {
+			P: "RotationPivot", "Vector3D", "Vector", "",9.875,3.625,2.25
+			P: "ScalingPivot", "Vector3D", "Vector", "",9.875,3.625,2.25
+			P: "RotationActive", "bool", "", "",1
+			P: "InheritType", "enum", "", "",1
+			P: "ScalingMax", "Vector3D", "Vector", "",0,0,0
+			P: "DefaultAttributeIndex", "int", "Integer", "",0
+		}
+		Shading: Y
+		Culling: "CullingOff"
+	}
+	Model: 2085722874256, "Model::pCube8", "Mesh" {
 		Version: 232
 		Properties70:  {
 			P: "RotationPivot", "Vector3D", "Vector", "",3,-3,-3
@@ -369,12 +398,13 @@ Objects:  {
 			P: "InheritType", "enum", "", "",1
 			P: "ScalingMax", "Vector3D", "Vector", "",0,0,0
 			P: "DefaultAttributeIndex", "int", "Integer", "",0
+			P: "Lcl Translation", "Lcl Translation", "", "A",-3,0,3
 			P: "currentUVSet", "KString", "", "U", "map1"
 		}
 		Shading: T
 		Culling: "CullingOff"
 	}
-	Material: 2005838397744, "Material::grass_sml_med", "" {
+	Material: 2086184016848, "Material::grass_sml_med", "" {
 		Version: 102
 		ShadingModel: "lambert"
 		MultiLayer: 0
@@ -389,19 +419,19 @@ Objects:  {
 			P: "Opacity", "double", "Number", "",1
 		}
 	}
-	Video: 2004056818448, "Video::file1", "Clip" {
+	Video: 2086182073536, "Video::file1", "Clip" {
 		Type: "Clip"
 		Properties70:  {
 			P: "Path", "KString", "XRefUrl", "", "C:/Users/otejp/Documents/maya/projects/ronnyGame/sourceimages/3dPaintTextures/grass_smlMed.png"
-			P: "RelPath", "KString", "XRefUrl", "", "grass_smlMed.png"
+			P: "RelPath", "KString", "XRefUrl", "", "..\sourceimages\3dPaintTextures\grass_smlMed.png"
 		}
 		UseMipMap: 0
 		Filename: "C:/Users/otejp/Documents/maya/projects/ronnyGame/sourceimages/3dPaintTextures/grass_smlMed.png"
-		RelativeFilename: "grass_smlMed.png"
+		RelativeFilename: "..\sourceimages\3dPaintTextures\grass_smlMed.png"
 		Content: ,
  "iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAEDElEQVR4Xu2bsasUMRDGc5VPH4Kgla2FnTaCVmIv2ImViJ1g7V9hLdhZWImdYC9WCjbaWdhaKQiiPqsn3+J3zs4lmclesvcWc809drOTmV++mcyGe6sQwmH4jz+rDuCvAm4+vJjVwfMH78NcYyxBenzx2MCYtQLmCi7n/Okzx8PXL78s38MsAOgMv+WkKUc5JhfINs7HfJG0vADxDPwwFSANehzXkDCBXtEYSO24hq8l4fElJiMdzwaA3MSpSVOQUkFpOxgXA9VKRQSTVEBreZeuXmxRPKlmFZLmKUAHNNBSALAzxYYnjcwaICl6HC8dU1K0Sn2JgdM2RgAsydS8n9pyrVWT+StteJ/LAjgKfUBu1awdyVJTLI1GCrj35MoaELeuvZd7w7X9O6vw+O6bcPva5XBw/WCdk9Ioxj599TbAjtz6aAPPcYwFO6U2qw8oUelGEbxx6UI4e//EYOPzo58jW8durYbGAWPwwTgE+fvZ4fA3x79492ENAPfwHL7x4d8YMxVAKgVKApcQRwpgcCljcLx0jARAuwTgyVtrS7YKXQ5MVAG5B6YAiNmTCogFaOUybHp2GwknZvNIACiRrgzICyCnkCoAvn3/McRw6uT+8C1Vgnu8zkBx7fXHTzutAbKOTKoBDIzBxwDIe/I+AZSufMvx6/MAb4HTwXkAyAAWpQApY8o7BoAQMObq+XPZBUsBiBUq9A3oH+TH029YiqENMwVaAYDasEUyaPYTcAj9Ba6zt2DPgXvsKdhvcIzebvUzKRsbAHRRaw2AAcGRVBOGezpAa0umLTZrVIRu2pIApIRkhffI25If7lMBEgAh6C40dt0CQGCxRoz+wcYIQC44QNgmvyUU2VJrWDmH5VgLQGzF9VxHEoBHPRjjBZCz1xSAdbZobbkWiNkBwCFsX54P3/RyLzKLBeApgtZpT64GeABPSYFYW16UAlTANgAY3K4AYH75bjILgNRraMsU0Ksde2ehitzb4K4UEJNuLAX0C5pc6dkBePKYCkgFCBu6K831Abn3k9kBWOd9rAExxyQQD4BU4LlFkJ1tkxTgyTGM460LJ8royXk6jJNjKGDKqsk21irIFoSNIuiRrjUpeoVYgZMtrqel1r7onMY8li9NAHggSQCp/bfUeQKgarYFIBu76r8RSgEgjCkK4B6+CABYXb1iUjm1Vq9URVq9bO2rK8ByrAPYsoB5mzKrXjVTgDUx7lsqsWzUUtGoD7AmrXm/AzCOzi3Y3rMJy05XgPylqIdWrTE9BSqkQA2IPQV6Cohfi9fKb4+dGvKtYaOnQE+BngL//mPEk7u1xtTI3xo2eg3YVQ2ooaRFK6ADqECgK6DC+8TOimAFAVQ5VVo0gBoQO4Alb4NdAZUI/AG+AG4919R7HAAAAABJRU5ErkJggg=="
 	}
-	Texture: 2004056830448, "Texture::file1", "" {
+	Texture: 2086182072576, "Texture::file1", "" {
 		Type: "TextureVideoClip"
 		Version: 202
 		TextureName: "Texture::file1"
@@ -412,13 +442,13 @@ Objects:  {
 		}
 		Media: "Video::file1"
 		FileName: "C:/Users/otejp/Documents/maya/projects/ronnyGame/sourceimages/3dPaintTextures/grass_smlMed.png"
-		RelativeFilename: "grass_smlMed.png"
+		RelativeFilename: "..\sourceimages\3dPaintTextures\grass_smlMed.png"
 		ModelUVTranslation: 0,0
 		ModelUVScaling: 1,1
 		Texture_Alpha_Source: "None"
 		Cropping: 0,0,0,0
 	}
-	AnimationStack: 2005846767456, "AnimStack::Take 001", "" {
+	AnimationStack: 2085717172976, "AnimStack::Take 001", "" {
 		Properties70:  {
 			P: "LocalStart", "KTime", "Time", "",1924423250
 			P: "LocalStop", "KTime", "Time", "",230930790000
@@ -426,7 +456,7 @@ Objects:  {
 			P: "ReferenceStop", "KTime", "Time", "",230930790000
 		}
 	}
-	AnimationLayer: 2005835614464, "AnimLayer::BaseLayer", "" {
+	AnimationLayer: 2085710109872, "AnimLayer::BaseLayer", "" {
 	}
 }
 
@@ -435,23 +465,29 @@ Objects:  {
 
 Connections:  {
 	
+	;Model::group, Model::RootNode
+	C: "OO",2085722811616,0
+	
 	;Model::pCube8, Model::RootNode
-	C: "OO",2005865897936,0
+	C: "OO",2085722874256,0
 	
 	;AnimLayer::BaseLayer, AnimStack::Take 001
-	C: "OO",2005835614464,2005846767456
+	C: "OO",2085710109872,2085717172976
+	
+	;NodeAttribute::, Model::group
+	C: "OO",2085484121120,2085722811616
 	
 	;Texture::file1, Material::grass_sml_med
-	C: "OP",2004056830448,2005838397744, "DiffuseColor"
+	C: "OP",2086182072576,2086184016848, "DiffuseColor"
 	
 	;Video::file1, Texture::file1
-	C: "OO",2004056818448,2004056830448
+	C: "OO",2086182073536,2086182072576
 	
 	;Geometry::, Model::pCube8
-	C: "OO",2004245870208,2005865897936
+	C: "OO",2085940718208,2085722874256
 	
 	;Material::grass_sml_med, Model::pCube8
-	C: "OO",2005838397744,2005865897936
+	C: "OO",2086184016848,2085722874256
 }
 ;Takes section
 ;----------------------------------------------------
