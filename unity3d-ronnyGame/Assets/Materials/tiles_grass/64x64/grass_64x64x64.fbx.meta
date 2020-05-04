@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 54d122d0a50113b4bb7e65a110bbaacb
+guid: afc5ca5c3a1a5d6449bb3cfc56bda5c7
 ModelImporter:
   serializedVersion: 19300
   internalIDToNameTable: []
@@ -8,7 +8,7 @@ ModelImporter:
       type: UnityEngine:Texture2D
       assembly: UnityEngine.CoreModule
       name: grass_lrg
-    second: {fileID: 2800000, guid: 36df359639b812a4fbd7c56d93561b87, type: 3}
+    second: {fileID: 2800000, guid: c3456eb5750f9614da85a03a8b25f0eb, type: 3}
   materials:
     materialImportMode: 1
     materialName: 0
@@ -85,7 +85,7 @@ ModelImporter:
     armStretch: 0.05
     legStretch: 0.05
     feetSpacing: 0
-    globalScale: 12
+    globalScale: 0.12
     rootMotionBoneName: 
     hasTranslationDoF: 0
     hasExtraRoot: 0
