@@ -67,10 +67,15 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\Scene_Changer_test.cs" />
+    <Compile Include="Assets\Scripts\Being.cs" />
+    <Compile Include="Assets\Scripts\GameMaster.cs" />
+    <Compile Include="Assets\Scripts\SceneMaster.cs" />
     <Compile Include="Assets\Scripts\cameraRotation.cs" />
     <Compile Include="Assets\Scripts\followCamera.cs" />
     <Compile Include="Assets\Scripts\playerMovement.cs" />
     <Compile Include="Assets\Scripts\walkScript.cs" />
+    <None Include="Assets\Resources\Level_Data\rotation_testScene.txt" />
     <None Include="Assets\Scripts\test.txt" />
     <Reference Include="Unity.Timeline.Editor">
       <HintPath>D:/Projects/ronnyGame/unity3d-ronnyGame/Library/ScriptAssemblies/Unity.Timeline.Editor.dll</HintPath>
