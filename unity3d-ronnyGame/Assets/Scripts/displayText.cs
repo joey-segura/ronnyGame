@@ -7,9 +7,10 @@ using UnityEngine;
 public class displayText : MonoBehaviour
 {
     public GameObject displayTextPrefab;
+
     void OnTriggerEnter(Collider other)
     {
-        if (displayTextPrefab && other.gameObject.name == "sign_01")
+        if (other.gameObject.name == "ronny")
         {
             ShowpopUpText();
             

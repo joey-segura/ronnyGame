@@ -32,9 +32,9 @@
         <option value="$PROJECT_DIR$/Assets/Scripts/compionFollow.cs" />
         <option value="$PROJECT_DIR$/Assets/Scripts/companionFollow.cs" />
         <option value="$PROJECT_DIR$/Assets/Scripts/playerMovement.cs" />
-        <option value="$PROJECT_DIR$/Assets/Scripts/displayText.cs" />
         <option value="$PROJECT_DIR$/Assets/Scripts/UIcontroller.cs" />
         <option value="$PROJECT_DIR$/Assets/Scripts/playerHealth.cs" />
+        <option value="$PROJECT_DIR$/Assets/Scripts/displayText.cs" />
       </list>
     </option>
   </component>
@@ -105,6 +105,7 @@
       <workItem from="1588398179707" duration="336000" />
       <workItem from="1588485158736" duration="698000" />
       <workItem from="1588552012563" duration="22000" />
+      <workItem from="1588735934730" duration="409000" />
     </task>
     <servers />
   </component>
