@@ -10,20 +10,19 @@ using UnityEngine;
 public class displayText : MonoBehaviour
 {
     public GameObject displayTextPrefab;
-    public Vector3 cam;
-    void OnTriggerEnter(Collider other)
+
+    private void Start()
     {
-        if (other.gameObject.name == "ronny")
-        {
-            ShowpopUpText();
-            
-            Debug.Log("Hit");
-        }
+        displayTextPrefab = GameObject.Find("textBox");
     }
-    private void ShowpopUpText()
+
+    void OnTriggerEnter(Collider ronny)
     {
-        {
-            Instantiate(displayTextPrefab, new Vector3((float) 0.85,(float) 2.2,(float) 0.6), Quaternion.LookRotation(Vector3.up));
-        }
+        displayTextPrefab.GetComponent<SpriteRenderer>().material.color = new Color(1.0f, 1.0f, 1.0f, 1.0f);
+    }
+
+    private void OnTriggerExit(Collider ronny)
+    {
+        displayTextPrefab.GetComponent<SpriteRenderer>().material.color = new Color(1.0f, 1.0f, 1.0f, 0.0f);
     }
 }
