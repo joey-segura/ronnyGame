@@ -3,28 +3,30 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class SceneMaster : GameMaster
+public class SceneMaster : Kami
 {
     bool[] levelLoaded = { false, false, false };
+
+
     private void OnEnable()
     {
         SceneManager.sceneLoaded += OnSceneLoaded;
     }
     void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        isSceneChanging = false;
+        gameMaster.isSceneChanging = false;
         if (!LevelLoaded(scene.name))
         {
-            this.LoadInitialSceneData(scene.name);
+            gameMaster.LoadInitialSceneData(scene.name);
         }
         else
         {
-            this.LoadGameMasterSceneData();
+            gameMaster.LoadGameMasterSceneData();
         }
     }
     public void SceneChange(string scenename)
     {
-        this.isSceneChanging = true;
+        gameMaster.isSceneChanging = true;
         SceneManager.LoadScene(scenename);
     }
     private bool LevelLoaded(string sceneName)

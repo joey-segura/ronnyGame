@@ -4,19 +4,36 @@ using System.IO;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class GameMaster : MonoBehaviour
+[System.Serializable]
+public class BeingData
 {
-    GameObject PLAYER;
+    public GameObject gameObject;
+    public int objectID;
+    public string jsonData;
+    public string prefabName;
+}
+[System.Serializable]
+public class ListBeingData
+{
+    public List<BeingData> BeingDatas;
+    public ListBeingData()
+    {
+        BeingDatas = new List<BeingData>();
+    }
+}
+public class GameMaster : Kami
+{
+    private GameObject PLAYER;
 
-    ListBeingData GameMasterBeingDataList = new ListBeingData();
+    public ListBeingData GameMasterBeingDataList = new ListBeingData();
 
     public bool isSceneChanging = false;
     
-    int objectIDCounter = 0;
+    public int objectIDCounter;
 
-    string sceneJsonData;
-    string LEVELDATAPATH = "Assets/Resources/Level_Data/";
-    string PREFABPATH = "Assets/Resources/Prefabs/";
+    private string sceneJsonData;
+    private string LEVELDATAPATH = "Assets/Resources/Level_Data/";
+    private string PREFABPATH = "Assets/Resources/Prefabs/";
 
     private void Start()
     {
@@ -35,34 +52,34 @@ public class GameMaster : MonoBehaviour
             beingData.prefabName = name;
             beingData.objectID = objectIDCounter;
             beingData.gameObject = entity.gameObject;
-            objectIDCounter++;
+            this.objectIDCounter++;
             jsonData = JsonUtility.ToJson(beingData);
-        }
+            if(GameMasterBeingDataList.BeingDatas != null)
+            {
+                this.AddBeingToList(beingData);
+            }
+        } 
 
         Being being = entity.GetComponent<Being>();
-        being.InjectData(jsonData);
-
-        if (entity.tag == "Player")
+        if (being != null)
         {
-            PLAYER = entity;
+            being.InjectData(jsonData);
+
+            if (entity.tag == "Player")
+            {
+                PLAYER = entity;
+            }
         }
     }
-    protected void LoadGameMasterSceneData()
+    public void LoadGameMasterSceneData()
     {
-        if (GameMasterBeingDataList.BeingDatas == null) 
-        { 
-            return;
-        }
-
-        ListBeingData listBeingData = GameMasterBeingDataList;
- 
-        foreach (BeingData beingData in listBeingData.BeingDatas)
+        foreach (BeingData beingData in GameMasterBeingDataList.BeingDatas)
         {
-            Quaternion angle = new Quaternion(0,0,0,0);
+            Quaternion angle = new Quaternion(0, 0, 0, 0);
             InstatiateObject(beingData.prefabName, beingData.gameObject.transform.position, angle, beingData.jsonData);
         }
     }
-    protected void LoadInitialSceneData(string sceneName)
+    public void LoadInitialSceneData(string sceneName)
     {
         LoadGameMasterSceneData();
 
@@ -81,9 +98,7 @@ public class GameMaster : MonoBehaviour
             InstatiateObject(objectName, location, angle, null);
         }
         reader.Close();
-
     }
-    
     private void AddBeingToList(BeingData being)
     {
         GameMasterBeingDataList.BeingDatas.Add(being);
@@ -114,11 +129,9 @@ public class GameMaster : MonoBehaviour
             GameMasterBeingDataList.BeingDatas.Remove(GetBeingDataByID(ID));
         }
     }
-    private BeingData GetBeingDataByID(int ID)
+    public BeingData GetBeingDataByID(int ID)
     {
-        ListBeingData listBeingData = GameMasterBeingDataList;
-
-        foreach (BeingData beingData in listBeingData.BeingDatas)
+        foreach (BeingData beingData in GameMasterBeingDataList.BeingDatas)
         {
            if (beingData.objectID == ID)
             {
@@ -129,20 +142,13 @@ public class GameMaster : MonoBehaviour
     }
     public GameObject GetPlayerGameObject()
     {
-        return PLAYER;
+        if (PLAYER != null)
+        {
+           return PLAYER;
+        } else
+        {
+           return this.gameObject;
+        }
     }
 }
-[System.Serializable]
-public class BeingData
-{
-    public GameObject gameObject;
-    public int objectID;
-    public string jsonData;
-    public string prefabName;
-}
-[System.Serializable]
-public class ListBeingData 
-{
-    public List<BeingData> BeingDatas;
-    
-}
+

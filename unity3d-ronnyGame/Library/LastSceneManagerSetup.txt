@@ -1,5 +1,5 @@
 sceneSetups:
-- path: Assets/Scenes/exploreScene.unity
+- path: Assets/rotation_testScene.unity
   isLoaded: 1
   isActive: 1
   isSubScene: 0
