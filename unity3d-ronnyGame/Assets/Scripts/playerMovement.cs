@@ -7,9 +7,11 @@ public class playerMovement : MonoBehaviour
 {
     public float speed = 0f;
     public float angle = 0f;
+    public Animator anim;
 
     void Update()
     {
+
         float x = 0f;
         float z = 0f;
 
@@ -17,10 +19,12 @@ public class playerMovement : MonoBehaviour
 
         if (Input.GetKey(KeyCode.W))
         {
+            anim.SetFloat("Facing", 1);
             x += Mathf.Cos(Mathf.Deg2Rad * angle);
             z += Mathf.Sin(Mathf.Deg2Rad * angle);
         } else if (Input.GetKey(KeyCode.S))
         {
+            anim.SetFloat("Facing", -1);
             x += Mathf.Cos(Mathf.Deg2Rad * (angle + 180));
             z += Mathf.Sin(Mathf.Deg2Rad * (angle + 180));
         } else
@@ -30,11 +34,13 @@ public class playerMovement : MonoBehaviour
         }
         if (Input.GetKey(KeyCode.D))
         {
+            anim.SetFloat("Facing", 1);
             x += Mathf.Cos(Mathf.Deg2Rad * (angle + 90));
             z += Mathf.Sin(Mathf.Deg2Rad * (angle + 90));
         }
         else if (Input.GetKey(KeyCode.A))
         {
+            anim.SetFloat("Facing", -1);
             x += Mathf.Cos(Mathf.Deg2Rad * (angle - 90));
             z += Mathf.Sin(Mathf.Deg2Rad * (angle - 90));
         }
@@ -43,7 +49,16 @@ public class playerMovement : MonoBehaviour
             x += 0;
             z += 0;
         }
+
         this.transform.position += new Vector3(z * speed * Time.deltaTime, 0, x * speed * Time.deltaTime);
+
+        if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.D))
+        {
+            anim.SetBool("Moving", true);
+        } else
+        {
+            anim.SetBool("Moving", false);
+        }
     }
 
 }
