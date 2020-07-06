@@ -11,6 +11,9 @@ public class BeingData
     public int objectID;
     public string jsonData;
     public string prefabName;
+    public Vector3 location;
+    public Quaternion angle;
+    public Vector3 scale;
 }
 [System.Serializable]
 public class ListBeingData
@@ -40,30 +43,31 @@ public class GameMaster : Kami
         DontDestroyOnLoad(this.gameObject);
     }
 
-    public void InstatiateObject (string name, Vector3 location, Quaternion angle, string jsonData)
+    public void InstantiateObject (string jsonData)
     {
-        GameObject entity = Instantiate(Resources.Load(("Prefabs/" + name), typeof(GameObject)), location, angle, this.gameObject.transform) as GameObject;
-        entity.transform.name = name;
-
-        //need to forawrd json data there should always be json sent to the object in all cases of instantiuation
-        if (jsonData == null) //thinking about getting rid of this by throwing json in the instantiation files which would baiscally move the assignment of beingData to
+        BeingData beingData = JsonUtility.FromJson<BeingData>(jsonData);
+        GameObject entity = Instantiate(Resources.Load(("Prefabs/" + beingData.prefabName), typeof(GameObject)), beingData.location, beingData.angle, this.gameObject.transform) as GameObject;
+        
+        if (beingData.scale != new Vector3(0,0,0))
         {
-            BeingData beingData = new BeingData();
-            beingData.prefabName = name;
-            beingData.objectID = objectIDCounter;
-            beingData.gameObject = entity.gameObject;
-            this.objectIDCounter++;
-            jsonData = JsonUtility.ToJson(beingData);
-            if(GameMasterBeingDataList.BeingDatas != null)
-            {
-                this.AddBeingToList(beingData);
-            }
-        } 
+            entity.transform.localScale = beingData.scale;
+        }
+        entity.transform.name = beingData.prefabName;
+
+        beingData.gameObject = entity.gameObject;
+        beingData.objectID = objectIDCounter;
+        objectIDCounter++;
+
+        if(GameMasterBeingDataList.BeingDatas != null)
+        {
+            this.AddBeingToList(beingData);
+        }
+
 
         Being being = entity.GetComponent<Being>();
         if (being != null)
         {
-            being.InjectData(jsonData);
+            being.InjectData(JsonUtility.ToJson(beingData));
 
             if (entity.tag == "Player")
             {
@@ -76,7 +80,7 @@ public class GameMaster : Kami
         foreach (BeingData beingData in GameMasterBeingDataList.BeingDatas)
         {
             Quaternion angle = new Quaternion(0, 0, 0, 0);
-            InstatiateObject(beingData.prefabName, beingData.gameObject.transform.position, angle, beingData.jsonData);
+            InstantiateObject(JsonUtility.ToJson(beingData));
         }
     }
     public void LoadInitialSceneData(string sceneName)
@@ -90,12 +94,7 @@ public class GameMaster : Kami
         string line;
         while ((line = reader.ReadLine()) != null)
         {
-            string[] data = line.Split(',');
-            string objectName = data[0];
-            Vector3 location = new Vector3(float.Parse(data[1]), float.Parse(data[2]), float.Parse(data[3]));
-            Quaternion angle = new Quaternion(float.Parse(data[4]), float.Parse(data[5]), float.Parse(data[6]), float.Parse(data[7]));
-
-            InstatiateObject(objectName, location, angle, null);
+            InstantiateObject(line);
         }
         reader.Close();
     }

@@ -12,6 +12,8 @@ public class Being : MonoBehaviour
 
     public int ID;
 
+    public string beingData;
+
     public float multiplier;
 
     private Camera cam;
@@ -67,11 +69,13 @@ public class Being : MonoBehaviour
     {
         this.GetComponent<MeshRenderer>().material.color = new Color(1.0f, 1.0f, 1.0f, alpha);
     }
-    public string CompactBeingDataIntoJson()
+    public virtual string CompactBeingDataIntoJson()
     {
         //the function overriding this one will need to return string jsonData
         //will be overriden by extended objects but left to be referenced by Being.CompactBeingDataIntoJson
-        return null;
+        //need to bundle up class specific json (jsonUtility.ToJson('individual class'))
+        //need to update values in beingData (location, angle, scale, jsonData (class specific json))
+        return JsonUtility.ToJson(beingData);
     }
     public void DestroyBeing()
     {
@@ -80,6 +84,9 @@ public class Being : MonoBehaviour
     public virtual void InjectData(string jsonData)
     {
         //will be overriden by extended objects but left to be referenced by Being.InjectData()
+        //need to convert jsonData into the class of beingData and set the object ID to that
+        //need to convert beingData.jsonData (this is the being class specific) to its individual class
+        //need to set values of that individual class E.G., for the sign class it assigns the 'message' string
     }
     public void Interact()
     {

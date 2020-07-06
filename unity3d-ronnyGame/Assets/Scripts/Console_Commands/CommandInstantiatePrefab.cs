@@ -27,7 +27,11 @@ namespace Console
             {
                 GameObject Kami = GameObject.Find("Kami");
                 GameMaster gameMaster = Kami.GetComponent<GameMaster>();
-                gameMaster.InstatiateObject(args[1], gameMaster.GetPlayerGameObject().transform.position, new Quaternion(0, 0, 0, 0), null);
+                BeingData being = new BeingData();
+                being.prefabName = args[1];
+                being.location = gameMaster.GetPlayerGameObject().transform.position;
+                being.angle = new Quaternion(0, 0, 0, 0);
+                gameMaster.InstantiateObject(JsonUtility.ToJson(being));
                 
                 return "Object instantiated sucessfully";
                 
