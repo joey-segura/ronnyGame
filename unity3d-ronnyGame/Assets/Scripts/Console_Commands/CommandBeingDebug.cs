@@ -17,12 +17,12 @@ namespace Console
             Help = "This command toggles all beings into debug mode or just a specific ID if ID is supplied as the first parameter";
             Name = "BeingDebug";
             Command = "beingdebug";
-
+            
             AddThisToList();
         }
         public override string ExecuteCommand(string[] args)
         {
-            if (args.Length > 2)
+            if (args.Length >= 2)
             {
                 int ID = int.Parse(args[1]);
                 if (ID != null)

@@ -52,7 +52,7 @@ public class Being : MonoBehaviour
             float width = maxX - minX;
             float height = maxY - minY;
         
-            GUI.Box(new Rect(minX, (Screen.height - maxY), width, height), "This is a box");
+            GUI.Box(new Rect(minX, (Screen.height - maxY), width, height), (this.gameObject.name + " " + ID.ToString()));
         }
     }
 

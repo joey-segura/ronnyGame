@@ -93,10 +93,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3044864e6a20ca64ca1b5c41eaeff32c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  debugMode: 0
   ID: 0
   multiplier: 0
-  renderer: {fileID: 0}
   message: 
 --- !u!64 &8883445286352763808
 MeshCollider:

@@ -35,6 +35,7 @@ namespace Console
         private void Start()
         {
             consoleCanvas.gameObject.SetActive(false);
+            AddLineToConsole("Welcome, please type 'help' to get a list of commands");
             CreateCommands();
         }
 
@@ -44,6 +45,8 @@ namespace Console
             CommandDestroyBeing.CreateCommand();
             CommandDescription.CreateCommand();
             CommandInstantiatePrefab.CreateCommand();
+
+            CommandHelp.CreateCommand();
         }
 
         public static void AddCommandToList(string name, ConsoleCommand Command)
