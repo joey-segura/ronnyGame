@@ -5,10 +5,18 @@ using UnityEditor;
 
 public class Being : MonoBehaviour
 {
+    // functions needed to extend this class (quick reference
+    // CompactBeingDataIntoJson() <- needs to return json of the class BeingData
+    // InjectData(string jsonData) <- instantiates individual class data (jsonData should be in class format)
+    // Interact() <- no return value
+    //
+
     GameObject gameMasterGameObject;
     GameMaster gameMasterScript;
 
     private bool debugMode = false;
+
+    public bool interactable = false;
 
     public int ID;
 
@@ -58,6 +66,14 @@ public class Being : MonoBehaviour
         }
     }
 
+    private void Update()
+    {
+        if (interactable && Input.GetKeyDown(KeyCode.R)) //Interact Key (need to generalize in the future to allow remapping etc)
+        {
+            this.Interact();
+        }
+    }
+
     private void Start()
     {
         renderer = this.GetComponent<Renderer>();
@@ -88,7 +104,7 @@ public class Being : MonoBehaviour
         //need to convert beingData.jsonData (this is the being class specific) to its individual class
         //need to set values of that individual class E.G., for the sign class it assigns the 'message' string
     }
-    public void Interact()
+    public virtual void Interact()
     {
         //will be overriden by extended objects but left to be referenced by Being.Interact()
     }
@@ -102,6 +118,7 @@ public class Being : MonoBehaviour
     }
     public void Say(string text)
     {
+        Debug.Log("trying to say ->" + text);
         //instatiate word box object
         //fill with 'text'
     }
@@ -113,5 +130,13 @@ public class Being : MonoBehaviour
     {
         this.debugMode = !this.debugMode;
     }
-    
+    public void OnTriggerEnter(Collider other)
+    {
+        interactable = true;
+    }
+    public void OnTriggerExit(Collider other)
+    {
+        interactable = false;
+    }
+
 }

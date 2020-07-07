@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 1051744824989457451}
   - component: {fileID: 6001281949208742415}
   - component: {fileID: 487128938954546638}
+  - component: {fileID: -1150363717971648211}
   m_Layer: 0
   m_Name: Sign
   m_TagString: Untagged
@@ -97,3 +98,16 @@ MonoBehaviour:
   beingData: 
   multiplier: 0
   message: 
+--- !u!65 &-1150363717971648211
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8910916117381563122}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.4, y: 0.7, z: 0.7}
+  m_Center: {x: -0.000000007450581, y: 0, z: 0}

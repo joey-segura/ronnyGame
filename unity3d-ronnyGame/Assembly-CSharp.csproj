@@ -69,6 +69,8 @@
   <ItemGroup>
     <Compile Include="Assets\Scene_Changer_test.cs" />
     <Compile Include="Assets\Scripts\Being.cs" />
+    <Compile Include="Assets\Scripts\Beings\Ronny.cs" />
+    <Compile Include="Assets\Scripts\Beings\Sign.cs" />
     <Compile Include="Assets\Scripts\ConsoleMaster.cs" />
     <Compile Include="Assets\Scripts\Console_Commands\CommandBeingDebug.cs" />
     <Compile Include="Assets\Scripts\Console_Commands\CommandDescription.cs" />
@@ -78,7 +80,6 @@
     <Compile Include="Assets\Scripts\GameMaster.cs" />
     <Compile Include="Assets\Scripts\Kami.cs" />
     <Compile Include="Assets\Scripts\SceneMaster.cs" />
-    <Compile Include="Assets\Scripts\Sign.cs" />
     <Compile Include="Assets\Scripts\cameraRotation.cs" />
     <Compile Include="Assets\Scripts\followCamera.cs" />
     <Compile Include="Assets\Scripts\playerMovement.cs" />
