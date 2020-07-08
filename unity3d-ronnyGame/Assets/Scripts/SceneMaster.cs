@@ -5,8 +5,9 @@ using UnityEngine.SceneManagement;
 
 public class SceneMaster : Kami
 {
-    bool[] levelLoaded = { false, false, false };
+    public bool[] levelLoaded = { false, false, false, false, true, false};
 
+    public static string[] SCENENAMES = { "exploreScene", "rotation_testScene", "Battle_Scene_Test" };
 
     private void OnEnable()
     {
@@ -24,22 +25,77 @@ public class SceneMaster : Kami
             gameMaster.LoadGameMasterSceneData();
         }
     }
-    public void SceneChange(string scenename)
+    public void ChangeScene(string sceneName)
     {
-        gameMaster.isSceneChanging = true;
-        SceneManager.LoadScene(scenename);
+        bool validSceneName = false;
+        int count = SCENENAMES.Length;
+
+        for (int i = 0; i < count; i++)
+        {
+            if (SCENENAMES[i] == sceneName)
+            {
+                validSceneName = true;
+            }
+        }
+        if (validSceneName)
+        {
+            gameMaster.DestroyAllBeings();
+            gameMaster.isSceneChanging = true;
+            SceneManager.LoadScene(sceneName);
+        } else
+        {
+            Debug.LogError("Scene name invalid " + sceneName + " Check unity build settings?");
+        }
+        
     }
     private bool LevelLoaded(string sceneName)
     {
         switch (sceneName)
         {
-            case "Ritter":
-                //if level_x is false change it to true and then return !level_x to send false otherwise just return level_x (which should just be true)
-                break;
+            case "rotation_testScene":
+                if (!levelLoaded[0])
+                {
+                    levelLoaded[0] = true;
+                    return false;
+                } else
+                {
+                    return true;
+                }
+            case "Ritter_Dungeon":
+                //if level[x] is false change it to true and then return !level[x] to send false otherwise just return level[x] (which should just be true)
+                if (!levelLoaded[1])
+                {
+                    levelLoaded[1] = true;
+                    return false;
+                }
+                else
+                {
+                    return true;
+                }
             case "Pixeltic":
                 break;
-            case "Boss":
+            case "Ronny":
                 break;
+            case "Battle_Scene_Test":
+                if (!levelLoaded[4])
+                {
+                    levelLoaded[4] = true;
+                    return false;
+                }
+                else
+                {
+                    return true;
+                }
+            case "exploreScene":
+                if (!levelLoaded[5])
+                {
+                    levelLoaded[5] = true;
+                    return false;
+                }
+                else
+                {
+                    return true;
+                }
             default:
                 return false;
         }

@@ -16,11 +16,13 @@ public class Ronny : Being
         being.angle = this.gameObject.transform.rotation;
         being.scale = this.gameObject.transform.localScale;
 
-        RonnyJson Ronnyj = new RonnyJson();
+        RonnyJson ronny = new RonnyJson();
         //
         //! needs to assign RonnyJson values to updated values
+        ronny.speed = this.speed;
+        ronny.health = this.health;
         //
-        being.jsonData = JsonUtility.ToJson(Ronnyj);
+        being.jsonData = JsonUtility.ToJson(ronny);
 
         return JsonUtility.ToJson(being);
     }
@@ -33,10 +35,10 @@ public class Ronny : Being
 
             if (being.jsonData != null && being.jsonData != string.Empty)
             {
-                RonnyJson Ronnyj = JsonUtility.FromJson<RonnyJson>(being.jsonData);
+                RonnyJson ronny = JsonUtility.FromJson<RonnyJson>(being.jsonData);
 
-                this.health = Ronnyj.health;
-                this.speed = Ronnyj.speed;
+                this.health = ronny.health;
+                this.speed = ronny.speed;
                 this.ChangeSpeed(this.speed);
                 this.SetHealth(this.health);
             }

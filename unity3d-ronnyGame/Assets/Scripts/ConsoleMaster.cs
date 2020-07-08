@@ -7,6 +7,7 @@ namespace Console
 {
     public abstract class ConsoleCommand
     {
+        public static GameObject Kami = GameObject.Find("Kami");
         public abstract string Command { get; set; }
         public abstract string Description { get; set; }
         public abstract string Help { get; set; }
@@ -45,6 +46,7 @@ namespace Console
             CommandDestroyBeing.CreateCommand();
             CommandDescription.CreateCommand();
             CommandInstantiatePrefab.CreateCommand();
+            CommandChangeScene.CreateCommand();
 
             CommandHelp.CreateCommand();
         }
@@ -95,12 +97,10 @@ namespace Console
                     {
                         AddLineToConsole(inputText.text);
                         ParseInput(inputText.text);
-                        inputText.text = "";
+                        inputText.text = string.Empty;
                     }
-
                 }
             }
         }
     }
-
 }

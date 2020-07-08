@@ -52,17 +52,20 @@ public class GameMaster : Kami
         {
             entity.transform.localScale = beingData.scale;
         }
-        entity.transform.name = beingData.prefabName;
 
-        beingData.gameObject = entity.gameObject;
-        beingData.objectID = objectIDCounter;
-        objectIDCounter++;
-
-        if(GameMasterBeingDataList.BeingDatas != null)
+        if(GameMasterBeingDataList.BeingDatas != null && GetBeingDataByID(beingData.objectID) == null) //checks to see if the object being instantiated is already populated in list
         {
+            entity.transform.name = beingData.prefabName;
+            beingData.gameObject = entity.gameObject;
+            beingData.objectID = objectIDCounter;
+            objectIDCounter++;
             this.AddBeingToList(beingData);
+        } else if (GetBeingDataByID(beingData.objectID) != null)
+        {
+            entity.transform.name = beingData.prefabName;
+            beingData.gameObject = entity.gameObject;
+            this.UpdateBeingInList(beingData);
         }
-
 
         Being being = entity.GetComponent<Being>();
         if (being != null)
@@ -77,16 +80,15 @@ public class GameMaster : Kami
     }
     public void LoadGameMasterSceneData()
     {
-        foreach (BeingData beingData in GameMasterBeingDataList.BeingDatas)
+        ListBeingData list = new ListBeingData();
+        list = GameMasterBeingDataList;
+        for(int i = 0; i < list.BeingDatas.Count; i++)
         {
-            Quaternion angle = new Quaternion(0, 0, 0, 0);
-            InstantiateObject(JsonUtility.ToJson(beingData));
+            InstantiateObject(JsonUtility.ToJson(list.BeingDatas[i]));
         }
     }
     public void LoadInitialSceneData(string sceneName)
     {
-        LoadGameMasterSceneData();
-
         string path = LEVELDATAPATH + sceneName + ".txt";
 
         //Read the text directly from the test.txt file
@@ -102,21 +104,35 @@ public class GameMaster : Kami
     {
         GameMasterBeingDataList.BeingDatas.Add(being);
     }
+    public void DestroyAllBeings()
+    {
+        foreach (BeingData beingData in GameMasterBeingDataList.BeingDatas)
+        {
+            if (beingData.gameObject != null)
+            {
+                Destroy(beingData.gameObject);
+            }
+        }
+    }
     public void UpdateAllBeingsInList() //this will be called before scene change
     {
         for(int x = 0; x < this.gameObject.transform.childCount; x++)
         {
             GameObject child = this.gameObject.transform.GetChild(x).gameObject;
             Being being = child.GetComponent<Being>();
-            UpdateBeingInList(being.ID, being.CompactBeingDataIntoJson());
+            BeingData beingData = JsonUtility.FromJson<BeingData> (being.CompactBeingDataIntoJson());
+            UpdateBeingInList(beingData);
         }
     }
-    public void UpdateBeingInList(int ID, string jsonData)
+    public void UpdateBeingInList(BeingData beingData)
     {
-        BeingData being = GetBeingDataByID(ID);
-        RemoveBeingFromList(ID, being);
-        being.jsonData = jsonData;
-        AddBeingToList(being);
+        for (int i = 0; i < GameMasterBeingDataList.BeingDatas.Count; i++)
+        {
+            if (beingData.objectID == GameMasterBeingDataList.BeingDatas[i].objectID)
+            {
+                GameMasterBeingDataList.BeingDatas[i] = beingData;
+            }
+        }
     }
     public void RemoveBeingFromList(int ID, BeingData being = null)
     {

@@ -25,10 +25,10 @@ namespace Console
         {
             if (args[1] != null && Resources.Load("Prefabs/" + args[1]) != null)
             {
-                GameObject Kami = GameObject.Find("Kami");
                 GameMaster gameMaster = Kami.GetComponent<GameMaster>();
                 BeingData being = new BeingData();
                 being.prefabName = args[1];
+                being.objectID = -1;
                 being.location = gameMaster.GetPlayerGameObject().transform.position;
                 being.angle = new Quaternion(0, 0, 0, 0);
                 gameMaster.InstantiateObject(JsonUtility.ToJson(being));

@@ -627,6 +627,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   speed: 0
   angle: 0
+  anim: {fileID: 0}
 --- !u!108 &946031285
 Light:
   m_ObjectHideFlags: 0
@@ -892,12 +893,12 @@ GameObject:
   - component: {fileID: 1922718191}
   - component: {fileID: 1922718190}
   m_Layer: 0
-  m_Name: GameObject
+  m_Name: Scene Changer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1922718190
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -905,7 +906,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1922718189}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 27b6981ad1f29334989f1514fd318509, type: 3}
   m_Name: 

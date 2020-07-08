@@ -11,4 +11,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/rotation_testScene.unity
     guid: 9a1e00da3ec4a404c9aed90c4ee894a0
+  - enabled: 1
+    path: Assets/Scenes/Battle_Scene_Test.unity
+    guid: ddb5805db816c8444a6aab7bb66c779a
   m_configObjects: {}
