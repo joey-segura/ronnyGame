@@ -5,26 +5,11 @@ using UnityEngine.SceneManagement;
 
 public class SceneMaster : Kami
 {
-    public bool[] levelLoaded = { false, false, false, false, true, false};
+    public bool[] levelLoaded = { false, false, false, false, true, false, false, true, true, true};
 
-    public static string[] SCENENAMES = { "exploreScene", "rotation_testScene", "Battle_Scene_Test" };
+    public static string[] SCENENAMES = { "exploreScene", "rotation_testScene", "Battle_Scene_Test", "Ritter", "Ritter_Battle", "Joey", "Joey_Battle" };
 
-    private void OnEnable()
-    {
-        SceneManager.sceneLoaded += OnSceneLoaded;
-    }
-    void OnSceneLoaded(Scene scene, LoadSceneMode mode)
-    {
-        gameMaster.isSceneChanging = false;
-        if (!LevelLoaded(scene.name))
-        {
-            gameMaster.LoadInitialSceneData(scene.name);
-        }
-        else
-        {
-            gameMaster.LoadGameMasterSceneData();
-        }
-    }
+    private string currentSceneName;
     public void ChangeScene(string sceneName)
     {
         bool validSceneName = false;
@@ -42,11 +27,27 @@ public class SceneMaster : Kami
             gameMaster.DestroyAllBeings();
             gameMaster.isSceneChanging = true;
             SceneManager.LoadScene(sceneName);
+            currentSceneName = sceneName;
         } else
         {
             Debug.LogError("Scene name invalid " + sceneName + " Check unity build settings?");
         }
-        
+    }
+    public string GetBattleSceneName(string sceneName)
+    {
+        string battleSceneName = string.Empty;
+        for (int i = 0; i < SCENENAMES.Length; i++)
+        {
+            if (SCENENAMES[i] == sceneName)
+            {
+                battleSceneName = SCENENAMES[i] + "_Battle";
+            }
+        }
+        return battleSceneName;
+    }
+    public string GetCurrentSceneName()
+    {
+        return this.currentSceneName;
     }
     private bool LevelLoaded(string sceneName)
     {
@@ -61,7 +62,7 @@ public class SceneMaster : Kami
                 {
                     return true;
                 }
-            case "Ritter_Dungeon":
+            case "Ritter":
                 //if level[x] is false change it to true and then return !level[x] to send false otherwise just return level[x] (which should just be true)
                 if (!levelLoaded[1])
                 {
@@ -72,7 +73,16 @@ public class SceneMaster : Kami
                 {
                     return true;
                 }
-            case "Pixeltic":
+            case "Joey":
+                if (!levelLoaded[8])
+                {
+                    levelLoaded[8] = true;
+                    return false;
+                }
+                else
+                {
+                    return true;
+                }
                 break;
             case "Ronny":
                 break;
@@ -100,5 +110,28 @@ public class SceneMaster : Kami
                 return false;
         }
         return false;
+    }
+    private void OnEnable()
+    {
+        SceneManager.sceneLoaded += OnSceneLoaded;
+    }
+    void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        this.currentSceneName = scene.name;
+        if (!scene.name.Contains("Battle"))
+        {
+            gameMaster.isSceneChanging = false;
+            if (!LevelLoaded(scene.name))
+            {
+                gameMaster.LoadInitialSceneData(scene.name);
+            }
+            else
+            {
+                gameMaster.LoadGameMasterSceneData();
+            }
+        } else
+        {
+            return;
+        }
     }
 }

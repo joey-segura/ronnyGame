@@ -6,9 +6,17 @@ public class RonnyJson
 {
     public float speed, health;
 }
-public class Ronny : Being
+public class Ronny : Fighter
 {
-    float speed, health;
+    float speed;
+    public override void Action()
+    {
+        //need to choose what action he does via some ui or something
+    }
+    public override GameObject ChooseTarget(ListBeingData partyMembers, ListBeingData enemyMembers)
+    {
+        return base.ChooseTarget(partyMembers, enemyMembers);
+    }
     public override string CompactBeingDataIntoJson()
     {
         BeingData being = JsonUtility.FromJson<BeingData>(this.beingData);
@@ -57,12 +65,5 @@ public class Ronny : Being
     {
         this.gameObject.GetComponent<playerMovement>().speed = newSpeed;
     }
-    public void AddToHealth(float change)
-    {
-        this.health += change;
-    }
-    private void SetHealth(float health)
-    {
-        this.health = health;
-    }
+
 }

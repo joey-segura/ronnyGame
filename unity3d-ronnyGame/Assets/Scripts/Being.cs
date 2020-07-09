@@ -133,6 +133,10 @@ public class Being : MonoBehaviour
     public void OnTriggerEnter(Collider other)
     {
         interactable = true;
+        if (this.gameObject.tag == "Enemy" && other.gameObject.tag == "Player")
+        {
+            gameMasterScript.InitializeBattle(gameMasterScript.GetBeingDataByID(this.ID));
+        }
     }
     public void OnTriggerExit(Collider other)
     {

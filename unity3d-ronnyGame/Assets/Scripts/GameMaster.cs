@@ -42,7 +42,6 @@ public class GameMaster : Kami
     {
         DontDestroyOnLoad(this.gameObject);
     }
-
     public void InstantiateObject (string jsonData)
     {
         BeingData beingData = JsonUtility.FromJson<BeingData>(jsonData);
@@ -52,19 +51,24 @@ public class GameMaster : Kami
         {
             entity.transform.localScale = beingData.scale;
         }
-
-        if(GameMasterBeingDataList.BeingDatas != null && GetBeingDataByID(beingData.objectID) == null) //checks to see if the object being instantiated is already populated in list
+        if(GameMasterBeingDataList.BeingDatas != null && GetBeingDataByID(beingData.objectID) == null && !sceneMaster.GetCurrentSceneName().Contains("Battle")) //checks to see if the object being instantiated is already populated in list
         {
             entity.transform.name = beingData.prefabName;
             beingData.gameObject = entity.gameObject;
             beingData.objectID = objectIDCounter;
             objectIDCounter++;
             this.AddBeingToList(beingData);
-        } else if (GetBeingDataByID(beingData.objectID) != null)
+        } else if (GetBeingDataByID(beingData.objectID) != null && !sceneMaster.GetCurrentSceneName().Contains("Battle"))
         {
             entity.transform.name = beingData.prefabName;
             beingData.gameObject = entity.gameObject;
             this.UpdateBeingInList(beingData);
+        } else if (sceneMaster.GetCurrentSceneName().Contains("Battle"))
+        {
+            beingData.gameObject = entity.gameObject;
+            beingData.objectID = objectIDCounter;
+            objectIDCounter++;
+            battleMaster.AddFighter(beingData);
         }
 
         Being being = entity.GetComponent<Being>();
@@ -164,6 +168,28 @@ public class GameMaster : Kami
         {
            return this.gameObject;
         }
+    }
+    public void InitializeBattle(BeingData enemy)
+    {
+        ListBeingData partyMembers = new ListBeingData();
+        ListBeingData enemyMembers = new ListBeingData();
+
+        for(int i = 0; i < GameMasterBeingDataList.BeingDatas.Count; i++)
+        {
+            if (GameMasterBeingDataList.BeingDatas[i].gameObject.tag == "Player" || GameMasterBeingDataList.BeingDatas[i].gameObject.tag == "Party")
+            {
+                partyMembers.BeingDatas.Add(GameMasterBeingDataList.BeingDatas[i]);
+            }
+        }
+        string[] party = enemy.gameObject.GetComponent<Fighter>().GetParty();
+        for (int i = 0; i < party.Length; i++)
+        {
+            BeingData being = new BeingData();
+            being.prefabName = party[i];
+            being.objectID = -1;
+            enemyMembers.BeingDatas.Add(being);
+        }
+        battleMaster.InitializeBattle(partyMembers, enemyMembers);
     }
 }
 

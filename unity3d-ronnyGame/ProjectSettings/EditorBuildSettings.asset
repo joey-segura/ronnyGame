@@ -14,4 +14,16 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Battle_Scene_Test.unity
     guid: ddb5805db816c8444a6aab7bb66c779a
+  - enabled: 1
+    path: Assets/Scenes/Ritter.unity
+    guid: db553397f77553c4faee26cb0b92c334
+  - enabled: 1
+    path: Assets/Scenes/Ritter_Battle.unity
+    guid: ab338b9ce051fa54bb9479d714e1dbba
+  - enabled: 1
+    path: Assets/Scenes/Joey.unity
+    guid: 3e40ab3be86d82e48afee7639959d633
+  - enabled: 1
+    path: Assets/Scenes/Joey_Battle.unity
+    guid: a6058a699f93c3c4da26320b177aa02e
   m_configObjects: {}

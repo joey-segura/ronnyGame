@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class Kami : MonoBehaviour
 {
+    protected static BattleMaster battleMaster;
     protected static GameMaster gameMaster;
     protected static SceneMaster sceneMaster;
 
@@ -14,6 +15,8 @@ public class Kami : MonoBehaviour
 
     protected void LoadClasses()
     {
+        
+        battleMaster = this.GetComponent<BattleMaster>();
         gameMaster = this.GetComponent<GameMaster>();
         sceneMaster = this.GetComponent<SceneMaster>();
     }

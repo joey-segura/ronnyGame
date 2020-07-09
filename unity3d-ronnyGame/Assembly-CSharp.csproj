@@ -67,7 +67,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\Rogue.cs" />
     <Compile Include="Assets\Scene_Changer_test.cs" />
+    <Compile Include="Assets\Scripts\BattleMaster.cs" />
     <Compile Include="Assets\Scripts\Being.cs" />
     <Compile Include="Assets\Scripts\Beings\Ronny.cs" />
     <Compile Include="Assets\Scripts\Beings\Sign.cs" />
@@ -78,16 +80,17 @@
     <Compile Include="Assets\Scripts\Console_Commands\CommandDestroyBeing.cs" />
     <Compile Include="Assets\Scripts\Console_Commands\CommandHelp.cs" />
     <Compile Include="Assets\Scripts\Console_Commands\CommandInstantiatePrefab.cs" />
+    <Compile Include="Assets\Scripts\Fighter.cs" />
     <Compile Include="Assets\Scripts\GameMaster.cs" />
     <Compile Include="Assets\Scripts\Kami.cs" />
     <Compile Include="Assets\Scripts\SceneMaster.cs" />
     <Compile Include="Assets\Scripts\cameraRotation.cs" />
     <Compile Include="Assets\Scripts\followCamera.cs" />
     <Compile Include="Assets\Scripts\playerMovement.cs" />
-    <Compile Include="Assets\Scripts\walkScript.cs" />
     <None Include="Assets\TextMesh Pro\Resources\Shaders\TMPro.cginc" />
     <None Include="Assets\TextMesh Pro\Resources\Shaders\TMP_SDF-Mobile Overlay.shader" />
     <None Include="Assets\TextMesh Pro\Resources\Shaders\TMP_Bitmap.shader" />
+    <None Include="Assets\Resources\Level_Data\Ritter.txt" />
     <None Include="Assets\TextMesh Pro\Resources\Shaders\TMP_SDF-Surface-Mobile.shader" />
     <None Include="Assets\TextMesh Pro\Resources\Shaders\TMP_SDF-Surface.shader" />
     <None Include="Assets\TextMesh Pro\Sprites\EmojiOne Attribution.txt" />

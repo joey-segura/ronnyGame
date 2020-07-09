@@ -1,5 +1,5 @@
 sceneSetups:
-- path: Assets/rotation_testScene.unity
+- path: Assets/Scenes/Ritter.unity
   isLoaded: 1
   isActive: 1
   isSubScene: 0
