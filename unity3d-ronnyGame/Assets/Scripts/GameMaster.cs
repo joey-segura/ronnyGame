@@ -46,21 +46,20 @@ public class GameMaster : Kami
     {
         BeingData beingData = JsonUtility.FromJson<BeingData>(jsonData);
         GameObject entity = Instantiate(Resources.Load(("Prefabs/" + beingData.prefabName), typeof(GameObject)), beingData.location, beingData.angle, this.gameObject.transform) as GameObject;
-        
+        entity.transform.name = beingData.prefabName;
+
         if (beingData.scale != new Vector3(0,0,0))
         {
             entity.transform.localScale = beingData.scale;
         }
         if(GameMasterBeingDataList.BeingDatas != null && GetBeingDataByID(beingData.objectID) == null && !sceneMaster.GetCurrentSceneName().Contains("Battle")) //checks to see if the object being instantiated is already populated in list
         {
-            entity.transform.name = beingData.prefabName;
             beingData.gameObject = entity.gameObject;
             beingData.objectID = objectIDCounter;
             objectIDCounter++;
             this.AddBeingToList(beingData);
         } else if (GetBeingDataByID(beingData.objectID) != null && !sceneMaster.GetCurrentSceneName().Contains("Battle"))
         {
-            entity.transform.name = beingData.prefabName;
             beingData.gameObject = entity.gameObject;
             this.UpdateBeingInList(beingData);
         } else if (sceneMaster.GetCurrentSceneName().Contains("Battle"))

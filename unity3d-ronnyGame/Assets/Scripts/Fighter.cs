@@ -17,11 +17,19 @@ public class Fighter : Being
     public bool isStunned = false, isPoisoned = false;
     public string[] party;
     private List<Effect> currentEffects = new List<Effect>();
+    protected List<Action> actionList = new List<Action>();
+    public virtual void Awake()
+    {
+        Invoke("InititializeBaseActions", 2);
+    }
+    private void InititializeBaseActions()
+    {
+        actionList.Add(new Attack(3, this.damage));
+    }
     public virtual void Action()
     {
         return;
     }
-
     public void AddEffect(Effect effect)
     {
         if (effect.name != "Stunned")
@@ -40,7 +48,9 @@ public class Fighter : Being
     }
     public void AddToHealth(float change)
     {
+        Debug.Log(change);
         this.health += change;
+        Debug.LogError("DeathCheck");
     }
     private void ApplyEffects()
     {
@@ -79,26 +89,19 @@ public class Fighter : Being
         this.ApplyEffects();
         //apply status effects
     }
-    public virtual Action ChooseAction(ListBeingData partyMembers, ListBeingData enemyMembers)
+    public virtual Action ChooseAction(GameObject target)
     {
-        Action action = new Action();
+        Action action = this.actionList[0]; //random action for enemy and friendly units
         action.originator = this.gameObject;
-        action.target = this.ChooseTarget(partyMembers, enemyMembers);
-        action.method = this.Action;
+        action.target = this.gameObject;
 
         return action;
     }
-    public virtual GameObject ChooseTarget(ListBeingData partyMembers, ListBeingData enemyMembers) //chooses a target at random!
+    public virtual GameObject ChooseTarget(ListBeingData allFighters) //chooses a target at random!
     {
-        int targetIndex = Random.Range(0, partyMembers.BeingDatas.Count + enemyMembers.BeingDatas.Count);
-        if (targetIndex > partyMembers.BeingDatas.Count)
-        {
-            targetIndex -= partyMembers.BeingDatas.Count;
-            return enemyMembers.BeingDatas[targetIndex].gameObject;
-        } else
-        {
-            return partyMembers.BeingDatas[targetIndex].gameObject;
-        }
+        int targetIndex = Random.Range(0, allFighters.BeingDatas.Count);
+        Debug.Log(allFighters.BeingDatas[targetIndex].gameObject.name);
+        return allFighters.BeingDatas[targetIndex].gameObject;
     }
     public void RemoveAllEffectsOfName(string name)//might be used by actions to cleanse debuffs etc
     {

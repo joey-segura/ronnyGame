@@ -67,10 +67,11 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\Rogue.cs" />
     <Compile Include="Assets\Scene_Changer_test.cs" />
+    <Compile Include="Assets\Scripts\Actions.cs" />
     <Compile Include="Assets\Scripts\BattleMaster.cs" />
     <Compile Include="Assets\Scripts\Being.cs" />
+    <Compile Include="Assets\Scripts\Beings\Rogue.cs" />
     <Compile Include="Assets\Scripts\Beings\Ronny.cs" />
     <Compile Include="Assets\Scripts\Beings\Sign.cs" />
     <Compile Include="Assets\Scripts\ConsoleMaster.cs" />

@@ -4,18 +4,35 @@ using UnityEngine;
 
 public class RonnyJson
 {
-    public float speed, health;
+    public float speed, health, damage;
 }
 public class Ronny : Fighter
 {
+    private GameObject target = null;
     float speed;
     public override void Action()
     {
         //need to choose what action he does via some ui or something
     }
-    public override GameObject ChooseTarget(ListBeingData partyMembers, ListBeingData enemyMembers)
+    public override Action ChooseAction(GameObject target)
     {
-        return base.ChooseTarget(partyMembers, enemyMembers);
+        Action action = this.actionList[0]; //replace this with a function that lets you choose what action you want to do
+        action.originator = this.gameObject;
+        action.target = target;
+        return action;
+    }
+    public override GameObject ChooseTarget(ListBeingData allFighters)
+    {
+        if (Input.GetKeyDown(KeyCode.Mouse0))
+        {
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            RaycastHit hit;
+            if (Physics.Raycast(ray, out hit, 25))
+            {
+                this.target = hit.collider.gameObject;
+            }
+        }
+        return this.target;
     }
     public override string CompactBeingDataIntoJson()
     {
@@ -29,6 +46,7 @@ public class Ronny : Fighter
         //! needs to assign RonnyJson values to updated values
         ronny.speed = this.speed;
         ronny.health = this.health;
+        ronny.damage = this.damage;
         //
         being.jsonData = JsonUtility.ToJson(ronny);
 
@@ -46,9 +64,9 @@ public class Ronny : Fighter
                 RonnyJson ronny = JsonUtility.FromJson<RonnyJson>(being.jsonData);
 
                 this.health = ronny.health;
+                this.damage = ronny.damage;
                 this.speed = ronny.speed;
                 this.ChangeSpeed(this.speed);
-                this.SetHealth(this.health);
             }
 
             this.ID = being.objectID;

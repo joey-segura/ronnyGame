@@ -3,15 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-[System.Serializable]
-public class Action
-{
-    public GameObject originator, target;
-    public delegate void Affect();
-    public Affect method;
-    public int duration;
-}
-
 public class BattleMaster : Kami
 {
     private bool turn;
@@ -26,8 +17,9 @@ public class BattleMaster : Kami
     {
         if (turn)
         {
+            StartCoroutine("PlayerAction");
             //gameMaster.GetPlayerGameObject.this.getComponent<Fighter>().actions
-            this.AllyActions();
+            //this.AllyActions();
         }
     }
     public void AddFighter(BeingData being)
@@ -64,6 +56,15 @@ public class BattleMaster : Kami
             return;
         } 
     }
+    private void DestroyAllFighters()
+    {
+        for (int i = 0; i < allFighters.BeingDatas.Count; i++)
+        {
+            Being being = allFighters.BeingDatas[i].gameObject.GetComponent<Being>();
+            being.DestroyBeing();
+            allFighters.BeingDatas.Remove(allFighters.BeingDatas[i]);
+        }
+    }
     private void EnemyActions() 
     {
         for(int i = 0; i < enemyMembers.BeingDatas.Count; i++)
@@ -76,9 +77,20 @@ public class BattleMaster : Kami
         partyMembers = ronnyParty;
         enemyMembers = enemyParty;
     }
-    public void InitializeBattle(ListBeingData partyMembers, ListBeingData enemyMembers)
+    private GameObject GetPlayerObject()
     {
-        
+        GameObject player = null;
+        for(int i = 0; i < allFighters.BeingDatas.Count; i++)
+        {
+            if (allFighters.BeingDatas[i].gameObject.tag == "Player")
+            {
+                player = allFighters.BeingDatas[i].gameObject;
+            }
+        }
+        return player;
+    }
+    public void InitializeBattle(ListBeingData partyMembers, ListBeingData enemyMembers)
+    {   
         this.AssignScenes();
         for(int i = 0; i < partyMembers.BeingDatas.Count; i++)
         {
@@ -110,21 +122,34 @@ public class BattleMaster : Kami
             BeingData being = allFigthers.BeingDatas[i];
             gameMaster.InstantiateObject(JsonUtility.ToJson(being));
         }
-
     }
     private void MoveCameraTo(float x, float y, float z)
     {
         Camera cam = Camera.main;
         cam.transform.position += new Vector3(x,y,z);
     }
-    private void DestroyAllFighters()
+    private IEnumerator PlayerAction()
     {
-        for(int i = 0; i < allFighters.BeingDatas.Count; i++)
+        bool decided = false;
+        GameObject player = this.GetPlayerObject();
+        Fighter fighter = player.GetComponent<Fighter>();
+        GameObject target = fighter.ChooseTarget(allFighters);
+        Action action = fighter.ChooseAction(target);
+
+        if (Input.GetKeyDown(KeyCode.Return))
         {
-            Being being = allFighters.BeingDatas[i].gameObject.GetComponent<Being>();
-            being.DestroyBeing();
-            allFighters.BeingDatas.Remove(allFighters.BeingDatas[i]);
+            this.ProcessAction(action);
+            decided = true;
+            turn = false;
+            this.AllyActions();
         }
+        yield return new WaitUntil(() => decided == true);
+    }
+    private void ProcessAction(Action action)
+    {
+        //Debug.Log(action.method);
+        action.method();
+        Debug.Log("action processed");
     }
     private void RemoveAllMembers()
     {
