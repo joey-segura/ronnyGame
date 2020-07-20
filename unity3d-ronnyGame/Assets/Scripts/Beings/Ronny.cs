@@ -23,7 +23,7 @@ public class Ronny : Fighter
     }
     public override GameObject ChooseTarget(ListBeingData allFighters)
     {
-        if (Input.GetKeyDown(KeyCode.Mouse0))
+        if (Input.GetKey(KeyCode.Mouse0))
         {
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             RaycastHit hit;

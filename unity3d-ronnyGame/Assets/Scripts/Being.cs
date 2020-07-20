@@ -18,7 +18,7 @@ public class Being : MonoBehaviour
 
     public bool interactable = false;
 
-    public int ID;
+    public int ID { get; set; }
 
     public string beingData;
 
@@ -26,20 +26,18 @@ public class Being : MonoBehaviour
 
     private Camera cam;
 
-    private Renderer renderer;
-
     private void OnGUI()
     {
-        if (debugMode && renderer.isVisible)
+        if (debugMode && this.GetComponent<Renderer>().isVisible)
         {
             Mesh mesh = this.gameObject.GetComponent<MeshFilter>().mesh;
+            Vector3[] verts = mesh.vertices;
             Vector3 center = cam.WorldToScreenPoint(this.transform.position);
-            float minX = center.x, maxX = center.x, minY = center.y, maxY = center.y;
+            float minX = center.x, maxX = center.x, minY = center.y, maxY = center.y; 
 
-            for (int x = 0; x < mesh.vertices.Length; x++)
+            for (int i = 0; i < verts.Length; i++)
             {
-                Vector3 scaledVector = new Vector3(mesh.vertices[x].x * this.transform.localScale.x, mesh.vertices[x].y * this.transform.localScale.y, mesh.vertices[x].z * this.transform.localScale.z);
-                Vector3 truePoint = new Vector3((this.transform.position.x + scaledVector.x), (this.transform.position.y + scaledVector.y), (this.transform.position.z + scaledVector.z));
+                Vector3 truePoint = transform.TransformPoint(verts[i]);
                 Vector3 screenPoint = cam.WorldToScreenPoint(truePoint);
                 if (screenPoint.x < minX)
                 {
@@ -76,7 +74,6 @@ public class Being : MonoBehaviour
 
     private void Start()
     {
-        renderer = this.GetComponent<Renderer>();
         cam = Camera.main;
         gameMasterGameObject = this.gameObject.transform.parent.gameObject;
         gameMasterScript = gameMasterGameObject.GetComponent<GameMaster>();

@@ -83,7 +83,6 @@ public class SceneMaster : Kami
                 {
                     return true;
                 }
-                break;
             case "Ronny":
                 break;
             case "Battle_Scene_Test":

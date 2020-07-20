@@ -20,7 +20,7 @@ public class Fighter : Being
     protected List<Action> actionList = new List<Action>();
     public virtual void Awake()
     {
-        Invoke("InititializeBaseActions", 2);
+        Invoke("InititializeBaseActions", 1);
     }
     private void InititializeBaseActions()
     {
@@ -48,7 +48,6 @@ public class Fighter : Being
     }
     public void AddToHealth(float change)
     {
-        Debug.Log(change);
         this.health += change;
         Debug.LogError("DeathCheck");
     }
@@ -93,14 +92,13 @@ public class Fighter : Being
     {
         Action action = this.actionList[0]; //random action for enemy and friendly units
         action.originator = this.gameObject;
-        action.target = this.gameObject;
+        action.target = target;
 
         return action;
     }
     public virtual GameObject ChooseTarget(ListBeingData allFighters) //chooses a target at random!
     {
         int targetIndex = Random.Range(0, allFighters.BeingDatas.Count);
-        Debug.Log(allFighters.BeingDatas[targetIndex].gameObject.name);
         return allFighters.BeingDatas[targetIndex].gameObject;
     }
     public void RemoveAllEffectsOfName(string name)//might be used by actions to cleanse debuffs etc

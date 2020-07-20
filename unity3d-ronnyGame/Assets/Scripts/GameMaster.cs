@@ -65,8 +65,11 @@ public class GameMaster : Kami
         } else if (sceneMaster.GetCurrentSceneName().Contains("Battle"))
         {
             beingData.gameObject = entity.gameObject;
-            beingData.objectID = objectIDCounter;
-            objectIDCounter++;
+            if (beingData.objectID < 0)
+            {
+                beingData.objectID = objectIDCounter;
+                objectIDCounter++;
+            }
             battleMaster.AddFighter(beingData);
         }
 

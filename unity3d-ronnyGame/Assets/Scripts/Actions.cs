@@ -3,14 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
- public class Action
+ public abstract class Action
 {
     public GameObject originator { get; set; }
     public GameObject target { get; set; }
-    public delegate void Affect();
-    public Affect method;
     public int duration;
-    public float value1, value2;
+    public abstract void Execute();
 }
 /*
 public class Effect
@@ -23,18 +21,18 @@ public class Effect
 }
 */
 public class Attack : Action
-{   
+{
+    public float damage;
     public Attack (int duration, float damage)
     {
         this.duration = duration;
-        this.value1 = damage;
-        this.method = this.Function;
+        this.damage = damage;
         return;
     }
-    public void Function()
+    public override void Execute()
     {
-        Debug.Log(this.target.name + " Got attacked!");
-        this.target.GetComponent<Fighter>().AddToHealth(this.value1 * -1);
+        Debug.Log(this.target.name + " Got attacked! They took " + this.damage.ToString() + " Damage");
+        this.target.GetComponent<Fighter>().AddToHealth(this.damage * -1);
         return;
     }
 }
