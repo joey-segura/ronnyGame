@@ -7,6 +7,8 @@ public class BattleMaster : Kami
 {
     private bool turn;
     private bool isBattle = false;
+    private int enemyID { get; set; }
+    private int turnCounter;
     public ListBeingData allFighters = new ListBeingData();
     public ListBeingData partyMembers = new ListBeingData();
     public ListBeingData enemyMembers = new ListBeingData();
@@ -24,7 +26,18 @@ public class BattleMaster : Kami
         {
             if (partyMembers.BeingDatas[i].gameObject != gameMaster.GetPlayerGameObject())
             {
-                //do actions to enemy members or to party members fighter.action(ListBeginData partyMembers, ListBeingData enemyMembers)
+                GameObject self = partyMembers.BeingDatas[i].gameObject;
+                if (self != null)
+                {
+                    Fighter fighter = self.GetComponent<Fighter>();
+                    //fighter.EvaluateBuffs();
+                    fighter.RecalculateActions();
+                    GameObject target = fighter.ChooseTarget(allFighters);
+                    Action action = fighter.ChooseAction(target);
+                    //fighter.animation(action) ?
+                    yield return new WaitForSeconds(action.duration);
+                    this.ProcessAction(action);
+                }
             }
         }
         StartCoroutine("EnemyTurn");
@@ -40,11 +53,13 @@ public class BattleMaster : Kami
         if(partyMembers.BeingDatas.Count == 0)
         {
             isBattle = false;
+            StartCoroutine("EndBattle", false);
             //load save data because you died
             return;
         } else  if (enemyMembers.BeingDatas.Count == 0)
         {
             isBattle = false;
+            StartCoroutine("EndBattle", true);
             //maybe track rewards? anyways load the initial scene
             return;
         } else
@@ -61,6 +76,39 @@ public class BattleMaster : Kami
             allFighters.BeingDatas.Remove(allFighters.BeingDatas[i]);
         }
     }
+    private IEnumerator EndBattle(bool victory)
+    {
+        if (victory)
+        {
+            //play victory animations and ui and stuff
+            Debug.Log("Victory!");
+            yield return new WaitForSeconds(2);
+            //victory UI (rewards?) wait on click to load back to normal scene
+            bool anyKey = false;
+            Debug.Log("Press anykey please");
+            while(!anyKey)
+            {
+                if(Input.anyKey)
+                {
+                    anyKey = true;
+                    gameMaster.isSceneChanging = true;
+                    this.RemoveMemberReferenceInGameMasterByID(this.enemyID); //destroy the enemy reference before we load back in
+                    this.DestroyAllFighters();
+                    yield return new WaitForSeconds(1); // have to wait to destroy every object before moving to the next scene
+                    sceneMaster.ChangeScene(worldSceneName);
+                }
+                yield return new WaitForEndOfFrame();
+            }
+        } else
+        {
+            //play defeat animations and ui and stuff
+            Debug.Log("Defeat :(");
+            yield return new WaitForSeconds(2);
+            //reload last save UI
+            //I.E (Continue?)
+        }
+        yield return null;
+    }
     private IEnumerator EnemyTurn() 
     {
         for(int i = 0; i < enemyMembers.BeingDatas.Count; i++)
@@ -69,6 +117,8 @@ public class BattleMaster : Kami
             if (self != null)
             {
                 Fighter fighter = self.GetComponent<Fighter>();
+                //fighter.EvaluateBuffs();
+                fighter.RecalculateActions();
                 GameObject target = fighter.ChooseTarget(allFighters);
                 Action action = fighter.ChooseAction(target);
                 //fighter.animation(action) ?
@@ -98,7 +148,7 @@ public class BattleMaster : Kami
         return player;
     }
     public void InitializeBattle(ListBeingData partyMembers, ListBeingData enemyMembers)
-    {   
+    {
         this.AssignScenes();
         for(int i = 0; i < partyMembers.BeingDatas.Count; i++)
         {
@@ -110,6 +160,7 @@ public class BattleMaster : Kami
         }
         this.FillMembers(partyMembers, enemyMembers);
         sceneMaster.ChangeScene(this.battleSceneName);
+        this.turnCounter = 0;
         this.InitializeFighters();
         this.MoveCameraTo(1.4f, 4, -6);
         StartCoroutine("PlayerAction");
@@ -143,10 +194,10 @@ public class BattleMaster : Kami
     {
         bool decided = false;
 
-        yield return new WaitForSeconds(2); //waiting for stuff to initialize like fighter.ChooseAction(target);
-
         GameObject player = this.GetPlayerObject();
         Fighter fighter = player.GetComponent<Fighter>();
+        //fighter.EvaluateBuffs();
+        fighter.RecalculateActions();
         GameObject target = null;
         Action action = null;
 
@@ -161,6 +212,7 @@ public class BattleMaster : Kami
             if (Input.GetKey(KeyCode.Return) && action != null)
             {
                 decided = true;
+                this.turnCounter++;
                 //fighter.animation(action) ?
                 yield return new WaitForSeconds(action.duration);
                 this.ProcessAction(action);
@@ -174,6 +226,13 @@ public class BattleMaster : Kami
     private void ProcessAction(Action action)
     {
         action.Execute();
+        Fighter figher = action.target.GetComponent<Fighter>();
+        if(figher.isDead())
+        {
+            figher.DestroyBeing();
+            RemoveMemberByID(figher.ID);
+        }
+        this.BattleEndCheck();
     }
     private void RemoveAllMembers()
     {
@@ -190,14 +249,29 @@ public class BattleMaster : Kami
                 return;
             }
         }
-        for (int i = 0; i < partyMembers.BeingDatas.Count; i++)
+        for (int i = 0; i < enemyMembers.BeingDatas.Count; i++)
         {
             if (enemyMembers.BeingDatas[i].objectID == ID)
             {
                 enemyMembers.BeingDatas.Remove(enemyMembers.BeingDatas[i]);
             }
         }
+        for (int i = 0; i < allFighters.BeingDatas.Count; i++)
+        {
+            if (allFighters.BeingDatas[i].objectID == ID)
+            {
+                allFighters.BeingDatas.Remove(allFighters.BeingDatas[i]);
+            }
+        }
     }
+    private void RemoveMemberReferenceInGameMasterByID(int ID)
+    {
+        gameMaster.RemoveBeingFromList(ID);
+    }
+    public void SetEnemyID(int ID)
+    {
+        this.enemyID = ID;
+    } 
     private void UpdateBothPartiesFromAllFigthers()
     {
         ListBeingData allyMembers = new ListBeingData();

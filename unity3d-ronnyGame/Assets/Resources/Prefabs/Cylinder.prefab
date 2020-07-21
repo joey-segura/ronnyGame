@@ -93,7 +93,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3044864e6a20ca64ca1b5c41eaeff32c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ID: 0
+  interactable: 0
+  beingData: 
   multiplier: 0
   message: 
 --- !u!64 &8883445286352763808
@@ -104,7 +105,7 @@ MeshCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7263556026217532732}
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 3
   m_Convex: 1

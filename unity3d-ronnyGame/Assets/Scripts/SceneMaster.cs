@@ -5,11 +5,25 @@ using UnityEngine.SceneManagement;
 
 public class SceneMaster : Kami
 {
+    public static SceneMaster Instance { get; private set; }
     public bool[] levelLoaded = { false, false, false, false, true, false, false, true, true, true};
 
     public static string[] SCENENAMES = { "exploreScene", "rotation_testScene", "Battle_Scene_Test", "Ritter", "Ritter_Battle", "Joey", "Joey_Battle" };
 
     private string currentSceneName;
+
+    private void Awake()
+    {
+        if (Instance == null)
+        {
+            Instance = this;
+            DontDestroyOnLoad(this.gameObject);
+        }
+        else
+        {
+            Destroy(this.gameObject);
+        }
+    }
     public void ChangeScene(string sceneName)
     {
         bool validSceneName = false;
@@ -24,6 +38,7 @@ public class SceneMaster : Kami
         }
         if (validSceneName)
         {
+            gameMaster.UpdateAllBeingsInList();
             gameMaster.DestroyAllBeings();
             gameMaster.isSceneChanging = true;
             SceneManager.LoadScene(sceneName);
@@ -116,16 +131,23 @@ public class SceneMaster : Kami
     }
     void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
+        this.LoadClasses();
+        if(Instance != this)
+        {
+            Destroy(this.gameObject);
+        }
         this.currentSceneName = scene.name;
         if (!scene.name.Contains("Battle"))
         {
             gameMaster.isSceneChanging = false;
             if (!LevelLoaded(scene.name))
             {
+                Debug.Log("Level not loaded before");
                 gameMaster.LoadInitialSceneData(scene.name);
             }
             else
             {
+                Debug.Log("Level loaded before! gameMaster do your thing!");
                 gameMaster.LoadGameMasterSceneData();
             }
         } else

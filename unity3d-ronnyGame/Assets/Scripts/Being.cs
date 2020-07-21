@@ -107,8 +107,15 @@ public class Being : MonoBehaviour
     }
     private void OnDestroy()
     {
-        bool changing = gameMasterScript.isSceneChanging;
-        if (!changing) //this check is to see if the object is being removed intrinsically or being removed from the scene changing
+        bool changing;
+        if (gameMasterScript != null)
+        {
+            changing = gameMasterScript.isSceneChanging;
+        } else
+        {
+            changing = true;
+        }
+        if (changing == false) //this check is to see if the object is being removed intrinsically or being removed from the scene changing
         {
             gameMasterScript.RemoveBeingFromList(ID);
         }

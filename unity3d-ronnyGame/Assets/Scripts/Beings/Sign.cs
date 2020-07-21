@@ -11,12 +11,15 @@ public class Sign : Being
    
     public string message;
 
-    new public string CompactBeingDataIntoJson()
+    public override string CompactBeingDataIntoJson()
     {
         BeingData being = JsonUtility.FromJson<BeingData>(this.beingData);
         being.location = this.gameObject.transform.position;
         being.angle = this.gameObject.transform.rotation;
         being.scale = this.gameObject.transform.localScale;
+        being.gameObject = this.gameObject;
+        being.prefabName = this.gameObject.name;
+        being.objectID = this.ID;
        
         SignJson sign = new SignJson();
         sign.message = this.message;

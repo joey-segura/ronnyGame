@@ -11,16 +11,15 @@ public class Rogue : Fighter
 {
     public float speed;
     
-    public override void Action()
-    {
-        base.Action();
-    }
     public override string CompactBeingDataIntoJson()
     {
         BeingData being = JsonUtility.FromJson<BeingData>(this.beingData);
         being.location = this.gameObject.transform.position;
         being.angle = this.gameObject.transform.rotation;
         being.scale = this.gameObject.transform.localScale;
+        being.gameObject = this.gameObject;
+        being.prefabName = this.gameObject.name;
+        being.objectID = this.ID;
 
         RogueJson rogue = new RogueJson();
         rogue.speed = this.speed;
@@ -63,5 +62,8 @@ public class Rogue : Fighter
     {
         base.Interact();
     }
-
+    public override void RecalculateActions()
+    {
+        actionList.Add(new Attack(3, this.damage));
+    }
 }

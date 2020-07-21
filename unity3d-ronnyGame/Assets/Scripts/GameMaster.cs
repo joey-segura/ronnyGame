@@ -1,8 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using System.IO;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using System.IO;
 
 [System.Serializable]
 public class BeingData
@@ -26,11 +26,12 @@ public class ListBeingData
 }
 public class GameMaster : Kami
 {
+
     private GameObject PLAYER;
 
     public ListBeingData GameMasterBeingDataList = new ListBeingData();
 
-    public bool isSceneChanging = false;
+    public bool isSceneChanging = true;
     
     public int objectIDCounter;
 
@@ -122,12 +123,15 @@ public class GameMaster : Kami
     }
     public void UpdateAllBeingsInList() //this will be called before scene change
     {
-        for(int x = 0; x < this.gameObject.transform.childCount; x++)
+        for (int i = 0; i < GameMasterBeingDataList.BeingDatas.Count; i++)
         {
-            GameObject child = this.gameObject.transform.GetChild(x).gameObject;
-            Being being = child.GetComponent<Being>();
-            BeingData beingData = JsonUtility.FromJson<BeingData> (being.CompactBeingDataIntoJson());
-            UpdateBeingInList(beingData);
+            if (GameMasterBeingDataList.BeingDatas[i].gameObject != null)
+            {
+                GameObject obj = GameMasterBeingDataList.BeingDatas[i].gameObject;
+                Being being = obj.GetComponent<Being>();
+                BeingData beingData = JsonUtility.FromJson<BeingData>(being.CompactBeingDataIntoJson());
+                UpdateBeingInList(beingData);
+            }
         }
     }
     public void UpdateBeingInList(BeingData beingData)
@@ -175,6 +179,7 @@ public class GameMaster : Kami
     {
         ListBeingData partyMembers = new ListBeingData();
         ListBeingData enemyMembers = new ListBeingData();
+        //this.UpdateAllBeingsInList();
 
         for(int i = 0; i < GameMasterBeingDataList.BeingDatas.Count; i++)
         {
@@ -191,6 +196,7 @@ public class GameMaster : Kami
             being.objectID = -1;
             enemyMembers.BeingDatas.Add(being);
         }
+        battleMaster.SetEnemyID(enemy.objectID);
         battleMaster.InitializeBattle(partyMembers, enemyMembers);
     }
 }

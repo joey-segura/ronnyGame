@@ -26,10 +26,6 @@ public class Fighter : Being
     {
         actionList.Add(new Attack(3, this.damage));
     }
-    public virtual void Action()
-    {
-        return;
-    }
     public void AddEffect(Effect effect)
     {
         if (effect.name != "Stunned")
@@ -100,6 +96,23 @@ public class Fighter : Being
     {
         int targetIndex = Random.Range(0, allFighters.BeingDatas.Count);
         return allFighters.BeingDatas[targetIndex].gameObject;
+    }
+    public bool isDead()
+    {
+        if (this.health <= 0)
+        {
+            return true;
+        } else
+        {
+            return false;
+        }
+    }
+    public virtual void RecalculateActions()
+    {
+        //This function should be instantiated by each individual fighter with their unique actions
+        //Recalculating actions is important to apply certain affects
+        //(E.G) if you apply a damage buff we need to apply that affect to the persons attack damage
+        return;
     }
     public void RemoveAllEffectsOfName(string name)//might be used by actions to cleanse debuffs etc
     {

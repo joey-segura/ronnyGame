@@ -10,9 +10,9 @@ public class Ronny : Fighter
 {
     private GameObject target = null;
     float speed;
-    public override void Action()
+    public void ChangeSpeed(float newSpeed)
     {
-        //need to choose what action he does via some ui or something
+        this.gameObject.GetComponent<playerMovement>().speed = newSpeed;
     }
     public override Action ChooseAction(GameObject target)
     {
@@ -40,6 +40,9 @@ public class Ronny : Fighter
         being.location = this.gameObject.transform.position;
         being.angle = this.gameObject.transform.rotation;
         being.scale = this.gameObject.transform.localScale;
+        being.gameObject = this.gameObject;
+        being.prefabName = this.gameObject.name;
+        being.objectID = this.ID;
 
         RonnyJson ronny = new RonnyJson();
         //
@@ -79,9 +82,9 @@ public class Ronny : Fighter
     {
         
     }
-    public void ChangeSpeed(float newSpeed)
-    {
-        this.gameObject.GetComponent<playerMovement>().speed = newSpeed;
-    }
 
+    public override void RecalculateActions()
+    {
+        actionList.Add(new Attack(3, this.damage));
+    }
 }
