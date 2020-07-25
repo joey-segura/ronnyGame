@@ -115,14 +115,14 @@ public class Being : MonoBehaviour
         {
             changing = true;
         }
-        if (changing == false) //this check is to see if the object is being removed intrinsically or being removed from the scene changing
+        if (!changing) //this check is to see if the object is being removed intrinsically or being removed from the scene changing
         {
             gameMasterScript.RemoveBeingFromList(ID);
         }
     }
     public void Say(string text)
     {
-        Debug.Log("trying to say ->" + text);
+        Debug.Log($"Trying to say {text}");
         //instatiate word box object
         //fill with 'text'
     }

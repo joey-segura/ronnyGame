@@ -30,11 +30,7 @@ public class BattleMaster : Kami
                 if (self != null)
                 {
                     Fighter fighter = self.GetComponent<Fighter>();
-                    //fighter.EvaluateBuffs();
-                    fighter.RecalculateActions();
-                    GameObject target = fighter.ChooseTarget(allFighters);
-                    Action action = fighter.ChooseAction(target);
-                    //fighter.animation(action) ?
+                    Action action = fighter.DoAITurn(allFighters);
                     yield return new WaitForSeconds(action.duration);
                     this.ProcessAction(action);
                 }
@@ -117,11 +113,7 @@ public class BattleMaster : Kami
             if (self != null)
             {
                 Fighter fighter = self.GetComponent<Fighter>();
-                //fighter.EvaluateBuffs();
-                fighter.RecalculateActions();
-                GameObject target = fighter.ChooseTarget(allFighters);
-                Action action = fighter.ChooseAction(target);
-                //fighter.animation(action) ?
+                Action action = fighter.DoAITurn(allFighters);
                 yield return new WaitForSeconds(action.duration);
                 this.ProcessAction(action);
             }
@@ -196,7 +188,7 @@ public class BattleMaster : Kami
 
         GameObject player = this.GetPlayerObject();
         Fighter fighter = player.GetComponent<Fighter>();
-        //fighter.EvaluateBuffs();
+        fighter.ApplyEffects();
         fighter.RecalculateActions();
         GameObject target = null;
         Action action = null;
@@ -226,11 +218,11 @@ public class BattleMaster : Kami
     private void ProcessAction(Action action)
     {
         action.Execute();
-        Fighter figher = action.target.GetComponent<Fighter>();
-        if(figher.isDead())
+        Fighter fighter = action.target.GetComponent<Fighter>();
+        if(fighter.isDead())
         {
-            figher.DestroyBeing();
-            RemoveMemberByID(figher.ID);
+            fighter.DestroyBeing();
+            RemoveMemberByID(fighter.ID);
         }
         this.BattleEndCheck();
     }

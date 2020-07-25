@@ -43,10 +43,10 @@ public class GameMaster : Kami
     {
         DontDestroyOnLoad(this.gameObject);
     }
-    public void InstantiateObject (string jsonData)
+    public void InstantiateObject(string jsonData)
     {
         BeingData beingData = JsonUtility.FromJson<BeingData>(jsonData);
-        GameObject entity = Instantiate(Resources.Load(("Prefabs/" + beingData.prefabName), typeof(GameObject)), beingData.location, beingData.angle, this.gameObject.transform) as GameObject;
+        GameObject entity = Instantiate(Resources.Load($"Prefabs/{beingData.prefabName}", typeof(GameObject)), beingData.location, beingData.angle, this.gameObject.transform) as GameObject;
         entity.transform.name = beingData.prefabName;
 
         if (beingData.scale != new Vector3(0,0,0))
@@ -96,7 +96,7 @@ public class GameMaster : Kami
     }
     public void LoadInitialSceneData(string sceneName)
     {
-        string path = LEVELDATAPATH + sceneName + ".txt";
+        string path = $"{LEVELDATAPATH}{sceneName}.txt";
 
         //Read the text directly from the test.txt file
         StreamReader reader = new StreamReader(path);
@@ -179,7 +179,6 @@ public class GameMaster : Kami
     {
         ListBeingData partyMembers = new ListBeingData();
         ListBeingData enemyMembers = new ListBeingData();
-        //this.UpdateAllBeingsInList();
 
         for(int i = 0; i < GameMasterBeingDataList.BeingDatas.Count; i++)
         {

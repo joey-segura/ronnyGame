@@ -3,14 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [System.Serializable]
-public class Effect
-{
-    public string name;
-    public bool isActive;
-    public float value1;
-    public float value2;
-    public int duration;
-}
+
 public class Fighter : Being
 {
     public float health, damage, damageMultiplier = 1, defenseMultiplier = 1;
@@ -28,61 +21,35 @@ public class Fighter : Being
     }
     public void AddEffect(Effect effect)
     {
-        if (effect.name != "Stunned")
-        {
-            currentEffects.Add(effect);
-        } else
-        {
-            for(int i = 0; i < currentEffects.Count; i++)
-            {
-                if (currentEffects[i].name == "Stunned")
-                {
-                    currentEffects[i].duration += effect.duration;
-                }
-            }
-        }
+        currentEffects.Add(effect);
+        currentEffects.Sort(CompareEffectsByDuration);
     }
     public void AddToHealth(float change)
     {
         this.health += change;
         Debug.LogError("DeathCheck");
     }
-    private void ApplyEffects()
+    public void ApplyEffects()
     {
-        foreach(Effect effect in currentEffects)
+        for(int i = 0; i < currentEffects.Count; i++)
         {
-            switch (effect.name)
+            currentEffects[i].Affliction(this);
+            currentEffects[i].duration -= 1;
+            if (currentEffects[i].duration <= 0)
             {
-                case "Stunned":
-                    isStunned = true;
-                    //action is skipped this turn
-                    break;
-                case "Poisoned":
-                    isPoisoned = true;
-                    //take poison damage (takedamage(effect.value1));
-                    break;
-                case "Vulnerable":
-                    defenseMultiplier = effect.value1;
-                    break;
-                case "Bolstered":
-                    defenseMultiplier = effect.value1;
-                    break;
-                case "Empowered":
-                    damageMultiplier = effect.value1;
-                    break;
-                case "Weakened":
-                    damageMultiplier = effect.value1;
-                    break;
-                default:
-                    return;
+                currentEffects[i].Cleanse(this);
+                currentEffects.Remove(currentEffects[i]);
             }
-            effect.duration -= 1;
         }
     }
-    public void BeginTurn(ListBeingData partyMembers, ListBeingData enemyMembers)
+    public Action DoAITurn(ListBeingData allFighters)
     {
         this.ApplyEffects();
-        //apply status effects
+        this.RecalculateActions();
+        GameObject target = this.ChooseTarget(allFighters);
+        Action action = this.ChooseAction(target);
+        //fighter.animation(action) ?
+        return action;
     }
     public virtual Action ChooseAction(GameObject target)
     {
@@ -96,6 +63,19 @@ public class Fighter : Being
     {
         int targetIndex = Random.Range(0, allFighters.BeingDatas.Count);
         return allFighters.BeingDatas[targetIndex].gameObject;
+    }
+    private static int CompareEffectsByDuration(Effect x, Effect y)
+    {
+        if (x.duration > y.duration)
+        {
+            return 1;
+        } else if (x.duration < y.duration)
+        {
+            return -1;
+        } else
+        {
+            return 0;
+        }
     }
     public bool isDead()
     {
@@ -114,21 +94,15 @@ public class Fighter : Being
         //(E.G) if you apply a damage buff we need to apply that affect to the persons attack damage
         return;
     }
+    public void RemoveAllEffects()//strong cleanse (used after a battle is concluded?)
+    {
+        this.currentEffects = new List<Effect>();
+    }
     public void RemoveAllEffectsOfName(string name)//might be used by actions to cleanse debuffs etc
     {
         for (int i = 0; i < currentEffects.Count; i++)
         {
             if (currentEffects[i].name == name)
-            {
-                currentEffects.Remove(currentEffects[i]);
-            }
-        }
-    }
-    public void RemoveEffect(Effect effect)//used to call and remove
-    {
-        for (int i = 0; i < currentEffects.Count; i++)
-        {
-            if (currentEffects[i] == effect)
             {
                 currentEffects.Remove(currentEffects[i]);
             }

@@ -81,6 +81,7 @@
     <Compile Include="Assets\Scripts\Console_Commands\CommandDestroyBeing.cs" />
     <Compile Include="Assets\Scripts\Console_Commands\CommandHelp.cs" />
     <Compile Include="Assets\Scripts\Console_Commands\CommandInstantiatePrefab.cs" />
+    <Compile Include="Assets\Scripts\Effects.cs" />
     <Compile Include="Assets\Scripts\Fighter.cs" />
     <Compile Include="Assets\Scripts\GameMaster.cs" />
     <Compile Include="Assets\Scripts\Kami.cs" />
