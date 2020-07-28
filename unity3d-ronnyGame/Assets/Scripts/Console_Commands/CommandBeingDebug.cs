@@ -25,7 +25,7 @@ namespace Console
             if (args.Length >= 2)
             {
                 int ID = int.Parse(args[1]);
-                if (ID != null)
+                if (args[1] != null)
                 {
                     GameObject Kami = GameObject.Find("Kami");
                     GameMaster gameMaster = Kami.GetComponent<GameMaster>();

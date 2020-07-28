@@ -6,11 +6,14 @@ using UnityEngine.SceneManagement;
 public class SceneMaster : Kami
 {
     public static SceneMaster Instance { get; private set; }
-    public bool[] levelLoaded = { false, false, false, false, true, false, false, true, true, true};
+    public bool[] levelLoaded = { false, false, false, false, false, false, false, false, false, false, false };
 
-    public static string[] SCENENAMES = { "exploreScene", "rotation_testScene", "Battle_Scene_Test", "Ritter", "Ritter_Battle", "Joey", "Joey_Battle" };
+    public static string[] SCENENAMES = { "exploreScene", "rotation_testScene", "Battle_Scene_Test", "Ritter", "Ritter_Battle", "Joey", "Joey_Battle", "Main_Menu" };
 
-    private string currentSceneName;
+    public string currentSceneName;
+    public string lastSceneName = "Main_Menu";
+
+    public bool newGame = false;
 
     private void Awake()
     {
@@ -26,6 +29,11 @@ public class SceneMaster : Kami
     }
     public void ChangeScene(string sceneName)
     {
+        //this.LoadClasses();
+        if (Instance != this)
+        {
+            return;
+        }
         bool validSceneName = false;
         int count = SCENENAMES.Length;
 
@@ -41,6 +49,8 @@ public class SceneMaster : Kami
             gameMaster.UpdateAllBeingsInList();
             gameMaster.DestroyAllBeings();
             gameMaster.isSceneChanging = true;
+            
+            this.lastSceneName = this.currentSceneName;
             SceneManager.LoadScene(sceneName);
             currentSceneName = sceneName;
         } else
@@ -63,6 +73,11 @@ public class SceneMaster : Kami
     public string GetCurrentSceneName()
     {
         return this.currentSceneName;
+    }
+    public void InjectData(SceneMasterJson data)
+    {
+        this.levelLoaded = data.levelLoaded;
+        this.currentSceneName = data.currentSceneName;
     }
     private bool LevelLoaded(string sceneName)
     {
@@ -125,6 +140,16 @@ public class SceneMaster : Kami
         }
         return false;
     }
+    public void NewGame()
+    {
+        this.newGame = true;
+        for (int i = 0; i < levelLoaded.Length; i++)
+        {
+            levelLoaded[i] = false;
+        }
+        //this.currentSceneName = "Main_Menu";
+        this.lastSceneName = "Main_Menu";
+    }
     private void OnEnable()
     {
         SceneManager.sceneLoaded += OnSceneLoaded;
@@ -132,27 +157,56 @@ public class SceneMaster : Kami
     void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
         this.LoadClasses();
-        if(Instance != this)
+        if (Instance != this)
         {
             Destroy(this.gameObject);
         }
         this.currentSceneName = scene.name;
-        if (!scene.name.Contains("Battle"))
+
+        if (scene.name == "Main_Menu")
         {
-            gameMaster.isSceneChanging = false;
-            if (!LevelLoaded(scene.name))
+            return;
+        }
+
+        if (lastSceneName == "Main_Menu")
+        {
+            if (this.newGame) // this gets flagged true in MainMenuMaster.cs by calling sceneMaster.NewGame()
             {
-                Debug.Log("Level not loaded before");
-                gameMaster.LoadInitialSceneData(scene.name);
-            }
-            else
+                //wipe data and load initial scene data of first dungeon
+                gameMaster.NewGame();
+                LevelLoaded(scene.name);
+                this.newGame = false;
+            } else
             {
-                Debug.Log("Level loaded before! gameMaster do your thing!");
-                gameMaster.LoadGameMasterSceneData();
+                dataMaster.LoadDataFromFile(); // this eventually will call gameMaster.LoadGameMasterSceneData
             }
         } else
         {
-            return;
+            if (!scene.name.Contains("Battle"))
+            {
+                gameMaster.isSceneChanging = false;
+                if (!LevelLoaded(scene.name))
+                {
+                    Debug.Log("Level not loaded before");
+                    gameMaster.LoadInitialSceneData(scene.name);
+                }
+                else
+                {
+                    Debug.Log("Level loaded before! gameMaster do your thing!");
+                    gameMaster.LoadGameMasterSceneData();
+                }
+            }
+        }
+    }
+    public bool WasLastSceneBattle()
+    {
+        if (this.lastSceneName.Contains("Battle"))
+        {
+            return true;
+        }
+        else 
+        {
+            return false;
         }
     }
 }

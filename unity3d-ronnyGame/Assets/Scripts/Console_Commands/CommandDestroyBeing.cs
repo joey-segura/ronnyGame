@@ -23,7 +23,7 @@ namespace Console
         public override string ExecuteCommand(string[] args)
         {
             int ID = int.Parse(args[1]);
-            if (args[1] != null && ID != null)
+            if (args[1] != null)
             {
                 GameObject Kami = GameObject.Find("Kami");
                 GameMaster gameMaster = Kami.GetComponent<GameMaster>();

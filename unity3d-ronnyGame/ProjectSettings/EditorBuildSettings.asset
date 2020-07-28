@@ -26,4 +26,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Joey_Battle.unity
     guid: a6058a699f93c3c4da26320b177aa02e
+  - enabled: 1
+    path: Assets/Scenes/Main_Menu.unity
+    guid: 05da6ac52ae05a241bac40907a9593e1
   m_configObjects: {}

@@ -61,7 +61,6 @@ public class Weak : Effect
         fighter.damageMultiplier = fighter.damageMultiplier * this.multiplier;
     }
 }
-
 public class Vulnerable : Effect
 {
     public float multiplier;

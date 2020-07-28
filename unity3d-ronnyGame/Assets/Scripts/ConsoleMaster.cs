@@ -61,7 +61,8 @@ namespace Console
         
         public void AddLineToConsole(string input)
         {
-            consoleText.text += input + "\n";
+            consoleText.text += $"{input} \n";
+            //consoleText.text += input + "\n";
         }
         private void ParseInput(string input)
         {
@@ -75,7 +76,7 @@ namespace Console
 
             if (!Commands.ContainsKey(args[0]))
             {
-                AddLineToConsole(args[0] + " is not recognized");
+                AddLineToConsole($"{args[0]} is not recognized");
             }
             else
             {
@@ -88,6 +89,9 @@ namespace Console
             if (Input.GetKeyDown(KeyCode.BackQuote))
             {
                 consoleCanvas.gameObject.SetActive(!consoleCanvas.gameObject.activeInHierarchy);
+                consoleInput.Select();
+                consoleInput.ActivateInputField();
+                inputText.text = string.Empty;
             }
             if (consoleCanvas.gameObject.activeInHierarchy)
             {

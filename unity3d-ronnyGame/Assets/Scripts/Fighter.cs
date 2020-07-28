@@ -114,6 +114,14 @@ public class Fighter : Being
     }
     public string[] GetParty()
     {
-        return party;
+        if (party != null)
+        {
+            return party;
+        } else
+        {
+            string[] party = { this.gameObject.name };
+            return party;
+        }
+        
     }
 } 

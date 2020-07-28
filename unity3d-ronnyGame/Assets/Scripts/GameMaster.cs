@@ -198,5 +198,21 @@ public class GameMaster : Kami
         battleMaster.SetEnemyID(enemy.objectID);
         battleMaster.InitializeBattle(partyMembers, enemyMembers);
     }
+    public void InjectData(GameMasterJson data)
+    {
+        this.GameMasterBeingDataList = new ListBeingData();
+        this.GameMasterBeingDataList = data.GameMasterBeingDataList;
+        this.isSceneChanging = data.isSceneChanging;
+        this.objectIDCounter = data.objectIDCounter;
+        this.LoadGameMasterSceneData();
+    }
+    public void NewGame()
+    {
+        this.GameMasterBeingDataList = new ListBeingData();
+        this.isSceneChanging = true;
+        this.objectIDCounter = 0;
+        this.LoadInitialSceneData("Ritter");
+        Debug.LogWarning("Loaded New game but Ritter isn't the first scene that should be loaded! Change this!");
+    }
 }
 
