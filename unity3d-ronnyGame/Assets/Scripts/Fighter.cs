@@ -17,7 +17,7 @@ public class Fighter : Being
     }
     private void InititializeBaseActions()
     {
-        actionList.Add(new Attack(3, this.damage));
+        actionList.Add(new Attack(3, this.damage, null));
     }
     public void AddEffect(Effect effect)
     {
@@ -48,7 +48,7 @@ public class Fighter : Being
         this.RecalculateActions();
         GameObject target = this.ChooseTarget(allFighters);
         Action action = this.ChooseAction(target);
-        //fighter.animation(action) ?
+        //fighter.animation(action) <- animation handled in BattleMaster.cs
         return action;
     }
     public virtual Action ChooseAction(GameObject target)

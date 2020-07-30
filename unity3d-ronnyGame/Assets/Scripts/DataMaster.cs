@@ -7,7 +7,7 @@ public class DataMasterJson
 {
     public bool loadFromFile;
     public string levelName;
-    private static string KamiDataPath = "Assets/Resources/Kami/Kami_Data.txt";
+    private static string KamiDataPath;
 
     public DataMasterJson(bool _loadFromFile)
     {

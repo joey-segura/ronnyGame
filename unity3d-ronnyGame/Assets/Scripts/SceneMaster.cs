@@ -55,7 +55,7 @@ public class SceneMaster : Kami
             currentSceneName = sceneName;
         } else
         {
-            Debug.LogError("Scene name invalid " + sceneName + " Check unity build settings?");
+            Debug.LogError($"Scene name invalid {sceneName}, Check unity build settings?");
         }
     }
     public string GetBattleSceneName(string sceneName)

@@ -8,7 +8,6 @@ public class Kami : MonoBehaviour
     protected static BattleMaster battleMaster;
     protected static GameMaster gameMaster;
     protected static SceneMaster sceneMaster;
-    protected static UIMaster uiMaster;
     protected static DataMaster dataMaster;
 
     protected void Awake()
@@ -20,7 +19,6 @@ public class Kami : MonoBehaviour
         battleMaster = this.GetComponent<BattleMaster>();
         gameMaster = this.GetComponent<GameMaster>();
         sceneMaster = this.GetComponent<SceneMaster>();
-        uiMaster = this.GetComponent<UIMaster>();
         dataMaster = this.GetComponent<DataMaster>();
     }
     public virtual string GetMasterData()

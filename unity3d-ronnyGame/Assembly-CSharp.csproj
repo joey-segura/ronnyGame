@@ -89,7 +89,6 @@
     <Compile Include="Assets\Scripts\Kami.cs" />
     <Compile Include="Assets\Scripts\MainMenuMaster.cs" />
     <Compile Include="Assets\Scripts\SceneMaster.cs" />
-    <Compile Include="Assets\Scripts\UIMaster.cs" />
     <Compile Include="Assets\Scripts\cameraRotation.cs" />
     <Compile Include="Assets\Scripts\followCamera.cs" />
     <Compile Include="Assets\Scripts\playerMovement.cs" />

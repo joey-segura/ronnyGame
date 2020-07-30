@@ -4,12 +4,12 @@ using UnityEngine;
 
 public class SignJson
 {
-    public string message;
+    public string[] message;
 }
 public class Sign : Being
 {
    
-    public string message;
+    public string[] message;
 
     public override string CompactBeingDataIntoJson()
     {
@@ -41,7 +41,7 @@ public class Sign : Being
                 this.message = sign.message;
             } else
             {
-                this.message = "Default";
+                this.message[0] = "Default";
             }
             
             this.ID = being.objectID;

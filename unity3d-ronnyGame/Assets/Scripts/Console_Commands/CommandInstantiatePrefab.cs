@@ -23,7 +23,7 @@ namespace Console
         }
         public override string ExecuteCommand(string[] args)
         {
-            if (args[1] != null && Resources.Load("Prefabs/" + args[1]) != null)
+            if (args[1] != null && Resources.Load($"Prefabs/{args[1]}") != null)
             {
                 GameMaster gameMaster = Kami.GetComponent<GameMaster>();
                 BeingData being = new BeingData();
@@ -36,9 +36,9 @@ namespace Console
                 return "Object instantiated sucessfully";
                 
                 
-            } else if (Resources.Load("Prefabs/" + args[1]) == null)
+            } else if (Resources.Load($"Prefabs/{args[1]}") == null)
             {
-                return "Could not find prefab name " + args[1];
+                return $"Could not find prefab name {args[1]}";
             }
             {
                 return "Missing parameter";

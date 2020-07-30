@@ -31,6 +31,7 @@ public class BattleMaster : Kami
                 {
                     Fighter fighter = self.GetComponent<Fighter>();
                     Action action = fighter.DoAITurn(allFighters);
+                    this.PlayAnimation(action.animation);
                     yield return new WaitForSeconds(action.duration);
                     this.ProcessAction(action);
                 }
@@ -46,7 +47,7 @@ public class BattleMaster : Kami
     }
     public void BattleEndCheck()
     {
-        if(partyMembers.BeingDatas.Count == 0)
+        if (partyMembers.BeingDatas.Count == 0)
         {
             isBattle = false;
             StartCoroutine("EndBattle", false);
@@ -82,9 +83,9 @@ public class BattleMaster : Kami
             //victory UI (rewards?) wait on click to load back to normal scene
             bool anyKey = false;
             Debug.Log("Press anykey please");
-            while(!anyKey)
+            while (!anyKey)
             {
-                if(Input.anyKey)
+                if (Input.anyKey)
                 {
                     anyKey = true;
                     gameMaster.isSceneChanging = true;
@@ -114,6 +115,7 @@ public class BattleMaster : Kami
             {
                 Fighter fighter = self.GetComponent<Fighter>();
                 Action action = fighter.DoAITurn(allFighters);
+                this.PlayAnimation(action.animation);
                 yield return new WaitForSeconds(action.duration);
                 this.ProcessAction(action);
             }
@@ -154,6 +156,8 @@ public class BattleMaster : Kami
         sceneMaster.ChangeScene(this.battleSceneName);
         this.turnCounter = 0;
         this.InitializeFighters();
+        GetPlayerObject().GetComponent<playerMovement>().enabled = false;
+        GetPlayerObject().GetComponent<cameraRotation>().enabled = false;
         this.MoveCameraTo(1.4f, 4, -6);
         StartCoroutine("PlayerAction");
         this.turn = true;
@@ -182,6 +186,17 @@ public class BattleMaster : Kami
         Camera cam = Camera.main;
         cam.transform.position += new Vector3(x,y,z);
     }
+    private void PlayAnimation(Animation anim)
+    {
+        if (anim != null)
+        {
+            anim.Play();
+        } else
+        {
+            Debug.LogWarning("There is no animation to play in the action");
+            return;
+        }
+    }
     private IEnumerator PlayerAction()
     {
         bool decided = false;
@@ -205,7 +220,7 @@ public class BattleMaster : Kami
             {
                 decided = true;
                 this.turnCounter++;
-                //fighter.animation(action) ?
+                this.PlayAnimation(action.animation);
                 yield return new WaitForSeconds(action.duration);
                 this.ProcessAction(action);
                 turn = false;
@@ -219,7 +234,7 @@ public class BattleMaster : Kami
     {
         action.Execute();
         Fighter fighter = action.target.GetComponent<Fighter>();
-        if(fighter.isDead())
+        if (fighter.isDead())
         {
             fighter.DestroyBeing();
             RemoveMemberByID(fighter.ID);
@@ -235,7 +250,7 @@ public class BattleMaster : Kami
     {
         for (int i = 0; i < partyMembers.BeingDatas.Count; i++)
         {
-            if(partyMembers.BeingDatas[i].objectID == ID)
+            if (partyMembers.BeingDatas[i].objectID == ID)
             {
                 partyMembers.BeingDatas.Remove(partyMembers.BeingDatas[i]);
                 return;

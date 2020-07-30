@@ -53,7 +53,7 @@ namespace Console
 
         public static void AddCommandToList(string name, ConsoleCommand Command)
         {
-            if(!Commands.ContainsKey(name))
+            if (!Commands.ContainsKey(name))
             {
                 Commands.Add(name, Command);
             }

@@ -2,16 +2,16 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
+using UnityEngine.UI;
 
 public class Being : MonoBehaviour
 {
-    // functions needed to extend this class (quick reference
+    // functions needed to extend this class (quick reference)
     // CompactBeingDataIntoJson() <- needs to return json of the class BeingData
     // InjectData(string jsonData) <- instantiates individual class data (jsonData should be in class format)
     // Interact() <- no return value
-    //
 
-    GameObject gameMasterGameObject;
+    GameObject Kami;
     GameMaster gameMasterScript;
 
     private bool debugMode = false;
@@ -26,44 +26,60 @@ public class Being : MonoBehaviour
 
     private Camera cam;
 
+    private Canvas canvas;
+
     private void OnGUI()
     {
         if (debugMode && this.GetComponent<Renderer>().isVisible)
         {
-            Mesh mesh = this.gameObject.GetComponent<MeshFilter>().mesh;
-            Vector3[] verts = mesh.vertices;
-            Vector3 center = cam.WorldToScreenPoint(this.transform.position);
-            float minX = center.x, maxX = center.x, minY = center.y, maxY = center.y; 
-
-            for (int i = 0; i < verts.Length; i++)
+            Vector3[] verts;
+            if (this.gameObject.GetComponent<MeshFilter>() != null) //3D objects
             {
-                Vector3 truePoint = transform.TransformPoint(verts[i]);
-                Vector3 screenPoint = cam.WorldToScreenPoint(truePoint);
-                if (screenPoint.x < minX)
-                {
-                    minX = screenPoint.x;
-                } 
-                if (screenPoint.x > maxX)
-                {
-                    maxX = screenPoint.x;
-                }
-                if (screenPoint.y < minY)
-                {
-                    minY = screenPoint.y;
-                }
-                if (screenPoint.y > maxY)
-                {
-                    maxY = screenPoint.y;
-                }
+                Mesh mesh = this.gameObject.GetComponent<MeshFilter>().mesh;
+                verts = mesh.vertices;
             }
+            else //2D
+            {
+                SpriteRenderer spriteRenderer = this.gameObject.GetComponent<SpriteRenderer>();
+                Vector3[] vert = new Vector3[spriteRenderer.sprite.vertices.Length];
+                for (int i = 0; i < vert.Length; i++)
+                {
+                    vert[i] = new Vector3(spriteRenderer.sprite.vertices[i].x, spriteRenderer.sprite.vertices[i].y, 0);
+                }
+                verts = vert;
+            }
+                
+                Vector3 center = cam.WorldToScreenPoint(this.transform.position);
+                float minX = center.x, maxX = center.x, minY = center.y, maxY = center.y;
 
-            float width = maxX - minX;
-            float height = maxY - minY;
-        
-            GUI.Box(new Rect(minX, (Screen.height - maxY), width, height), (this.gameObject.name + " " + ID.ToString()));
+                for (int i = 0; i < verts.Length; i++)
+                {
+                    Vector3 truePoint = transform.TransformPoint(verts[i]);
+                    Vector3 screenPoint = cam.WorldToScreenPoint(truePoint);
+                    if (screenPoint.x < minX)
+                    {
+                        minX = screenPoint.x;
+                    }
+                    if (screenPoint.x > maxX)
+                    {
+                        maxX = screenPoint.x;
+                    }
+                    if (screenPoint.y < minY)
+                    {
+                        minY = screenPoint.y;
+                    }
+                    if (screenPoint.y > maxY)
+                    {
+                        maxY = screenPoint.y;
+                    }
+                }
+
+                float width = maxX - minX;
+                float height = maxY - minY;
+
+                GUI.Box(new Rect(minX, (Screen.height - maxY), width, height), $"{this.gameObject.name} {ID.ToString()}");
         }
     }
-
     private void Update()
     {
         if (interactable && Input.GetKeyDown(KeyCode.R)) //Interact Key (need to generalize in the future to allow remapping etc)
@@ -74,9 +90,15 @@ public class Being : MonoBehaviour
 
     private void Start()
     {
+        if (this.gameObject.GetComponentInChildren<Canvas>() != null)
+        {
+            
+            canvas = this.gameObject.GetComponentInChildren<Canvas>();
+            canvas.gameObject.SetActive(false);
+        }
         cam = Camera.main;
-        gameMasterGameObject = this.gameObject.transform.parent.gameObject;
-        gameMasterScript = gameMasterGameObject.GetComponent<GameMaster>();
+        Kami = this.gameObject.transform.parent.gameObject;
+        gameMasterScript = Kami.GetComponent<GameMaster>();
     }
     public void ChangeTransparancy(float alpha = .7f)
     {
@@ -101,6 +123,19 @@ public class Being : MonoBehaviour
         //need to convert beingData.jsonData (this is the being class specific) to its individual class
         //need to set values of that individual class E.G., for the sign class it assigns the 'message' string
     }
+    protected IEnumerator InstantiateMessage(string[] message)
+    {
+        Text text = canvas.gameObject.GetComponentInChildren<Text>();
+        for (int i = 0; i < message.Length; i++)
+        {
+            text.text = message[i];
+            canvas.gameObject.SetActive(true);
+            yield return new WaitForSeconds(5);
+            Debug.LogWarning("Arbitrary constant set for all instantiated UI objects");
+            canvas.gameObject.SetActive(false);
+        }
+        yield return null;
+    }
     public virtual void Interact()
     {
         //will be overriden by extended objects but left to be referenced by Being.Interact()
@@ -120,12 +155,14 @@ public class Being : MonoBehaviour
             gameMasterScript.RemoveBeingFromList(ID);
         }
     }
-    public void Say(string text)
+    public void Say(string[] text)
     {
-        Debug.Log($"Trying to say {text}");
-        //instatiate word box object
-        //fill with 'text'
+        if (canvas != null && text.Length > 0)
+        {
+            StartCoroutine("InstantiateMessage", text);
+        }
     }
+    
     public void TeleportTo(Vector3 location)
     {
         this.transform.position = location;

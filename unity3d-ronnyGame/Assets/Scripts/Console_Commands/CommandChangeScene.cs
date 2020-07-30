@@ -27,7 +27,7 @@ namespace Console
             {
                 sceneMaster.ChangeScene(args[1]);
             }
-            return "Scene failed or Scene name " + args[1] + " was invalid";
+            return $"Scene failed or Scene name {args[1]} was invalid";
         }
         public static CommandChangeScene CreateCommand()
         {

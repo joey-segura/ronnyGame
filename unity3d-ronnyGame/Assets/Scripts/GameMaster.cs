@@ -53,7 +53,7 @@ public class GameMaster : Kami
         {
             entity.transform.localScale = beingData.scale;
         }
-        if(GameMasterBeingDataList.BeingDatas != null && GetBeingDataByID(beingData.objectID) == null && !sceneMaster.GetCurrentSceneName().Contains("Battle")) //checks to see if the object being instantiated is already populated in list
+        if (GameMasterBeingDataList.BeingDatas != null && GetBeingDataByID(beingData.objectID) == null && !sceneMaster.GetCurrentSceneName().Contains("Battle")) //checks to see if the object being instantiated is already populated in list
         {
             beingData.gameObject = entity.gameObject;
             beingData.objectID = objectIDCounter;
