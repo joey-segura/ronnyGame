@@ -27,7 +27,7 @@ public class Fighter : Being
     public void AddToHealth(float change)
     {
         this.health += change;
-        Debug.LogError("DeathCheck");
+        this.DeathCheck();
     }
     public void ApplyEffects()
     {
@@ -40,6 +40,19 @@ public class Fighter : Being
                 currentEffects[i].Cleanse(this);
                 currentEffects.Remove(currentEffects[i]);
             }
+        }
+    }
+    public void DeathCheck()
+    {
+        if (this.health <= 0)
+        {
+            this.transform.parent.GetComponentInParent<BattleMaster>().RemoveMemberByID(this.ID);
+            this.DestroyBeing();
+            return;
+        }
+        else
+        {
+            return;
         }
     }
     public Action DoAITurn(ListBeingData allFighters)
@@ -61,8 +74,21 @@ public class Fighter : Being
     }
     public virtual GameObject ChooseTarget(ListBeingData allFighters) //chooses a target at random!
     {
-        int targetIndex = Random.Range(0, allFighters.BeingDatas.Count);
-        return allFighters.BeingDatas[targetIndex].gameObject;
+        GameObject target = null;
+        
+        bool validTarget = false;
+        while (!validTarget)
+        {
+            int targetIndex = Random.Range(0, allFighters.BeingDatas.Count);
+            target = allFighters.BeingDatas[targetIndex].gameObject;
+            string relation = this.TargetRelationToSelf(target.tag);
+            if (this.ValidTarget(relation))
+            {
+                Debug.Log($"found valid target {this.gameObject.name} found {relation}");
+                validTarget = true;
+            }
+        }
+        return target;
     }
     private static int CompareEffectsByDuration(Effect x, Effect y)
     {
@@ -77,15 +103,9 @@ public class Fighter : Being
             return 0;
         }
     }
-    public bool isDead()
+    public virtual void InitializeBattle()
     {
-        if (this.health <= 0)
-        {
-            return true;
-        } else
-        {
-            return false;
-        }
+        return; // this is for any enemy script to disable their movement script once the battle starts
     }
     public virtual void RecalculateActions()
     {
@@ -122,6 +142,34 @@ public class Fighter : Being
             string[] party = { this.gameObject.name };
             return party;
         }
-        
+    }
+    private string TargetRelationToSelf(string targetTag)
+    {
+        if (this.gameObject.tag == "Party" && targetTag == "Player")
+        {
+            return "Friend";
+        } else if (this.gameObject.tag == "Player" && targetTag == "Party")
+        {
+            return "Friend";
+        }
+        else if (targetTag == this.gameObject.tag)
+        {
+            return "Friend";
+        } else
+        {
+            return "Foe";
+        }
+    }
+    private bool ValidTarget(string targetTag)
+    {
+        bool valid = false;
+        for (int i = 0; i < actionList.Count; i++)
+        {
+            if (actionList[i].IsValidAction(targetTag))
+            {
+                valid = true;
+            }
+        }
+        return valid;
     }
 } 

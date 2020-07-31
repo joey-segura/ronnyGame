@@ -9,7 +9,7 @@ public class RonnyJson
 public class Ronny : Fighter
 {
     private GameObject target = null;
-    float speed;
+    public float speed;
     public void ChangeSpeed(float newSpeed)
     {
         this.gameObject.GetComponent<playerMovement>().speed = newSpeed;
@@ -55,11 +55,15 @@ public class Ronny : Fighter
 
         return JsonUtility.ToJson(being);
     }
+    public override void InitializeBattle()
+    {
+        this.GetComponent<playerMovement>().enabled = false;
+        this.GetComponent<cameraRotation>().enabled = false;
+    }
     public override void InjectData(string jsonData)
     {
         if (JsonUtility.FromJson<BeingData>(jsonData) != null)
         {
-
             BeingData being = JsonUtility.FromJson<BeingData>(jsonData);
 
             if (being.jsonData != null && being.jsonData != string.Empty)
@@ -71,11 +75,9 @@ public class Ronny : Fighter
                 this.speed = ronny.speed;
                 this.ChangeSpeed(this.speed);
             }
-
             this.ID = being.objectID;
             this.beingData = jsonData;
         }
-
         return;
     }
     public override void Interact()
@@ -85,6 +87,7 @@ public class Ronny : Fighter
 
     public override void RecalculateActions()
     {
-        actionList.Add(new Attack(3, this.damage, null));
+        this.actionList = new List<Action>();
+        this.actionList.Add(new Attack(3, this.damage, null));
     }
 }

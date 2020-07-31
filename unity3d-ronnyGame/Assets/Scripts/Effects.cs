@@ -38,6 +38,7 @@ public class Poison : Effect
     {
         fighter.isPoisoned = true;
         fighter.AddToHealth(this.poisonDamage * -1);
+        Debug.Log($"{fighter.gameObject.name} has been poisoned for {this.poisonDamage}!");
     }
     public override void Cleanse(Fighter fighter)
     {

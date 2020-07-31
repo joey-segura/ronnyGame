@@ -64,6 +64,7 @@ public class Rogue : Fighter
     }
     public override void RecalculateActions()
     {
-        actionList.Add(new Attack(3, this.damage, null));
+        this.actionList = new List<Action>();
+        this.actionList.Add(new Attack(3, this.damage, null));
     }
 }

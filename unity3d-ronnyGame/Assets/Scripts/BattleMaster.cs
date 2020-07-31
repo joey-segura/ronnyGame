@@ -156,8 +156,6 @@ public class BattleMaster : Kami
         sceneMaster.ChangeScene(this.battleSceneName);
         this.turnCounter = 0;
         this.InitializeFighters();
-        GetPlayerObject().GetComponent<playerMovement>().enabled = false;
-        GetPlayerObject().GetComponent<cameraRotation>().enabled = false;
         this.MoveCameraTo(1.4f, 4, -6);
         StartCoroutine("PlayerAction");
         this.turn = true;
@@ -178,6 +176,10 @@ public class BattleMaster : Kami
         {
             BeingData being = allFigthers.BeingDatas[i];
             gameMaster.InstantiateObject(JsonUtility.ToJson(being));
+        }
+        for (int i = 0; i < allFighters.BeingDatas.Count; i++)
+        {
+            allFighters.BeingDatas[i].gameObject.GetComponent<Fighter>().InitializeBattle(); //stops all movement scripts of each fighter
         }
         this.UpdateBothPartiesFromAllFigthers();
     }
@@ -234,11 +236,6 @@ public class BattleMaster : Kami
     {
         action.Execute();
         Fighter fighter = action.target.GetComponent<Fighter>();
-        if (fighter.isDead())
-        {
-            fighter.DestroyBeing();
-            RemoveMemberByID(fighter.ID);
-        }
         this.BattleEndCheck();
     }
     private void RemoveAllMembers()

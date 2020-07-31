@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 
@@ -9,7 +10,18 @@ using UnityEngine;
     public GameObject target { get; set; }
     public int duration;
     public Animation animation;
+    public string[] validTargets;
     public abstract void Execute();
+    public bool IsValidAction(string targetTag)
+    {
+        if (validTargets.Contains(targetTag))
+        {
+            return true;
+        } else
+        {
+            return false;
+        }
+    }
 }
 public class Attack : Action
 {
@@ -19,6 +31,7 @@ public class Attack : Action
         this.duration = _duration;
         this.damage = _damage;
         this.animation = _animation;
+        this.validTargets = new string[] { "Foe" };
     }
     public override void Execute()
     {
@@ -27,14 +40,15 @@ public class Attack : Action
         return;
     }
 }
-public class Poision : Action
+public class PoisonAttack : Action
 {
     public int poisonDamage;
-    public Poision (int _duration, int _poisonDamage, Animation _animation)
+    public PoisonAttack (int _duration, int _poisonDamage, Animation _animation)
     {
         this.duration = _duration;
         this.poisonDamage = _poisonDamage;
         this.animation = _animation;
+        this.validTargets = new string[] { "Foe" };
     }
     public override void Execute()
     {

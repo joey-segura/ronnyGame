@@ -4,3 +4,4 @@
 {"gameObject":"","objectID":-1,"jsonData":"{\"speed\":4, \"health\": 100, \"damage\":10}","prefabName":"Ronny","location":{"x":-1.0,"y":1.5,"z":0.0},"angle":{"x":0.0,"y":0.0,"z":0.0,"w":0.0},"scale":{"x":1,"y":1,"z":1}}
 {"gameObject":"","objectID":-1,"jsonData":"{\"speed\":4, \"health\": 100, \"damage\":3,\"party\":[\"Rogue\", \"Rogue\"]}","prefabName":"Rogue","location":{"x":0.0,"y":1.36,"z":2.8},"angle":{"x":0.0,"y":0.0,"z":0.0,"w":0.0},"scale":{"x":1,"y":1,"z":1}}
 {"gameObject":"","objectID":-1,"jsonData":"{\"message\":[\"bridge guy\"]}","prefabName":"Bridge","location":{"x":-1.0,"y":2.0,"z":0.0},"angle":{"x":0.0,"y":0.0,"z":0.0,"w":0.0},"scale":{"x":1,"y":1,"z":1}}
+{"gameObject":"","objectID":-1,"jsonData":"{\"ronny\":{}, \"speed\":4, \"health\": 25, \"damage\":10}","prefabName":"Ritter","location":{"x":-3.0,"y":1.5,"z":1.0},"angle":{"x":0.0,"y":0.0,"z":0.0,"w":0.0},"scale":{"x":1,"y":1,"z":1}}
