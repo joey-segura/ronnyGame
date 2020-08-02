@@ -40,10 +40,10 @@ public class Ritter : Fighter
         being.objectID = this.ID;
 
         RitterJson ritter = new RitterJson();
-        ritter.health = this.health;
         ritter.damage = this.damage;
-        ritter.speed = this.speed;
+        ritter.health = this.health;
         ritter.ronny = this.ronny;
+        ritter.speed = this.speed;
 
         being.jsonData = JsonUtility.ToJson(ritter);
 
@@ -75,10 +75,10 @@ public class Ritter : Fighter
             {
                 RitterJson ritter = JsonUtility.FromJson<RitterJson>(being.jsonData);
 
-                this.health = ritter.health;
                 this.damage = ritter.damage;
-                this.speed = ritter.speed;
+                this.health = ritter.health;
                 this.ronny = ritter.ronny;
+                this.speed = ritter.speed;
             }
             this.ID = being.objectID;
             this.beingData = jsonData;

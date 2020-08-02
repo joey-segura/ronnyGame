@@ -9,6 +9,7 @@ public class BattleMaster : Kami
     private bool isBattle = false;
     private int enemyID { get; set; }
     private int turnCounter;
+    private List<Action> aiActions = new List<Action>();
     public ListBeingData allFighters = new ListBeingData();
     public ListBeingData partyMembers = new ListBeingData();
     public ListBeingData enemyMembers = new ListBeingData();
@@ -19,26 +20,6 @@ public class BattleMaster : Kami
     public void AddFighter(BeingData being)
     {
         allFighters.BeingDatas.Add(being);
-    }
-    private IEnumerator AllyActions()
-    {
-        for (int i = 0; i < partyMembers.BeingDatas.Count; i++)
-        {
-            if (partyMembers.BeingDatas[i].gameObject != gameMaster.GetPlayerGameObject())
-            {
-                GameObject self = partyMembers.BeingDatas[i].gameObject;
-                if (self != null)
-                {
-                    Fighter fighter = self.GetComponent<Fighter>();
-                    Action action = fighter.DoAITurn(allFighters);
-                    this.PlayAnimation(action.animation);
-                    yield return new WaitForSeconds(action.duration);
-                    this.ProcessAction(action);
-                }
-            }
-        }
-        StartCoroutine("EnemyTurn");
-        yield return null;
     }
     private void AssignScenes()
     {
@@ -64,12 +45,24 @@ public class BattleMaster : Kami
             return;
         } 
     }
+    private static int CompareActionsByOriginatorTag(Action x, Action y)
+    {
+        if (x.originator.tag == "Party")
+        {
+            return -1;
+        } else if (x.originator.tag == y.originator.tag)
+        {
+            return 0;
+        } else
+        {
+            return 1;
+        }
+    }
     private void DestroyAllFighters()
     {
         for (int i = 0; i < allFighters.BeingDatas.Count; i++)
         {
-            Being being = allFighters.BeingDatas[i].gameObject.GetComponent<Being>();
-            being.DestroyBeing();
+            Destroy(allFighters.BeingDatas[i].gameObject);
             allFighters.BeingDatas.Remove(allFighters.BeingDatas[i]);
         }
     }
@@ -88,10 +81,15 @@ public class BattleMaster : Kami
                 if (Input.anyKey)
                 {
                     anyKey = true;
-                    gameMaster.isSceneChanging = true;
-                    this.RemoveMemberReferenceInGameMasterByID(this.enemyID); //destroy the enemy reference before we load back in
                     this.DestroyAllFighters();
-                    yield return new WaitForSeconds(1); // have to wait to destroy every object before moving to the next scene
+                    this.RemoveMemberReferenceInGameMasterByID(this.enemyID); //destroy the enemy reference before we load back in
+                    gameMaster.isSceneChanging = true;
+                    this.aiActions = new List<Action>();
+                    this.allFighters = new ListBeingData();
+                    this.partyMembers = new ListBeingData();
+                    this.enemyMembers = new ListBeingData();
+                    this.isBattle = false;
+                    yield return new WaitForSeconds(2); // have to wait to destroy every object before moving to the next scene
                     sceneMaster.ChangeScene(worldSceneName);
                 }
                 yield return new WaitForEndOfFrame();
@@ -106,28 +104,24 @@ public class BattleMaster : Kami
         }
         yield return null;
     }
-    private IEnumerator EnemyTurn() 
-    {
-        for(int i = 0; i < enemyMembers.BeingDatas.Count; i++)
-        {
-            GameObject self = enemyMembers.BeingDatas[i].gameObject;
-            if (self != null)
-            {
-                Fighter fighter = self.GetComponent<Fighter>();
-                Action action = fighter.DoAITurn(allFighters);
-                this.PlayAnimation(action.animation);
-                yield return new WaitForSeconds(action.duration);
-                this.ProcessAction(action);
-            }
-        }
-        StartCoroutine("PlayerAction");
-        this.turn = true;
-        yield return null;
-    }
     public void FillMembers(ListBeingData ronnyParty, ListBeingData enemyParty) 
     {
         partyMembers = ronnyParty;
         enemyMembers = enemyParty;
+    }
+    private List<Action> GetIntentions()
+    {
+        List<Action> actions = new List<Action>();
+
+        for (int i = 0; i < allFighters.BeingDatas.Count; i ++)
+        {
+            if (allFighters.BeingDatas[i].gameObject.tag != "Player")
+            {
+                actions.Add(allFighters.BeingDatas[i].gameObject.GetComponent<Fighter>().GetIntention(allFighters));
+            }
+        }
+        actions.Sort(CompareActionsByOriginatorTag);
+        return actions;
     }
     private GameObject GetPlayerObject()
     {
@@ -157,9 +151,8 @@ public class BattleMaster : Kami
         this.turnCounter = 0;
         this.InitializeFighters();
         this.MoveCameraTo(1.4f, 4, -6);
-        StartCoroutine("PlayerAction");
-        this.turn = true;
         this.isBattle = true;
+        this.NewTurn();
     }
     public void InitializeFighters()
     {
@@ -188,6 +181,12 @@ public class BattleMaster : Kami
         Camera cam = Camera.main;
         cam.transform.position += new Vector3(x,y,z);
     }
+    private void NewTurn()
+    {
+        aiActions = new List<Action>();
+        aiActions = this.GetIntentions();
+        StartCoroutine("PlayerAction");
+    }
     private void PlayAnimation(Animation anim)
     {
         if (anim != null)
@@ -201,6 +200,7 @@ public class BattleMaster : Kami
     }
     private IEnumerator PlayerAction()
     {
+        this.turn = true;
         bool decided = false;
 
         GameObject player = this.GetPlayerObject();
@@ -226,7 +226,7 @@ public class BattleMaster : Kami
                 yield return new WaitForSeconds(action.duration);
                 this.ProcessAction(action);
                 turn = false;
-                StartCoroutine("AllyActions");
+                StartCoroutine("ProcessAIActions");
             }
             yield return new WaitForEndOfFrame();
         }
@@ -234,9 +234,25 @@ public class BattleMaster : Kami
     }
     private void ProcessAction(Action action)
     {
-        action.Execute();
-        Fighter fighter = action.target.GetComponent<Fighter>();
-        this.BattleEndCheck();
+        if (action.target != null)
+        {
+            action.Execute();
+        }
+    }
+    public IEnumerator ProcessAIActions()
+    {
+        for (int i = 0; i < aiActions.Count; i++)
+        {
+            if (aiActions[i].originator != null)
+            {
+                Action action = aiActions[i];
+                this.PlayAnimation(action.animation);
+                yield return new WaitForSeconds(action.duration);
+                this.ProcessAction(action);
+            }
+        }
+        this.NewTurn();
+        yield return null;
     }
     private void RemoveAllMembers()
     {

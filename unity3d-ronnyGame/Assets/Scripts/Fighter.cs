@@ -46,7 +46,9 @@ public class Fighter : Being
     {
         if (this.health <= 0)
         {
-            this.transform.parent.GetComponentInParent<BattleMaster>().RemoveMemberByID(this.ID);
+            BattleMaster battleMaster = this.transform.parent.GetComponentInParent<BattleMaster>();
+            battleMaster.RemoveMemberByID(this.ID);
+            battleMaster.BattleEndCheck();
             this.DestroyBeing();
             return;
         }
@@ -54,15 +56,6 @@ public class Fighter : Being
         {
             return;
         }
-    }
-    public Action DoAITurn(ListBeingData allFighters)
-    {
-        this.ApplyEffects();
-        this.RecalculateActions();
-        GameObject target = this.ChooseTarget(allFighters);
-        Action action = this.ChooseAction(target);
-        //fighter.animation(action) <- animation handled in BattleMaster.cs
-        return action;
     }
     public virtual Action ChooseAction(GameObject target)
     {
@@ -131,6 +124,15 @@ public class Fighter : Being
     public void SetHealth(float health)
     {
         this.health = health;
+    }
+    public Action GetIntention(ListBeingData allFighters)
+    {
+        this.ApplyEffects();
+        this.RecalculateActions();
+        GameObject target = this.ChooseTarget(allFighters);
+        Action action = this.ChooseAction(target);
+        Debug.DrawLine(action.originator.transform.position, action.target.transform.position, Color.red, 10);
+        return action;
     }
     public string[] GetParty()
     {
