@@ -7,12 +7,12 @@ FBXHeaderExtension:  {
 	CreationTimeStamp:  {
 		Version: 1000
 		Year: 2020
-		Month: 5
-		Day: 3
-		Hour: 19
-		Minute: 51
-		Second: 14
-		Millisecond: 309
+		Month: 8
+		Day: 2
+		Hour: 11
+		Minute: 4
+		Second: 45
+		Millisecond: 925
 	}
 	Creator: "FBX SDK/FBX Plugins version 2018.1.1"
 	SceneInfo: "SceneInfo::GlobalInfo", "UserData" {
@@ -34,13 +34,13 @@ FBXHeaderExtension:  {
 			P: "Original|ApplicationVendor", "KString", "", "", "Autodesk"
 			P: "Original|ApplicationName", "KString", "", "", "Maya"
 			P: "Original|ApplicationVersion", "KString", "", "", "201800"
-			P: "Original|DateTime_GMT", "DateTime", "", "", "04/05/2020 01:51:14.308"
+			P: "Original|DateTime_GMT", "DateTime", "", "", "02/08/2020 17:04:45.922"
 			P: "Original|FileName", "KString", "", "", "C:\Users\otejp\Documents\maya\projects\ronnyGame\scenes\grass_64x64x64.fbx"
 			P: "LastSaved", "Compound", "", ""
 			P: "LastSaved|ApplicationVendor", "KString", "", "", "Autodesk"
 			P: "LastSaved|ApplicationName", "KString", "", "", "Maya"
 			P: "LastSaved|ApplicationVersion", "KString", "", "", "201800"
-			P: "LastSaved|DateTime_GMT", "DateTime", "", "", "04/05/2020 01:51:14.308"
+			P: "LastSaved|DateTime_GMT", "DateTime", "", "", "02/08/2020 17:04:45.922"
 			P: "Original|ApplicationActiveProject", "KString", "", "", "C:\Users\otejp\Documents\maya\projects\ronnyGame\scenes"
 			P: "Original|ApplicationNativeFile", "KString", "", "", "C:\Users\otejp\Documents\maya\projects\ronnyGame\scenes\grass_tiles.mb"
 		}
@@ -77,7 +77,7 @@ GlobalSettings:  {
 
 Documents:  {
 	Count: 1
-	Document: 2326672284064, "", "Scene" {
+	Document: 1461855669152, "", "Scene" {
 		Properties70:  {
 			P: "SourceObject", "object", "", ""
 			P: "ActiveAnimStackName", "KString", "", "", "Take 001"
@@ -310,15 +310,15 @@ Definitions:  {
 ;------------------------------------------------------------------
 
 Objects:  {
-	NodeAttribute: 2326506342944, "NodeAttribute::", "Null" {
+	NodeAttribute: 1462319060496, "NodeAttribute::", "Null" {
 		Properties70:  {
 			P: "Look", "enum", "", "",0
 		}
 		TypeFlags: "Null"
 	}
-	Geometry: 2326006344304, "Geometry::", "Mesh" {
+	Geometry: 1460370874496, "Geometry::", "Mesh" {
 		Vertices: *30 {
-			a: -14,-16,6,0,-16,6,-14,0,6,0,0,6,-14,0,-10,0,0,-10,-14,-16,-10,0,-16,-10,0,0,6,0,0,6
+			a: -14,-16,6,0,-16,6,-14,0,6,0,0,6,-14,-5.36441802978516e-07,-8,-5.96046447753906e-08,-5.36441802978516e-07,-8,-14,-16,-8,-5.96046447753906e-08,-16,-8,0,0,6,0,0,6
 		} 
 		PolygonVertexIndex: *24 {
 			a: 0,1,8,-3,2,9,5,-5,4,5,7,-7,6,7,1,-1,1,7,5,-4,6,0,2,-5
@@ -333,7 +333,7 @@ Objects:  {
 			MappingInformationType: "ByPolygonVertex"
 			ReferenceInformationType: "Direct"
 			Normals: *72 {
-				a: 0,0,1,0,0,1,0,0,1,0,0,1,0,1,0,0,1,0,0,1,0,0,1,0,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,-1,0,0,-1,0,0,-1,0,0,-1,0,1,0,0,1,0,0,1,0,0,1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0
+				a: 0,0,1,0,0,1,0,0,1,0,0,1,0,1,-3.8317271133792e-08,0,1,-3.8317271133792e-08,0,1,-3.8317271133792e-08,0,1,-3.8317271133792e-08,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,-1,0,0,-1,0,0,-1,0,0,-1,0,1,0,-4.25747481713756e-09,1,0,-4.25747481713756e-09,1,0,-4.25747481713756e-09,1,0,-4.25747481713756e-09,-1,0,0,-1,0,0,-1,0,0,-1,0,0
 			} 
 			NormalsW: *24 {
 				a: 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
@@ -376,7 +376,7 @@ Objects:  {
 			}
 		}
 	}
-	Model: 2325854550816, "Model::group", "Null" {
+	Model: 1461920144304, "Model::group", "Null" {
 		Version: 232
 		Properties70:  {
 			P: "RotationPivot", "Vector3D", "Vector", "",9.875,3.625,2.25
@@ -389,7 +389,7 @@ Objects:  {
 		Shading: Y
 		Culling: "CullingOff"
 	}
-	Model: 2325854536896, "Model::pCube10", "Mesh" {
+	Model: 1461920114144, "Model::pCube10", "Mesh" {
 		Version: 232
 		Properties70:  {
 			P: "RotationPivot", "Vector3D", "Vector", "",-7,-8,-2
@@ -398,13 +398,13 @@ Objects:  {
 			P: "InheritType", "enum", "", "",1
 			P: "ScalingMax", "Vector3D", "Vector", "",0,0,0
 			P: "DefaultAttributeIndex", "int", "Integer", "",0
-			P: "Lcl Translation", "Lcl Translation", "", "A",7,0,2
+			P: "Lcl Translation", "Lcl Translation", "", "A",7,0,1
 			P: "currentUVSet", "KString", "", "U", "map1"
 		}
 		Shading: T
 		Culling: "CullingOff"
 	}
-	Material: 2326157515952, "Material::grass_lrg", "" {
+	Material: 1461912064176, "Material::grass_lrg", "" {
 		Version: 102
 		ShadingModel: "lambert"
 		MultiLayer: 0
@@ -419,7 +419,7 @@ Objects:  {
 			P: "Opacity", "double", "Number", "",1
 		}
 	}
-	Video: 2327219421984, "Video::file2", "Clip" {
+	Video: 1461861998480, "Video::file2", "Clip" {
 		Type: "Clip"
 		Properties70:  {
 			P: "Path", "KString", "XRefUrl", "", "C:/Users/otejp/Documents/maya/projects/ronnyGame/sourceimages/3dPaintTextures/grass_lrg.png"
@@ -431,7 +431,7 @@ Objects:  {
 		Content: ,
  "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"
 	}
-	Texture: 2327219421504, "Texture::file2", "" {
+	Texture: 1461861996080, "Texture::file2", "" {
 		Type: "TextureVideoClip"
 		Version: 202
 		TextureName: "Texture::file2"
@@ -448,7 +448,7 @@ Objects:  {
 		Texture_Alpha_Source: "None"
 		Cropping: 0,0,0,0
 	}
-	AnimationStack: 2327219319040, "AnimStack::Take 001", "" {
+	AnimationStack: 1460601614272, "AnimStack::Take 001", "" {
 		Properties70:  {
 			P: "LocalStart", "KTime", "Time", "",1924423250
 			P: "LocalStop", "KTime", "Time", "",230930790000
@@ -456,7 +456,7 @@ Objects:  {
 			P: "ReferenceStop", "KTime", "Time", "",230930790000
 		}
 	}
-	AnimationLayer: 2325920038704, "AnimLayer::BaseLayer", "" {
+	AnimationLayer: 1460435930624, "AnimLayer::BaseLayer", "" {
 	}
 }
 
@@ -466,28 +466,28 @@ Objects:  {
 Connections:  {
 	
 	;Model::group, Model::RootNode
-	C: "OO",2325854550816,0
+	C: "OO",1461920144304,0
 	
 	;Model::pCube10, Model::RootNode
-	C: "OO",2325854536896,0
+	C: "OO",1461920114144,0
 	
 	;AnimLayer::BaseLayer, AnimStack::Take 001
-	C: "OO",2325920038704,2327219319040
+	C: "OO",1460435930624,1460601614272
 	
 	;NodeAttribute::, Model::group
-	C: "OO",2326506342944,2325854550816
+	C: "OO",1462319060496,1461920144304
 	
 	;Texture::file2, Material::grass_lrg
-	C: "OP",2327219421504,2326157515952, "DiffuseColor"
+	C: "OP",1461861996080,1461912064176, "DiffuseColor"
 	
 	;Video::file2, Texture::file2
-	C: "OO",2327219421984,2327219421504
+	C: "OO",1461861998480,1461861996080
 	
 	;Geometry::, Model::pCube10
-	C: "OO",2326006344304,2325854536896
+	C: "OO",1460370874496,1461920114144
 	
 	;Material::grass_lrg, Model::pCube10
-	C: "OO",2326157515952,2325854536896
+	C: "OO",1461912064176,1461920114144
 }
 ;Takes section
 ;----------------------------------------------------
