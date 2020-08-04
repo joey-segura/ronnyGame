@@ -29,6 +29,10 @@ public class Fighter : Being
         this.health += change;
         this.DeathCheck();
     }
+    public virtual void AddToVirtue(float value) // this should only be extended by Ritter, Joey, and maybe Ronny
+    {
+        return;
+    }
     public void ApplyEffects()
     {
         for(int i = 0; i < currentEffects.Count; i++)
@@ -145,6 +149,10 @@ public class Fighter : Being
             return party;
         }
     }
+    public virtual float GetVirtue()
+    {
+        return -1;
+    }// this should only be extended by Ritter, Joey, and maybe Ronny
     private string TargetRelationToSelf(string targetTag)
     {
         if (this.gameObject.tag == "Party" && targetTag == "Player")

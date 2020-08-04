@@ -78,7 +78,7 @@ public class BattleMaster : Kami
             Debug.Log("Press anykey please");
             while (!anyKey)
             {
-                if (Input.anyKey)
+                if (Input.anyKey || Input.anyKeyDown)
                 {
                     anyKey = true;
                     this.DestroyAllFighters();
@@ -89,7 +89,7 @@ public class BattleMaster : Kami
                     this.partyMembers = new ListBeingData();
                     this.enemyMembers = new ListBeingData();
                     this.isBattle = false;
-                    yield return new WaitForSeconds(2); // have to wait to destroy every object before moving to the next scene
+                    yield return new WaitForSeconds(1); // have to wait to destroy every object before moving to the next scene
                     sceneMaster.ChangeScene(worldSceneName);
                 }
                 yield return new WaitForEndOfFrame();
@@ -212,7 +212,6 @@ public class BattleMaster : Kami
 
         while (decided == false)
         {
-            
             target = fighter.ChooseTarget(allFighters);
             if (target != null)
             {
@@ -237,6 +236,12 @@ public class BattleMaster : Kami
         if (action.target != null)
         {
             action.Execute();
+            float damage = action.GetDamage();
+            if (damage != 0 && action.originator.tag == "Party")
+            {
+                action.originator.GetComponent<Fighter>().AddToVirtue(Mathf.Round(damage / 3));
+                Debug.Log($"{action.originator.name}'s virtue got changed by {Mathf.Round(damage / 3)}");
+            } 
         }
     }
     public IEnumerator ProcessAIActions()

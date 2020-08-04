@@ -5,12 +5,12 @@ using UnityEngine;
 public class RitterJson
 {
     public GameObject ronny;
-    public float speed, health, damage;
+    public float courage, speed, health, damage;
 }
 public class Ritter : Fighter
 {
     public GameObject ronny;
-    public float speed;
+    public float courage, speed;
     private void Update()
     {
         if (ronny != null)
@@ -19,6 +19,17 @@ public class Ritter : Fighter
         } else
         {
             ronny = this.GetRonny();
+        }
+    }
+    public override void AddToVirtue(float value)
+    {
+        this.courage += value;
+        if (this.courage < 0)
+        {
+            this.courage = 0;
+        } else if (this.courage > 100)
+        {
+            this.courage = 100;
         }
     }
     public override Action ChooseAction(GameObject target)
@@ -60,6 +71,10 @@ public class Ritter : Fighter
     {
         GameObject Kami = this.transform.parent.gameObject;
         return Kami.GetComponent<GameMaster>().GetPlayerGameObject();
+    }
+    public override float GetVirtue()
+    {
+        return this.courage;
     }
     public override void InitializeBattle()
     {

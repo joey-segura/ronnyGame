@@ -12,6 +12,7 @@ using UnityEngine;
     public Animation animation;
     public string[] validTargets;
     public abstract void Execute();
+    public abstract float GetDamage();
     public bool IsValidAction(string targetTag)
     {
         if (validTargets.Contains(targetTag))
@@ -39,6 +40,10 @@ public class Attack : Action
         this.target.GetComponent<Fighter>().AddToHealth(this.damage * -1);
         return;
     }
+    public override float GetDamage()
+    {
+        return this.damage;
+    }
 }
 public class PoisonAttack : Action
 {
@@ -54,5 +59,9 @@ public class PoisonAttack : Action
     {
         Effect Poison = new Poison(this.duration, this.poisonDamage);
         this.target.GetComponent<Fighter>().AddEffect(Poison);
+    }
+    public override float GetDamage()
+    {
+        return this.poisonDamage;
     }
 }
