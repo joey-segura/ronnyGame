@@ -95,7 +95,6 @@ public class Being : MonoBehaviour
             
             this.canvas = this.gameObject.GetComponentInChildren<Canvas>();
             this.ToggleCanvas();
-            Debug.Log("Test");
         }
         cam = Camera.main;
         Kami = this.gameObject.transform.parent.gameObject;

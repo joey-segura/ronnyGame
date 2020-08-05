@@ -50,13 +50,13 @@ public class BattleMaster : Kami
     {
         if (x.originator.tag == "Party")
         {
-            return -1;
+            return 1;
         } else if (x.originator.tag == y.originator.tag)
         {
             return 0;
         } else
         {
-            return 1;
+            return -1;
         }
     }
     private void DestroyAllFighters()
@@ -73,28 +73,20 @@ public class BattleMaster : Kami
         {
             //play victory animations and ui and stuff
             Debug.Log("Victory!");
-            yield return new WaitForSeconds(2);
-            //victory UI (rewards?) wait on click to load back to normal scene
-            bool anyKey = false;
-            Debug.Log("Press anykey please");
-            while (!anyKey)
-            {
-                if (Input.anyKey || Input.anyKeyDown)
-                {
-                    anyKey = true;
-                    this.DestroyAllFighters();
-                    this.RemoveMemberReferenceInGameMasterByID(this.enemyID); //destroy the enemy reference before we load back in
-                    gameMaster.isSceneChanging = true;
-                    this.aiActions = new List<Action>();
-                    this.allFighters = new ListBeingData();
-                    this.partyMembers = new ListBeingData();
-                    this.enemyMembers = new ListBeingData();
-                    this.isBattle = false;
-                    yield return new WaitForSeconds(1); // have to wait to destroy every object before moving to the next scene
-                    sceneMaster.ChangeScene(worldSceneName);
-                }
-                yield return new WaitForEndOfFrame();
-            }
+            yield return new WaitForSeconds(1);
+            //victory UI (rewards?) wait on click to load back to normal scene but till now we will just force our way back
+            //yield return StartCoroutine(WaitForKeyDown());
+            this.DestroyAllFighters();
+            this.RemoveMemberReferenceInGameMasterByID(this.enemyID); //destroy the enemy reference before we load back in
+            gameMaster.isSceneChanging = true;
+            this.aiActions = new List<Action>();
+            this.allFighters = new ListBeingData();
+            this.partyMembers = new ListBeingData();
+            this.enemyMembers = new ListBeingData();
+            this.isBattle = false;
+            //yield return new WaitForSeconds(1); // have to wait to destroy every object before moving to the next scene
+            sceneMaster.ChangeScene(worldSceneName);
+
         } else
         {
             //play defeat animations and ui and stuff
@@ -239,10 +231,6 @@ public class BattleMaster : Kami
         {
             action.Execute();
             float damage = action.GetDamage();
-            if (action.originator.tag != "Player")
-            {
-                action.originator.GetComponent<Being>().ToggleCanvas();
-            }
             if (damage != 0 && action.originator.tag == "Party")
             {
                 action.originator.GetComponent<Human>().AddToVirtue(Mathf.Round(damage / 3));
@@ -252,13 +240,16 @@ public class BattleMaster : Kami
     }
     public IEnumerator ProcessAIActions()
     {
+        yield return new WaitForEndOfFrame(); //
         for (int i = 0; i < aiActions.Count; i++)
         {
             if (aiActions[i].originator != null)
             {
                 Action action = aiActions[i];
                 this.PlayAnimation(action.animation);
+                Debug.Log($"{action.originator.name}'s turn!");
                 yield return new WaitForSeconds(action.duration);
+                action.originator.GetComponent<Fighter>().ToggleCanvas();
                 this.ProcessAction(action);
             }
         }
@@ -319,5 +310,10 @@ public class BattleMaster : Kami
             }
         }
         this.FillMembers(allyMembers, foeMembers);
+    }
+    public IEnumerator WaitForKeyDown()
+    {
+        while (!Input.anyKeyDown)
+            yield return null;
     }
 }

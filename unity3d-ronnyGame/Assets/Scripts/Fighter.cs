@@ -13,6 +13,7 @@ public class Fighter : Being
     private List<Effect> currentEffects = new List<Effect>();
     protected List<Action> actionList = new List<Action>();
     //public Canvas canvas;
+
     public virtual void Awake()
     {
         Invoke("InititializeBaseActions", 1);
@@ -42,6 +43,46 @@ public class Fighter : Being
                 currentEffects[i].Cleanse(this);
                 currentEffects.Remove(currentEffects[i]);
             }
+        }
+    }
+   
+    public virtual Action ChooseAction(GameObject target)
+    {
+        Action action = this.actionList[0]; //random action for enemy and friendly units
+        action.originator = this.gameObject;
+        action.target = target;
+
+        return action;
+    }
+    public virtual GameObject ChooseTarget(ListBeingData allFighters) //chooses a target at random!
+    {
+        GameObject target = null;
+        
+        bool validTarget = false;
+        while (!validTarget)
+        {
+            int targetIndex = Random.Range(0, allFighters.BeingDatas.Count);
+            target = allFighters.BeingDatas[targetIndex].gameObject;
+            string relation = this.TargetRelationToSelf(target.tag);
+            if (this.ValidTarget(relation))
+            {
+                Debug.Log($"found valid target {this.gameObject.name} found {relation}");
+                validTarget = true;
+            }
+        }
+        return target;
+    }
+    private static int CompareEffectsByDuration(Effect x, Effect y)
+    {
+        if (x.duration > y.duration)
+        {
+            return 1;
+        } else if (x.duration < y.duration)
+        {
+            return -1;
+        } else
+        {
+            return 0;
         }
     }
     public void DeathCheck()
@@ -81,53 +122,24 @@ public class Fighter : Being
                     break;
             }
         }
-        direction.gameObject.SetActive(false);
+        Vector3 self = direction.rectTransform.position;
+        Vector3 target = new Vector3(action.target.transform.position.x, direction.rectTransform.position.y, action.target.transform.position.z);
+
+        float angle = Vector3.SignedAngle(target - self, transform.forward, Vector3.up);
+        
+        direction.transform.rotation = Quaternion.Euler(new Vector3(direction.transform.rotation.eulerAngles.x, direction.transform.rotation.eulerAngles.y, angle));
+        direction.transform.position = Vector3.MoveTowards(self, target, Vector3.Distance(self, target) / 2);
+        direction.rectTransform.sizeDelta = new Vector2(direction.rectTransform.sizeDelta.x, Vector3.Distance(target, self));
+        Color tempColor = direction.color;
+        tempColor.a = .1f;
+        direction.color = tempColor;
+
         Texture2D image = Resources.Load(action.GetImagePath()) as Texture2D;
-        Debug.Log(image.name);
         Sprite sprite = Sprite.Create(image, new Rect(0, 0, image.width, image.height), new Vector2(0, 0));
         sprite.name = action.GetImagePath();
         intention.sprite = sprite;
-        
-        yield return null;
-    }
-    public virtual Action ChooseAction(GameObject target)
-    {
-        Action action = this.actionList[0]; //random action for enemy and friendly units
-        action.originator = this.gameObject;
-        action.target = target;
 
-        return action;
-    }
-    public virtual GameObject ChooseTarget(ListBeingData allFighters) //chooses a target at random!
-    {
-        GameObject target = null;
-        
-        bool validTarget = false;
-        while (!validTarget)
-        {
-            int targetIndex = Random.Range(0, allFighters.BeingDatas.Count);
-            target = allFighters.BeingDatas[targetIndex].gameObject;
-            string relation = this.TargetRelationToSelf(target.tag);
-            if (this.ValidTarget(relation))
-            {
-                Debug.Log($"found valid target {this.gameObject.name} found {relation}");
-                validTarget = true;
-            }
-        }
-        return target;
-    }
-    private static int CompareEffectsByDuration(Effect x, Effect y)
-    {
-        if (x.duration > y.duration)
-        {
-            return 1;
-        } else if (x.duration < y.duration)
-        {
-            return -1;
-        } else
-        {
-            return 0;
-        }
+        yield return null;
     }
     public virtual void InitializeBattle()
     {
