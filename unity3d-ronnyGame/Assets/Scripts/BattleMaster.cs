@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using System.Linq;
 
 public class BattleMaster : Kami
 {
@@ -117,7 +118,8 @@ public class BattleMaster : Kami
         {
             if (allFighters.BeingDatas[i].gameObject.tag != "Player")
             {
-                actions.Add(allFighters.BeingDatas[i].gameObject.GetComponent<Fighter>().GetIntention(allFighters));
+                Fighter fighter = allFighters.BeingDatas[i].gameObject.GetComponent<Fighter>();
+                actions.Add(fighter.GetIntention(allFighters));
             }
         }
         actions.Sort(CompareActionsByOriginatorTag);
@@ -237,9 +239,13 @@ public class BattleMaster : Kami
         {
             action.Execute();
             float damage = action.GetDamage();
+            if (action.originator.tag != "Player")
+            {
+                action.originator.GetComponent<Being>().ToggleCanvas();
+            }
             if (damage != 0 && action.originator.tag == "Party")
             {
-                action.originator.GetComponent<Fighter>().AddToVirtue(Mathf.Round(damage / 3));
+                action.originator.GetComponent<Human>().AddToVirtue(Mathf.Round(damage / 3));
                 Debug.Log($"{action.originator.name}'s virtue got changed by {Mathf.Round(damage / 3)}");
             } 
         }

@@ -6,7 +6,7 @@ public class RonnyJson
 {
     public float speed, health, damage;
 }
-public class Ronny : Fighter
+public class Ronny : Human
 {
     private GameObject target = null;
     public float speed;

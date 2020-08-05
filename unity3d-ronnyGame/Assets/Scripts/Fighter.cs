@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 [System.Serializable]
 
@@ -11,6 +12,7 @@ public class Fighter : Being
     public string[] party;
     private List<Effect> currentEffects = new List<Effect>();
     protected List<Action> actionList = new List<Action>();
+    //public Canvas canvas;
     public virtual void Awake()
     {
         Invoke("InititializeBaseActions", 1);
@@ -28,10 +30,6 @@ public class Fighter : Being
     {
         this.health += change;
         this.DeathCheck();
-    }
-    public virtual void AddToVirtue(float value) // this should only be extended by Ritter, Joey, and maybe Ronny
-    {
-        return;
     }
     public void ApplyEffects()
     {
@@ -60,6 +58,37 @@ public class Fighter : Being
         {
             return;
         }
+    }
+    private IEnumerator DrawIntentions(Action action)
+    {
+        yield return new WaitForEndOfFrame();
+        this.ToggleCanvas();
+        Image intention = null;
+        Image direction = null;
+        GameObject panel = canvas.transform.GetChild(0).gameObject;
+
+        for (int i = 0; i < panel.transform.childCount; i++)
+        {
+            switch (panel.transform.GetChild(i).name)
+            {
+                case "Intention":
+                    intention = panel.transform.GetChild(i).GetComponent<Image>();
+                    break;
+                case "Direction":
+                    direction = panel.transform.GetChild(i).GetComponent<Image>();
+                    break;
+                default:
+                    break;
+            }
+        }
+        direction.gameObject.SetActive(false);
+        Texture2D image = Resources.Load(action.GetImagePath()) as Texture2D;
+        Debug.Log(image.name);
+        Sprite sprite = Sprite.Create(image, new Rect(0, 0, image.width, image.height), new Vector2(0, 0));
+        sprite.name = action.GetImagePath();
+        intention.sprite = sprite;
+        
+        yield return null;
     }
     public virtual Action ChooseAction(GameObject target)
     {
@@ -135,6 +164,7 @@ public class Fighter : Being
         this.RecalculateActions();
         GameObject target = this.ChooseTarget(allFighters);
         Action action = this.ChooseAction(target);
+        this.StartCoroutine("DrawIntentions", action);
         Debug.DrawLine(action.originator.transform.position, action.target.transform.position, Color.red, 10);
         return action;
     }
@@ -149,10 +179,6 @@ public class Fighter : Being
             return party;
         }
     }
-    public virtual float GetVirtue()
-    {
-        return -1;
-    }// this should only be extended by Ritter, Joey, and maybe Ronny
     private string TargetRelationToSelf(string targetTag)
     {
         if (this.gameObject.tag == "Party" && targetTag == "Player")

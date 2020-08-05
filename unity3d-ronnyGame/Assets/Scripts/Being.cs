@@ -26,7 +26,7 @@ public class Being : MonoBehaviour
 
     private Camera cam;
 
-    private Canvas canvas;
+    public Canvas canvas;
 
     private void OnGUI()
     {
@@ -93,12 +93,14 @@ public class Being : MonoBehaviour
         if (this.gameObject.GetComponentInChildren<Canvas>() != null)
         {
             
-            canvas = this.gameObject.GetComponentInChildren<Canvas>();
-            canvas.gameObject.SetActive(false);
+            this.canvas = this.gameObject.GetComponentInChildren<Canvas>();
+            this.ToggleCanvas();
+            Debug.Log("Test");
         }
         cam = Camera.main;
         Kami = this.gameObject.transform.parent.gameObject;
         gameMasterScript = Kami.GetComponent<GameMaster>();
+        
     }
     public void ChangeTransparancy(float alpha = .7f)
     {
@@ -129,10 +131,10 @@ public class Being : MonoBehaviour
         for (int i = 0; i < message.Length; i++)
         {
             text.text = message[i];
-            canvas.gameObject.SetActive(true);
+            this.ToggleCanvas();
             yield return new WaitForSeconds(5);
             Debug.LogWarning("Arbitrary constant set for all instantiated UI objects");
-            canvas.gameObject.SetActive(false);
+            this.ToggleCanvas();
         }
         yield return null;
     }
@@ -166,6 +168,14 @@ public class Being : MonoBehaviour
     public void TeleportTo(Vector3 location)
     {
         this.transform.position = location;
+    }
+    public void ToggleCanvas()
+    {
+        if (this.canvas == null)
+        {
+            this.canvas = this.gameObject.GetComponentInChildren<Canvas>();
+        }
+        this.canvas.gameObject.SetActive(!this.canvas.gameObject.activeInHierarchy);
     }
     public void ToggleDebug()
     {

@@ -4,13 +4,14 @@ using System.Linq;
 using UnityEngine;
 
 
- public abstract class Action
+public abstract class Action
 {
     public GameObject originator { get; set; }
     public GameObject target { get; set; }
     public int duration;
     public Animation animation;
     public string[] validTargets;
+    protected string IMAGEPATH;
     public abstract void Execute();
     public abstract float GetDamage();
     public bool IsValidAction(string targetTag)
@@ -23,6 +24,10 @@ using UnityEngine;
             return false;
         }
     }
+    public string GetImagePath()
+    {
+        return this.IMAGEPATH;
+    }
 }
 public class Attack : Action
 {
@@ -33,6 +38,7 @@ public class Attack : Action
         this.damage = _damage;
         this.animation = _animation;
         this.validTargets = new string[] { "Foe" };
+        this.IMAGEPATH = "UI/Attack";
     }
     public override void Execute()
     {
@@ -54,6 +60,8 @@ public class PoisonAttack : Action
         this.poisonDamage = _poisonDamage;
         this.animation = _animation;
         this.validTargets = new string[] { "Foe" };
+        this.IMAGEPATH = "UI/Attack";
+        
     }
     public override void Execute()
     {

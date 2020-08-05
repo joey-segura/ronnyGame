@@ -186,7 +186,7 @@ GameObject:
   - component: {fileID: 2353683034538207820}
   - component: {fileID: 3447781828850035516}
   m_Layer: 0
-  m_Name: Image
+  m_Name: BackGroundImage
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -431,7 +431,7 @@ MonoBehaviour:
   interactable: 0
   beingData: 
   multiplier: 0
-  message: 
+  message: []
 --- !u!65 &-1150363717971648211
 BoxCollider:
   m_ObjectHideFlags: 0
