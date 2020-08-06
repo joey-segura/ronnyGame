@@ -229,8 +229,9 @@ public class BattleMaster : Kami
     {
         if (action.target != null)
         {
+            Debug.Log($"{action.originator.name} just used {action.name} on {action.target.name} for {action.GetValue()} whatever!");
             action.Execute();
-            float damage = action.GetDamage();
+            float damage = action.GetValue();
             if (damage != 0 && action.originator.tag == "Party")
             {
                 action.originator.GetComponent<Human>().AddToVirtue(Mathf.Round(damage / 3));
@@ -310,10 +311,5 @@ public class BattleMaster : Kami
             }
         }
         this.FillMembers(allyMembers, foeMembers);
-    }
-    public IEnumerator WaitForKeyDown()
-    {
-        while (!Input.anyKeyDown)
-            yield return null;
     }
 }

@@ -20,7 +20,11 @@ public class Fighter : Being
     }
     private void InititializeBaseActions()
     {
-        actionList.Add(new Attack(3, this.damage, null));
+        this.actionList.Add(new Attack(3, this.damage * this.damageMultiplier, null));
+        this.actionList.Add(new WeakAttack(3, 3, 2, null));
+        this.actionList.Add(new BuffAttack(3, 3, 2, null));
+        this.actionList.Add(new BolsterDefense(3, 3, 2, null));
+        this.actionList.Add(new VulnerableAttack(3, 3, 2, null));
     }
     public void AddEffect(Effect effect)
     {
@@ -29,11 +33,14 @@ public class Fighter : Being
     }
     public void AddToHealth(float change)
     {
-        this.health += change;
+        Debug.Log($"{this.name}'s health just got changed by {change / this.defenseMultiplier}");
+        this.health += (change / this.defenseMultiplier);
         this.DeathCheck();
     }
     public void ApplyEffects()
     {
+        this.damageMultiplier = 1; //these values get reset every turn so that 1 effect doesn't proc twice
+        this.defenseMultiplier = 1;
         for(int i = 0; i < currentEffects.Count; i++)
         {
             currentEffects[i].Affliction(this);
@@ -48,10 +55,20 @@ public class Fighter : Being
    
     public virtual Action ChooseAction(GameObject target)
     {
-        Action action = this.actionList[0]; //random action for enemy and friendly units
-        action.originator = this.gameObject;
-        action.target = target;
-
+        Action action = null;
+        string relation = this.TargetRelationToSelf(target.tag);
+        bool valid = false;
+        while (!valid)
+        {
+            int actionIndex = Random.Range(0, this.actionList.Count);
+            action = this.actionList[actionIndex]; //random action for enemy and friendly units
+            if (action.IsValidAction(relation))
+            {
+                action.originator = this.gameObject;
+                action.target = target;
+                valid = true;
+            }
+        }
         return action;
     }
     public virtual GameObject ChooseTarget(ListBeingData allFighters) //chooses a target at random!
@@ -59,6 +76,7 @@ public class Fighter : Being
         GameObject target = null;
         
         bool validTarget = false;
+        int attempts = 0;
         while (!validTarget)
         {
             int targetIndex = Random.Range(0, allFighters.BeingDatas.Count);
@@ -66,8 +84,14 @@ public class Fighter : Being
             string relation = this.TargetRelationToSelf(target.tag);
             if (this.ValidTarget(relation))
             {
-                Debug.Log($"found valid target {this.gameObject.name} found {relation}");
                 validTarget = true;
+            }
+            if (attempts >= 10) //If no target could be found with valid actions (E.G., a buffer type unit who only has buff friendlies has no more teammates left)
+            {
+                return null; 
+            } else
+            {
+                attempts++;
             }
         }
         return target;
@@ -102,7 +126,8 @@ public class Fighter : Being
     }
     private IEnumerator DrawIntentions(Action action)
     {
-        yield return new WaitForEndOfFrame();
+        yield return new WaitForEndOfFrame(); //waiting a frame to make sure data is settled before we do this call (Not a fan)
+        Debug.Log($"{action.originator.name} is doing the action {action.name} to {action.target.name}");
         this.ToggleCanvas();
         Image intention = null;
         Image direction = null;
@@ -122,6 +147,8 @@ public class Fighter : Being
                     break;
             }
         }
+        direction.transform.position = action.originator.transform.position;
+        direction.transform.rotation = Quaternion.Euler(90, 0, 0);
         Vector3 self = direction.rectTransform.position;
         Vector3 target = new Vector3(action.target.transform.position.x, direction.rectTransform.position.y, action.target.transform.position.z);
 
@@ -130,9 +157,9 @@ public class Fighter : Being
         direction.transform.rotation = Quaternion.Euler(new Vector3(direction.transform.rotation.eulerAngles.x, direction.transform.rotation.eulerAngles.y, angle));
         direction.transform.position = Vector3.MoveTowards(self, target, Vector3.Distance(self, target) / 2);
         direction.rectTransform.sizeDelta = new Vector2(direction.rectTransform.sizeDelta.x, Vector3.Distance(target, self));
-        Color tempColor = direction.color;
+        /*Color tempColor = direction.color; //Might be necessary?
         tempColor.a = .1f;
-        direction.color = tempColor;
+        direction.color = tempColor;*/
 
         Texture2D image = Resources.Load(action.GetImagePath()) as Texture2D;
         Sprite sprite = Sprite.Create(image, new Rect(0, 0, image.width, image.height), new Vector2(0, 0));
@@ -172,6 +199,11 @@ public class Fighter : Being
     }
     public Action GetIntention(ListBeingData allFighters)
     {
+        if (this.isStunned)
+        {
+            this.ApplyEffects();
+            return null;
+        }
         this.ApplyEffects();
         this.RecalculateActions();
         GameObject target = this.ChooseTarget(allFighters);

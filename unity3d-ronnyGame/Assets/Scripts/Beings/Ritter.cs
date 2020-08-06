@@ -92,6 +92,11 @@ public class Ritter : Human
     public override void RecalculateActions()
     {
         this.actionList = new List<Action>();
-        this.actionList.Add(new PoisonAttack(3, Mathf.RoundToInt(this.damage), null));
+        this.actionList.Add(new Attack(3, this.damage * this.damageMultiplier, null));
+        this.actionList.Add(new Attack(3, this.damage * this.damageMultiplier, null));
+        this.actionList.Add(new WeakAttack(3, 3, 2, null));
+        this.actionList.Add(new BuffAttack(3, 3, 2, null));
+        this.actionList.Add(new BolsterDefense(3, 3, 2, null));
+        this.actionList.Add(new VulnerableAttack(3, 3, 2, null));
     }
 }

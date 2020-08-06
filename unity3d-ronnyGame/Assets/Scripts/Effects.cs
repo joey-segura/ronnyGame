@@ -9,20 +9,22 @@ public abstract class Effect
     public abstract void Affliction(Fighter fighter);
     public abstract void Cleanse(Fighter fighter);
 }
-public class Stun : Effect
+public class Bolster : Effect
 {
-    public Stun(int _duration)
+    public float multiplier;
+    public Bolster(int _duration, float _multiplier)
     {
-        this.name = "Stun";
+        this.name = "Bolster";
         this.duration = _duration;
+        this.multiplier = _multiplier;
     }
     public override void Affliction(Fighter fighter)
     {
-        fighter.isStunned = true;
+        fighter.defenseMultiplier = fighter.defenseMultiplier * this.multiplier;
     }
     public override void Cleanse(Fighter fighter)
     {
-        fighter.isStunned = false;
+        fighter.defenseMultiplier = fighter.defenseMultiplier / this.multiplier;
     }
 }
 public class Poison : Effect
@@ -45,23 +47,41 @@ public class Poison : Effect
         fighter.isPoisoned = false;
     }
 }
-public class Weak : Effect
+public class Strengthen : Effect
 {
     public float multiplier;
-    public Weak(int _duration, float _multiplier)
+    public Strengthen(int _duration, float _multiplier)
     {
-        this.name = "Weak";
+        this.name = "Strengthen";
+        this.duration = _duration;
         this.multiplier = _multiplier;
     }
     public override void Affliction(Fighter fighter)
     {
-        fighter.damageMultiplier = fighter.damageMultiplier / this.multiplier;
+        fighter.damageMultiplier = fighter.damageMultiplier * this.multiplier;
     }
     public override void Cleanse(Fighter fighter)
     {
-        fighter.damageMultiplier = fighter.damageMultiplier * this.multiplier;
+        fighter.damageMultiplier = fighter.damageMultiplier / this.multiplier;
     }
 }
+public class Stun : Effect
+{
+    public Stun(int _duration)
+    {
+        this.name = "Stun";
+        this.duration = _duration;
+    }
+    public override void Affliction(Fighter fighter)
+    {
+        fighter.isStunned = true;
+    }
+    public override void Cleanse(Fighter fighter)
+    {
+        fighter.isStunned = false;
+    }
+}
+
 public class Vulnerable : Effect
 {
     public float multiplier;
@@ -80,4 +100,23 @@ public class Vulnerable : Effect
         fighter.defenseMultiplier = fighter.defenseMultiplier * this.multiplier;
     }
 }
+public class Weak : Effect
+{
+    public float multiplier;
+    public Weak(int _duration, float _multiplier)
+    {
+        this.name = "Weak";
+        this.duration = _duration;
+        this.multiplier = _multiplier;
+    }
+    public override void Affliction(Fighter fighter)
+    {
+        fighter.damageMultiplier = fighter.damageMultiplier / this.multiplier;
+    }
+    public override void Cleanse(Fighter fighter)
+    {
+        fighter.damageMultiplier = fighter.damageMultiplier * this.multiplier;
+    }
+}
+
 
