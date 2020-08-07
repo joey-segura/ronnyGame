@@ -234,7 +234,7 @@ public class BattleMaster : Kami
             float damage = action.GetValue();
             if (damage != 0 && action.originator.tag == "Party")
             {
-                action.originator.GetComponent<Human>().AddToVirtue(Mathf.Round(damage / 3));
+                action.originator.GetComponent<Human>().AddToVirtue(action.virtueValue);
                 Debug.Log($"{action.originator.name}'s virtue got changed by {Mathf.Round(damage / 3)}");
             } 
         }

@@ -57,6 +57,7 @@ public class Ronny : Human
     }
     public override void InitializeBattle()
     {
+        this.isBattle = true;
         this.GetComponent<playerMovement>().enabled = false;
         this.GetComponent<cameraRotation>().enabled = false;
     }

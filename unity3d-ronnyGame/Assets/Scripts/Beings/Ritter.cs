@@ -63,6 +63,7 @@ public class Ritter : Human
     }
     public override void InitializeBattle()
     {
+        this.isBattle = true;
         this.speed = 0;
     }
     public override void InjectData(string jsonData)

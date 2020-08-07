@@ -9,7 +9,10 @@ public class Fighter : Being
 {
     public float health, damage, damageMultiplier = 1, defenseMultiplier = 1;
     public bool isStunned = false, isPoisoned = false;
+    protected bool isBattle = false;
+    
     public string[] party;
+    private Action currentAction = null;
     private List<Effect> currentEffects = new List<Effect>();
     protected List<Action> actionList = new List<Action>();
     //public Canvas canvas;
@@ -31,11 +34,13 @@ public class Fighter : Being
         currentEffects.Add(effect);
         currentEffects.Sort(CompareEffectsByDuration);
     }
-    public void AddToHealth(float change)
+    public float AddToHealth(float change)
     {
-        Debug.Log($"{this.name}'s health just got changed by {change / this.defenseMultiplier}");
-        this.health += (change / this.defenseMultiplier);
+        change = change / this.defenseMultiplier;
+        Debug.Log($"{this.name}'s health just got changed by {change}");
+        this.health += change;
         this.DeathCheck();
+        return change;
     }
     public void ApplyEffects()
     {
@@ -52,7 +57,6 @@ public class Fighter : Being
             }
         }
     }
-   
     public virtual Action ChooseAction(GameObject target)
     {
         Action action = null;
@@ -127,6 +131,7 @@ public class Fighter : Being
     private IEnumerator DrawIntentions(Action action)
     {
         yield return new WaitForEndOfFrame(); //waiting a frame to make sure data is settled before we do this call (Not a fan)
+        this.currentAction = action;
         Debug.Log($"{action.originator.name} is doing the action {action.name} to {action.target.name}");
         this.ToggleCanvas();
         Image intention = null;
@@ -170,7 +175,17 @@ public class Fighter : Being
     }
     public virtual void InitializeBattle()
     {
+        this.isBattle = true;
         return; // this is for any enemy script to disable their movement script once the battle starts
+    }
+    private void OnGUI()
+    {
+        if (isBattle && currentAction != null && this.isHovering)
+        {
+            Vector3 mouse = Input.mousePosition;
+            Rect rect = new Rect(mouse.x + 10, (Screen.height - mouse.y + 10), 200, 100);
+            GUI.Box(rect, $"Action name: {currentAction.name}\n Target name: {currentAction.target.name}\n Value: {currentAction.GetValue()}");
+        }
     }
     public virtual void RecalculateActions()
     {

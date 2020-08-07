@@ -29,18 +29,23 @@ public class Bolster : Effect
 }
 public class Poison : Effect
 {
+    private GameObject causer;
     public int poisonDamage;
-    public Poison(int _duration, int _poisonDamage)
+    public Poison(int _duration, int _poisonDamage, GameObject _causer)
     {
         this.name = "Poison";
         this.duration = _duration;
         this.poisonDamage = _poisonDamage;
+        this.causer = _causer;
     }
     public override void Affliction(Fighter fighter)
     {
         fighter.isPoisoned = true;
-        fighter.AddToHealth(this.poisonDamage * -1);
-        Debug.Log($"{fighter.gameObject.name} has been poisoned for {this.poisonDamage}!");
+        int virtue = Mathf.RoundToInt(fighter.AddToHealth(this.poisonDamage * -1));
+        if (causer.tag == "Party")
+        {
+            causer.GetComponent<Human>().AddToVirtue(virtue);
+        }
     }
     public override void Cleanse(Fighter fighter)
     {

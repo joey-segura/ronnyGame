@@ -9,6 +9,7 @@ public abstract class Action
     public GameObject originator { get; set; }
     public GameObject target { get; set; }
     public int duration, effectDuration;
+    public int virtueValue { get; set; }
     public Animation animation;
     public string name { get; set; }
     public string[] validTargets;
@@ -40,11 +41,12 @@ public class Attack : Action
         this.damage = _damage;
         this.animation = _animation;
         this.validTargets = new string[] { "Foe" };
+        this.virtueValue = 10;
         this.IMAGEPATH = "UI/UI_attack";
     }
     public override void Execute()
     {
-        this.target.GetComponent<Fighter>().AddToHealth(this.damage * -1);
+        this.virtueValue = Mathf.RoundToInt(this.target.GetComponent<Fighter>().AddToHealth(this.damage * -1));
         return;
     }
     public override float GetValue()
@@ -63,6 +65,7 @@ public class BolsterDefense : Action
         this.buffValue = _buffValue;
         this.animation = _animation;
         this.validTargets = new string[] { "Friend" };
+        this.virtueValue = _effectDuration * _buffValue;
         this.IMAGEPATH = "UI/UI_buff";
     }
     public override void Execute()
@@ -86,6 +89,7 @@ public class BuffAttack : Action
         this.buffValue = _buffValue;
         this.animation = _animation;
         this.validTargets = new string[] { "Friend" };
+        this.virtueValue = _effectDuration * _buffValue;
         this.IMAGEPATH = "UI/UI_buff";
     }
     public override void Execute()
@@ -108,11 +112,12 @@ public class Heal : Action
         this.healValue = _healValue;
         this.animation = _animation;
         this.validTargets = new string[] { "Friend" };
+        this.virtueValue = _healValue;
         this.IMAGEPATH = "UI/UI_buff";
     }
     public override void Execute()
     {
-        this.target.GetComponent<Fighter>().AddToHealth(this.healValue);
+        this.virtueValue = Mathf.RoundToInt(this.target.GetComponent<Fighter>().AddToHealth(this.healValue));
     }
     public override float GetValue()
     {
@@ -130,12 +135,13 @@ public class PoisonAttack : Action
         this.poisonDamage = _poisonDamage;
         this.animation = _animation;
         this.validTargets = new string[] { "Foe" };
+        this.virtueValue = _effectDuration * _poisonDamage;
         this.IMAGEPATH = "UI/UI_attack";
         
     }
     public override void Execute()
     {
-        Effect poison = new Poison(this.effectDuration, this.poisonDamage);
+        Effect poison = new Poison(this.effectDuration, this.poisonDamage, this.originator);
         this.target.GetComponent<Fighter>().AddEffect(poison);
     }
     public override float GetValue()

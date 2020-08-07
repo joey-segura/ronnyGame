@@ -18,6 +18,8 @@ public class Being : MonoBehaviour
 
     public bool interactable = false;
 
+    protected bool isHovering = false;
+
     public int ID { get; set; }
 
     public string beingData;
@@ -155,6 +157,14 @@ public class Being : MonoBehaviour
         {
             gameMasterScript.RemoveBeingFromList(ID);
         }
+    }
+    private void OnMouseEnter()
+    {
+        this.isHovering = true;
+    }
+    private void OnMouseExit()
+    {
+        this.isHovering = false;
     }
     public void Say(string[] text)
     {
