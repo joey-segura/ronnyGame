@@ -195,35 +195,20 @@ public class BattleMaster : Kami
     private IEnumerator PlayerAction()
     {
         this.turn = true;
-        bool decided = false;
-
         GameObject player = this.GetPlayerObject();
-        Fighter fighter = player.GetComponent<Fighter>();
-        fighter.ApplyEffects();
-        fighter.RecalculateActions();
-        GameObject target = null;
+        Ronny ronny = player.GetComponent<Ronny>();
+        ronny.ApplyEffects();
+        ronny.RecalculateActions();
+        ronny.InitializeTurn();
+        List<Action> actionList = ronny.GetActions().ToList<Action>();
         Action action = null;
-
-        while (decided == false)
-        {
-            target = fighter.ChooseTarget(allFighters);
-            if (target != null)
-            {
-                action = fighter.ChooseAction(target);
-            }
-            if (Input.GetKey(KeyCode.Return) && action != null)
-            {
-                decided = true;
-                this.turnCounter++;
-                this.PlayAnimation(action.animation);
-                yield return new WaitForSeconds(action.duration);
-                this.ProcessAction(action);
-                turn = false;
-                StartCoroutine("ProcessAIActions");
-            }
-            yield return new WaitForEndOfFrame();
-        }
-        yield return null;
+        yield return new WaitUntil(() => (action = ronny.Turn(allFighters, actionList)) != null);
+        this.turnCounter++;
+        this.PlayAnimation(action.animation);
+        yield return new WaitForSeconds(action.duration);
+        this.ProcessAction(action);
+        turn = false;
+        StartCoroutine("ProcessAIActions");
     }
     private void ProcessAction(Action action)
     {

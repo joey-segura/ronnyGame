@@ -10,6 +10,13 @@ public class Ronny : Human
 {
     private GameObject target = null;
     public float speed;
+
+    //turn data
+    private GameObject turnTarget = null;
+    private bool drawn = false;
+    private int index = 0;
+    private string relation = null;
+    //end turn data
     public void ChangeSpeed(float newSpeed)
     {
         this.gameObject.GetComponent<playerMovement>().speed = newSpeed;
@@ -45,7 +52,6 @@ public class Ronny : Human
         being.objectID = this.ID;
 
         RonnyJson ronny = new RonnyJson();
-        //
         //! needs to assign RonnyJson values to updated values
         ronny.speed = this.speed;
         ronny.health = this.health;
@@ -60,6 +66,13 @@ public class Ronny : Human
         this.isBattle = true;
         this.GetComponent<playerMovement>().enabled = false;
         this.GetComponent<cameraRotation>().enabled = false;
+    }
+    public void InitializeTurn()
+    {
+        this.turnTarget = null;
+        this.drawn = false;
+        this.index = 0;
+        this.relation = null;
     }
     public override void InjectData(string jsonData)
     {
@@ -89,6 +102,67 @@ public class Ronny : Human
     public override void RecalculateActions()
     {
         this.actionList = new List<Action>();
-        this.actionList.Add(new Attack(3, this.damage, null));
+        this.actionList.Add(new Attack(3, this.damage * this.damageMultiplier, null));
+        this.actionList.Add(new Heal(3, 3, null));
+        this.actionList.Add(new BuffAttack(3, 3, 5, null));
+    }
+    public Action Turn(ListBeingData allFighters, List<Action> actionList)
+    {
+        if (Input.GetKeyDown(KeyCode.RightArrow))
+        {
+            this.index++;
+            if (this.index > (actionList.Count - 1)) this.index = 0;
+            Action newAction = actionList[this.index];
+            if (this.currentAction != null) newAction.target = this.currentAction.target; //pass action.target along if you just choose a new action but have same target
+            this.currentAction = newAction;
+            this.currentAction.originator = this.gameObject;
+            //yield return new WaitUntil(() => Input.GetKeyUp(KeyCode.RightArrow)); // Jank because GetKeyDown Doesn't work in a coroutine
+
+        }
+        else if (Input.GetKeyDown(KeyCode.LeftArrow))
+        {
+            this.index--;
+            if (this.index < 0) this.index = actionList.Count - 1;
+            Action newAction = actionList[this.index];
+            if (this.currentAction != null) newAction.target = this.currentAction.target; //pass action.target along if you just choose a new action but have same target
+            this.currentAction = newAction;
+            this.currentAction.originator = this.gameObject;
+            //yield return new WaitUntil(() => Input.GetKeyUp(KeyCode.LeftArrow));
+        }
+        else if (this.currentAction == null)
+        {
+            this.currentAction = actionList[index];
+            this.currentAction.originator = this.gameObject;
+        }
+        
+        GameObject newTarget = this.ChooseTarget(allFighters);
+        if ((this.turnTarget == null || (newTarget != this.turnTarget)) && newTarget != null)
+        {
+            this.turnTarget = newTarget;
+            this.currentAction.target = this.turnTarget;
+            relation = this.TargetRelationToSelf(newTarget.tag);
+            if (!this.currentAction.IsValidAction(relation) && drawn) this.ToggleCanvas();
+            this.drawn = false;
+        }
+
+        if (this.turnTarget != null && this.currentAction != null && !this.drawn && relation != null && this.currentAction.IsValidAction(relation))
+        {
+            this.drawn = true;
+            StartCoroutine(this.DrawIntentions(this.currentAction));
+        }
+        else if (relation != null && !this.currentAction.IsValidAction(relation) && this.drawn)
+        {
+            this.drawn = false;
+            this.ToggleCanvas();
+        }
+
+        if (Input.GetKey(KeyCode.Return) && relation != null && this.currentAction.IsValidAction(relation))
+        {
+            this.currentAction.target = this.turnTarget;
+            return this.currentAction;
+        } else
+        {
+            return null;
+        }
     }
 }

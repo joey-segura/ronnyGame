@@ -12,7 +12,7 @@ public class Fighter : Being
     protected bool isBattle = false;
     
     public string[] party;
-    private Action currentAction = null;
+    protected Action currentAction = null;
     private List<Effect> currentEffects = new List<Effect>();
     protected List<Action> actionList = new List<Action>();
     //public Canvas canvas;
@@ -70,6 +70,7 @@ public class Fighter : Being
             {
                 action.originator = this.gameObject;
                 action.target = target;
+                this.SetAction(action);
                 valid = true;
             }
         }
@@ -128,12 +129,12 @@ public class Fighter : Being
             return;
         }
     }
-    private IEnumerator DrawIntentions(Action action)
+    public IEnumerator DrawIntentions(Action action)
     {
         yield return new WaitForEndOfFrame(); //waiting a frame to make sure data is settled before we do this call (Not a fan)
-        this.currentAction = action;
+        //this.currentAction = action;
         Debug.Log($"{action.originator.name} is doing the action {action.name} to {action.target.name}");
-        this.ToggleCanvas();
+        if (!this.canvas.gameObject.activeInHierarchy) this.ToggleCanvas();
         Image intention = null;
         Image direction = null;
         GameObject panel = canvas.transform.GetChild(0).gameObject;
@@ -208,9 +209,17 @@ public class Fighter : Being
             }
         }
     }
+    public void SetAction(Action action)
+    {
+        this.currentAction = action;
+    }
     public void SetHealth(float health)
     {
         this.health = health;
+    }
+    public List<Action> GetActions()
+    {
+        return this.actionList;
     }
     public Action GetIntention(ListBeingData allFighters)
     {
@@ -224,7 +233,6 @@ public class Fighter : Being
         GameObject target = this.ChooseTarget(allFighters);
         Action action = this.ChooseAction(target);
         this.StartCoroutine("DrawIntentions", action);
-        Debug.DrawLine(action.originator.transform.position, action.target.transform.position, Color.red, 10);
         return action;
     }
     public string[] GetParty()
@@ -238,7 +246,7 @@ public class Fighter : Being
             return party;
         }
     }
-    private string TargetRelationToSelf(string targetTag)
+    public string TargetRelationToSelf(string targetTag)
     {
         if (this.gameObject.tag == "Party" && targetTag == "Player")
         {
