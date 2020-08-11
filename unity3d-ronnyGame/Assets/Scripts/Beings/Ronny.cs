@@ -1,7 +1,5 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
 using UnityEngine;
 
 public class RonnyJson
@@ -22,13 +20,6 @@ public class Ronny : Human
     public void ChangeSpeed(float newSpeed)
     {
         this.gameObject.GetComponent<playerMovement>().speed = newSpeed;
-    }
-    public override Action ChooseAction(GameObject target)
-    {
-        Action action = this.actionList[0]; //replace this with a function that lets you choose what action you want to do
-        action.originator = this.gameObject;
-        action.target = target;
-        return action;
     }
     public override GameObject ChooseTarget(ListBeingData allFighters)
     {
@@ -63,10 +54,6 @@ public class Ronny : Human
         being.jsonData = JsonUtility.ToJson(ronny);
 
         return JsonUtility.ToJson(being);
-    }
-    public GameObject GetTurnTarget()
-    {
-        return this.turnTarget;
     }
     public override void InitializeBattle()
     {
@@ -127,14 +114,6 @@ public class Ronny : Human
         }
         return null;
     }
-    public IEnumerator test ()
-    {
-        this.turnTarget = null;
-        GameObject target = null;
-        Debug.Log("Select them");
-        yield return new WaitUntil(() => (target = this.ReturnChoosenGameObject()) != null);
-        this.turnTarget = target;
-    }
     private void SetNewAction(Action action)
     {
         if (this.currentAction != null)
@@ -143,6 +122,7 @@ public class Ronny : Human
         }
         action.originator = this.gameObject;
         this.currentAction = action;
+        this.transform.GetComponentInParent<BattleMaster>().SetActionText(action.name);
     }
     public Action Turn(ListBeingData allFighters, List<Action> actionList)
     {

@@ -8,6 +8,8 @@ public class Human : Fighter
 
     public void AddToVirtue(int value)
     {
+        BattleMaster bm = transform.GetComponentInParent<BattleMaster>();
+        if (bm.isBattle) bm.UpdateVirtueText(value);
         this.virtue += value;
         if (this.virtue < 0)
         {

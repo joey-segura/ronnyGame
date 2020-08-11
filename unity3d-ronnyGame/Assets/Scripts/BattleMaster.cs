@@ -1,13 +1,14 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using System.Linq;
 
 public class BattleMaster : Kami
 {
     private bool turn;
-    private bool isBattle = false;
+    public bool isBattle = false;
     private int enemyID { get; set; }
     private int turnCounter;
     private List<Action> intentions = new List<Action>();
@@ -17,6 +18,12 @@ public class BattleMaster : Kami
 
     private string worldSceneName;
     private string battleSceneName;
+
+    [SerializeField]
+    private Canvas canvas;
+    [SerializeField]
+    private Text virtue, action;
+    private int virtueValue = 0, virtueMax = -1;
 
     public void AddFighter(BeingData being)
     {
@@ -45,6 +52,10 @@ public class BattleMaster : Kami
         {
             return;
         } 
+    }
+    private void CalculateVirtueMax()
+    {
+
     }
     private static int CompareActionsByOriginatorTag(Action x, Action y)
     {
@@ -78,6 +89,7 @@ public class BattleMaster : Kami
             //yield return StartCoroutine(WaitForKeyDown());
             this.DestroyAllFighters();
             this.RemoveMemberReferenceInGameMasterByID(this.enemyID); //destroy the enemy reference before we load back in
+            this.canvas.gameObject.SetActive(false);
             gameMaster.isSceneChanging = true;
             this.intentions = new List<Action>();
             this.allFighters = new ListBeingData();
@@ -145,6 +157,9 @@ public class BattleMaster : Kami
         this.turnCounter = 0;
         this.InitializeFighters();
         this.MoveCameraTo(1.4f, 4, -6);
+        this.CalculateVirtueMax();
+        this.UpdateVirtueText(0);
+        this.canvas.gameObject.SetActive(true);
         this.isBattle = true;
         this.NewTurn();
     }
@@ -289,10 +304,15 @@ public class BattleMaster : Kami
     {
         gameMaster.RemoveBeingFromList(ID);
     }
+    public void SetActionText(string text)
+    {
+        action.text = $"Action: {text}";
+    }
     public void SetEnemyID(int ID)
     {
         this.enemyID = ID;
     } 
+    
     private void UpdateBothPartiesFromAllFigthers()
     {
         ListBeingData allyMembers = new ListBeingData();
@@ -309,5 +329,10 @@ public class BattleMaster : Kami
             }
         }
         this.FillMembers(allyMembers, foeMembers);
+    }
+    public void UpdateVirtueText(int increase)
+    {
+        this.virtueValue += increase;
+        this.virtue.text = $"{virtueValue}/{this.virtueMax}";
     }
 }
