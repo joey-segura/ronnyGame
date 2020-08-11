@@ -10,7 +10,7 @@ public class BattleMaster : Kami
     private bool isBattle = false;
     private int enemyID { get; set; }
     private int turnCounter;
-    private List<Action> aiActions = new List<Action>();
+    private List<Action> intentions = new List<Action>();
     public ListBeingData allFighters = new ListBeingData();
     public ListBeingData partyMembers = new ListBeingData();
     public ListBeingData enemyMembers = new ListBeingData();
@@ -79,7 +79,7 @@ public class BattleMaster : Kami
             this.DestroyAllFighters();
             this.RemoveMemberReferenceInGameMasterByID(this.enemyID); //destroy the enemy reference before we load back in
             gameMaster.isSceneChanging = true;
-            this.aiActions = new List<Action>();
+            this.intentions = new List<Action>();
             this.allFighters = new ListBeingData();
             this.partyMembers = new ListBeingData();
             this.enemyMembers = new ListBeingData();
@@ -177,8 +177,8 @@ public class BattleMaster : Kami
     }
     private void NewTurn()
     {
-        aiActions = new List<Action>();
-        aiActions = this.GetIntentions();
+        intentions = new List<Action>();
+        intentions = this.GetIntentions();
         StartCoroutine("PlayerAction");
     }
     private void PlayAnimation(Animation anim)
@@ -206,37 +206,50 @@ public class BattleMaster : Kami
         this.turnCounter++;
         this.PlayAnimation(action.animation);
         yield return new WaitForSeconds(action.duration);
-        this.ProcessAction(action);
+        CoroutineWithData cd = new CoroutineWithData(this, this.ProcessAction(action));
+        while (!cd.finished)
+        {
+            yield return new WaitForEndOfFrame();
+        }
         turn = false;
         StartCoroutine("ProcessAIActions");
     }
-    private void ProcessAction(Action action)
+    private IEnumerator ProcessAction(Action action)
     {
         if (action.target != null)
         {
             Debug.Log($"{action.originator.name} just used {action.name} on {action.target.name} for {action.GetValue()} whatever!");
-            action.Execute();
+            CoroutineWithData cd = new CoroutineWithData(this, action.Execute());
+            while (!cd.finished)
+            {
+                yield return new WaitForEndOfFrame();
+            }
             float damage = action.GetValue();
             if (damage != 0 && action.originator.tag == "Party")
             {
                 action.originator.GetComponent<Human>().AddToVirtue(action.virtueValue);
                 Debug.Log($"{action.originator.name}'s virtue got changed by {Mathf.Round(damage / 3)}");
-            } 
+            }
+            yield return true;
+        } else
+        {
+           yield return true;
         }
     }
     public IEnumerator ProcessAIActions()
     {
-        yield return new WaitForEndOfFrame(); //
-        for (int i = 0; i < aiActions.Count; i++)
+        yield return new WaitForEndOfFrame(); //waiting for action data to settle in case Ronny(player) influences an AI's action
+        for (int i = 0; i < intentions.Count; i++)
         {
-            if (aiActions[i].originator != null)
+            if (intentions[i].originator != null)
             {
-                Action action = aiActions[i];
+                Fighter fighter = intentions[i].originator.GetComponent<Fighter>();
+                Action action = fighter.GetCurrentAction(); //gets current action instead of playing intention incase ronny influences it
                 this.PlayAnimation(action.animation);
                 Debug.Log($"{action.originator.name}'s turn!");
                 yield return new WaitForSeconds(action.duration);
-                action.originator.GetComponent<Fighter>().ToggleCanvas();
-                this.ProcessAction(action);
+                fighter.ToggleCanvas();
+                StartCoroutine("ProcessAction", action);
             }
         }
         this.NewTurn();

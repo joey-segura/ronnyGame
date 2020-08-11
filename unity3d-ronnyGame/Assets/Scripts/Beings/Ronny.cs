@@ -1,5 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 using UnityEngine;
 
 public class RonnyJson
@@ -12,7 +14,7 @@ public class Ronny : Human
     public float speed;
 
     //turn data
-    private GameObject turnTarget = null;
+    public GameObject turnTarget = null;
     private bool drawn = false;
     private int index = 0;
     private string relation = null;
@@ -41,6 +43,7 @@ public class Ronny : Human
         }
         return this.target;
     }
+  
     public override string CompactBeingDataIntoJson()
     {
         BeingData being = JsonUtility.FromJson<BeingData>(this.beingData);
@@ -60,6 +63,10 @@ public class Ronny : Human
         being.jsonData = JsonUtility.ToJson(ronny);
 
         return JsonUtility.ToJson(being);
+    }
+    public GameObject GetTurnTarget()
+    {
+        return this.turnTarget;
     }
     public override void InitializeBattle()
     {
@@ -105,6 +112,37 @@ public class Ronny : Human
         this.actionList.Add(new Attack(3, this.damage * this.damageMultiplier, null));
         this.actionList.Add(new Heal(3, 3, null));
         this.actionList.Add(new BuffAttack(3, 3, 5, null));
+        this.actionList.Add(new CommandToAttack(3, null));
+    }
+    public GameObject ReturnChoosenGameObject()
+    {
+        if (Input.GetKey(KeyCode.Mouse0))
+        {
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            RaycastHit hit;
+            if (Physics.Raycast(ray, out hit, 25))
+            {
+                return hit.collider.gameObject;
+            }
+        }
+        return null;
+    }
+    public IEnumerator test ()
+    {
+        this.turnTarget = null;
+        GameObject target = null;
+        Debug.Log("Select them");
+        yield return new WaitUntil(() => (target = this.ReturnChoosenGameObject()) != null);
+        this.turnTarget = target;
+    }
+    private void SetNewAction(Action action)
+    {
+        if (this.currentAction != null)
+        {
+            action.target = this.currentAction.target;
+        }
+        action.originator = this.gameObject;
+        this.currentAction = action;
     }
     public Action Turn(ListBeingData allFighters, List<Action> actionList)
     {
@@ -112,27 +150,17 @@ public class Ronny : Human
         {
             this.index++;
             if (this.index > (actionList.Count - 1)) this.index = 0;
-            Action newAction = actionList[this.index];
-            if (this.currentAction != null) newAction.target = this.currentAction.target; //pass action.target along if you just choose a new action but have same target
-            this.currentAction = newAction;
-            this.currentAction.originator = this.gameObject;
-            //yield return new WaitUntil(() => Input.GetKeyUp(KeyCode.RightArrow)); // Jank because GetKeyDown Doesn't work in a coroutine
-
+            this.SetNewAction(this.actionList[this.index]);
         }
         else if (Input.GetKeyDown(KeyCode.LeftArrow))
         {
             this.index--;
             if (this.index < 0) this.index = actionList.Count - 1;
-            Action newAction = actionList[this.index];
-            if (this.currentAction != null) newAction.target = this.currentAction.target; //pass action.target along if you just choose a new action but have same target
-            this.currentAction = newAction;
-            this.currentAction.originator = this.gameObject;
-            //yield return new WaitUntil(() => Input.GetKeyUp(KeyCode.LeftArrow));
+            this.SetNewAction(this.actionList[this.index]);
         }
         else if (this.currentAction == null)
         {
-            this.currentAction = actionList[index];
-            this.currentAction.originator = this.gameObject;
+            this.SetNewAction(this.actionList[this.index]);
         }
         
         GameObject newTarget = this.ChooseTarget(allFighters);

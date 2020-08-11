@@ -15,7 +15,6 @@ public class Fighter : Being
     protected Action currentAction = null;
     private List<Effect> currentEffects = new List<Effect>();
     protected List<Action> actionList = new List<Action>();
-    //public Canvas canvas;
 
     public virtual void Awake()
     {
@@ -70,7 +69,7 @@ public class Fighter : Being
             {
                 action.originator = this.gameObject;
                 action.target = target;
-                this.SetAction(action);
+                this.currentAction = action;
                 valid = true;
             }
         }
@@ -132,7 +131,6 @@ public class Fighter : Being
     public IEnumerator DrawIntentions(Action action)
     {
         yield return new WaitForEndOfFrame(); //waiting a frame to make sure data is settled before we do this call (Not a fan)
-        //this.currentAction = action;
         Debug.Log($"{action.originator.name} is doing the action {action.name} to {action.target.name}");
         if (!this.canvas.gameObject.activeInHierarchy) this.ToggleCanvas();
         Image intention = null;
@@ -162,6 +160,7 @@ public class Fighter : Being
         
         direction.transform.rotation = Quaternion.Euler(new Vector3(direction.transform.rotation.eulerAngles.x, direction.transform.rotation.eulerAngles.y, angle));
         direction.transform.position = Vector3.MoveTowards(self, target, Vector3.Distance(self, target) / 2);
+        direction.transform.position += new Vector3(0, -.35f, 0);
         direction.rectTransform.sizeDelta = new Vector2(direction.rectTransform.sizeDelta.x, Vector3.Distance(target, self));
         /*Color tempColor = direction.color; //Might be necessary?
         tempColor.a = .1f;
@@ -212,6 +211,7 @@ public class Fighter : Being
     public void SetAction(Action action)
     {
         this.currentAction = action;
+        StartCoroutine("DrawIntentions", action);
     }
     public void SetHealth(float health)
     {
@@ -220,6 +220,10 @@ public class Fighter : Being
     public List<Action> GetActions()
     {
         return this.actionList;
+    }
+    public Action GetCurrentAction()
+    {
+        return this.currentAction;
     }
     public Action GetIntention(ListBeingData allFighters)
     {

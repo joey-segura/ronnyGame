@@ -25,6 +25,8 @@ public class Human : Fighter
     }
     public int GetLevel()
     {
+        //int i = this.virtue;
+        //Mathf.Abs(Mathf.Ceil(((i < 55 ? i : Mathf.Abs(i - 100)) - 4) / 10));
         int virtue = this.virtue;
         
         if ((virtue >= 0 && virtue <= 4) || (virtue >= 96 && virtue <= 100))
