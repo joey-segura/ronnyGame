@@ -11,8 +11,8 @@ public class Being : MonoBehaviour
     // InjectData(string jsonData) <- instantiates individual class data (jsonData should be in class format)
     // Interact() <- no return value
 
-    GameObject Kami;
-    GameMaster gameMasterScript;
+    protected GameObject Kami;
+    protected GameMaster gameMasterScript;
 
     private bool debugMode = false;
 
@@ -101,7 +101,6 @@ public class Being : MonoBehaviour
         cam = Camera.main;
         Kami = this.gameObject.transform.parent.gameObject;
         gameMasterScript = Kami.GetComponent<GameMaster>();
-        
     }
     public void ChangeTransparancy(float alpha = .7f)
     {

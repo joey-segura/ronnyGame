@@ -23,7 +23,7 @@ public class BattleMaster : Kami
     private Canvas canvas;
     [SerializeField]
     private Text virtue, action;
-    private int virtueValue = 0, virtueMax = -1;
+    private int virtueValue = 0, virtueMax = 0;
 
     public void AddFighter(BeingData being)
     {
@@ -55,7 +55,27 @@ public class BattleMaster : Kami
     }
     private void CalculateVirtueMax()
     {
+        int partyMember = 0;
+        int enemies = 0;
+        for (int i = 0; i < allFighters.BeingDatas.Count; i++)
+        {
+            switch (allFighters.BeingDatas[i].gameObject.tag)
+            {
+                case "Party":
+                    Fighter fighter = allFighters.BeingDatas[i].gameObject.GetComponent<Fighter>();
+                    partyMember += Mathf.RoundToInt(((fighter.health / 2) + fighter.damage) / 3);
+                    break;
+                case "Enemy":
+                    Fighter enemy = allFighters.BeingDatas[i].gameObject.GetComponent<Fighter>();
+                    enemies += Mathf.RoundToInt((enemy.health + enemy.damage) / 2);
+                    break;
+                default:
+                    break;
 
+            }
+        }
+        Debug.Log($"party ->{partyMember} and then enemies{enemies}");
+        this.virtueMax = Mathf.RoundToInt((enemies * 2) / partyMember);
     }
     private static int CompareActionsByOriginatorTag(Action x, Action y)
     {
@@ -242,8 +262,7 @@ public class BattleMaster : Kami
             float damage = action.GetValue();
             if (damage != 0 && action.originator.tag == "Party")
             {
-                action.originator.GetComponent<Human>().AddToVirtue(action.virtueValue);
-                Debug.Log($"{action.originator.name}'s virtue got changed by {Mathf.Round(damage / 3)}");
+                action.originator.GetComponent<Human>().AddToVirtue(Mathf.RoundToInt(Mathf.Abs(action.virtueValue) / 3));
             }
             yield return true;
         } else
@@ -333,6 +352,6 @@ public class BattleMaster : Kami
     public void UpdateVirtueText(int increase)
     {
         this.virtueValue += increase;
-        this.virtue.text = $"{virtueValue}/{this.virtueMax}";
+        this.virtue.text = $"Virtue expectation: {virtueValue}/{this.virtueMax}";
     }
 }

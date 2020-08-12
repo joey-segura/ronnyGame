@@ -41,7 +41,7 @@ public class Poison : Effect
     public override void Affliction(Fighter fighter)
     {
         fighter.isPoisoned = true;
-        int virtue = Mathf.RoundToInt(fighter.AddToHealth(this.poisonDamage * -1));
+        int virtue = Mathf.RoundToInt(fighter.AddToHealth(this.poisonDamage * -1) / 3);
         if (causer.tag == "Party")
         {
             causer.GetComponent<Human>().AddToVirtue(virtue);
