@@ -44,7 +44,7 @@ public class Poison : Effect
         int virtue = Mathf.RoundToInt(fighter.AddToHealth(this.poisonDamage * -1) / 3);
         if (causer.tag == "Party")
         {
-            causer.GetComponent<Human>().AddToVirtue(virtue);
+            causer.GetComponentInParent<BattleMaster>().AddToVirtue(virtue);
         }
     }
     public override void Cleanse(Fighter fighter)

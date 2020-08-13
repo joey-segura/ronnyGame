@@ -21,13 +21,9 @@ public class Ritter : Human
             ronny = this.GetRonny();
         }
     }
-    public override Action ChooseAction(GameObject target)
+    public override Action TurnAction(ListBeingData allFighters)
     {
-        return base.ChooseAction(target);
-    }
-    public override GameObject ChooseTarget(ListBeingData allFighters)
-    {
-        return base.ChooseTarget(allFighters);
+        return base.TurnAction(allFighters);
     }
     public override string CompactBeingDataIntoJson()
     {
@@ -63,8 +59,8 @@ public class Ritter : Human
     }
     public override void InitializeBattle()
     {
-        this.isBattle = true;
         this.speed = 0;
+        base.InitializeBattle();
     }
     public override void InjectData(string jsonData)
     {
@@ -93,7 +89,6 @@ public class Ritter : Human
     public override void RecalculateActions()
     {
         this.actionList = new List<Action>();
-        this.actionList.Add(new Attack(3, this.damage * this.damageMultiplier, null));
         this.actionList.Add(new Attack(3, this.damage * this.damageMultiplier, null));
         this.actionList.Add(new WeakAttack(3, 3, 2, null));
         this.actionList.Add(new BuffAttack(3, 3, 2, null));

@@ -34,6 +34,15 @@ public class BattleMaster : Kami
         worldSceneName = sceneMaster.GetCurrentSceneName();
         battleSceneName = sceneMaster.GetBattleSceneName(worldSceneName);
     }
+    public void AddToVirtue(int value)
+    {
+        if (value < 1)
+        {
+            value = 1;
+        }
+        this.virtueValue += value;
+        UpdateVirtueText(this.virtueValue);
+    }
     public void BattleEndCheck()
     {
         if (partyMembers.BeingDatas.Count == 0)
@@ -42,7 +51,7 @@ public class BattleMaster : Kami
             StartCoroutine("EndBattle", false);
             //load save data because you died
             return;
-        } else  if (enemyMembers.BeingDatas.Count == 0)
+        } else if (enemyMembers.BeingDatas.Count == 0)
         {
             isBattle = false;
             StartCoroutine("EndBattle", true);
@@ -51,7 +60,7 @@ public class BattleMaster : Kami
         } else
         {
             return;
-        } 
+        }
     }
     private void CalculateVirtueMax()
     {
@@ -105,10 +114,13 @@ public class BattleMaster : Kami
             //play victory animations and ui and stuff
             Debug.Log("Victory!");
             yield return new WaitForSeconds(1);
+            SubmitVirtueToAlly(this.virtueValue);
             //victory UI (rewards?) wait on click to load back to normal scene but till now we will just force our way back
             //yield return StartCoroutine(WaitForKeyDown());
             this.DestroyAllFighters();
             this.RemoveMemberReferenceInGameMasterByID(this.enemyID); //destroy the enemy reference before we load back in
+            Destroy(Camera.main.gameObject);
+            StopAllCoroutines();
             this.canvas.gameObject.SetActive(false);
             gameMaster.isSceneChanging = true;
             this.intentions = new List<Action>();
@@ -129,7 +141,7 @@ public class BattleMaster : Kami
         }
         yield return null;
     }
-    public void FillMembers(ListBeingData ronnyParty, ListBeingData enemyParty) 
+    public void FillMembers(ListBeingData ronnyParty, ListBeingData enemyParty)
     {
         partyMembers = ronnyParty;
         enemyMembers = enemyParty;
@@ -138,7 +150,7 @@ public class BattleMaster : Kami
     {
         List<Action> actions = new List<Action>();
 
-        for (int i = 0; i < allFighters.BeingDatas.Count; i ++)
+        for (int i = 0; i < allFighters.BeingDatas.Count; i++)
         {
             if (allFighters.BeingDatas[i].gameObject.tag != "Player")
             {
@@ -152,7 +164,7 @@ public class BattleMaster : Kami
     private GameObject GetPlayerObject()
     {
         GameObject player = null;
-        for(int i = 0; i < allFighters.BeingDatas.Count; i++)
+        for (int i = 0; i < allFighters.BeingDatas.Count; i++)
         {
             if (allFighters.BeingDatas[i].gameObject.tag == "Player")
             {
@@ -164,7 +176,7 @@ public class BattleMaster : Kami
     public void InitializeBattle(ListBeingData partyMembers, ListBeingData enemyMembers)
     {
         this.AssignScenes();
-        for(int i = 0; i < partyMembers.BeingDatas.Count; i++)
+        for (int i = 0; i < partyMembers.BeingDatas.Count; i++)
         {
             partyMembers.BeingDatas[i].location = new Vector3(-1.45f, .4f, -1.5f + (1.5f * i));
         }
@@ -175,6 +187,7 @@ public class BattleMaster : Kami
         this.FillMembers(partyMembers, enemyMembers);
         sceneMaster.ChangeScene(this.battleSceneName);
         this.turnCounter = 0;
+        this.virtueValue = 0;
         this.InitializeFighters();
         this.MoveCameraTo(1.4f, 4, -6);
         this.CalculateVirtueMax();
@@ -208,7 +221,8 @@ public class BattleMaster : Kami
     private void MoveCameraTo(float x, float y, float z)
     {
         Camera cam = Camera.main;
-        cam.transform.position += new Vector3(x,y,z);
+        cam.transform.position += new Vector3(x, y, z);
+        cam.transform.parent = this.transform;
     }
     private void NewTurn()
     {
@@ -239,6 +253,8 @@ public class BattleMaster : Kami
         Action action = null;
         yield return new WaitUntil(() => (action = ronny.Turn(allFighters, actionList)) != null);
         this.turnCounter++;
+        ronny.ToggleCanvas();
+        ronny.StartCoroutine("BattleMove");
         this.PlayAnimation(action.animation);
         yield return new WaitForSeconds(action.duration);
         CoroutineWithData cd = new CoroutineWithData(this, this.ProcessAction(action));
@@ -246,14 +262,15 @@ public class BattleMaster : Kami
         {
             yield return new WaitForEndOfFrame();
         }
+        ronny.StartCoroutine("MoveToBattlePosition");
         turn = false;
         StartCoroutine("ProcessAIActions");
     }
     private IEnumerator ProcessAction(Action action)
     {
-        if (action.target != null)
+        if (action.targets != null)
         {
-            Debug.Log($"{action.originator.name} just used {action.name} on {action.target.name} for {action.GetValue()} whatever!");
+            Debug.Log($"{action.originator.name} just used {action.name} on {action.targets[0].name} for {action.GetValue()} whatever!");
             CoroutineWithData cd = new CoroutineWithData(this, action.Execute());
             while (!cd.finished)
             {
@@ -262,12 +279,13 @@ public class BattleMaster : Kami
             float damage = action.GetValue();
             if (damage != 0 && action.originator.tag == "Party")
             {
-                action.originator.GetComponent<Human>().AddToVirtue(Mathf.RoundToInt(Mathf.Abs(action.virtueValue) / 3));
+                Debug.Log($"Local Virtue increased by {Mathf.RoundToInt(Mathf.Abs(action.virtueValue) / 3)}");
+                this.AddToVirtue(Mathf.RoundToInt(Mathf.Abs(action.virtueValue) / 3));
             }
             yield return true;
         } else
         {
-           yield return true;
+            yield return true;
         }
     }
     public IEnumerator ProcessAIActions()
@@ -278,14 +296,22 @@ public class BattleMaster : Kami
             if (intentions[i].originator != null)
             {
                 Fighter fighter = intentions[i].originator.GetComponent<Fighter>();
-                Action action = fighter.GetCurrentAction(); //gets current action instead of playing intention incase ronny influences it
-                this.PlayAnimation(action.animation);
-                Debug.Log($"{action.originator.name}'s turn!");
-                yield return new WaitForSeconds(action.duration);
-                fighter.ToggleCanvas();
-                StartCoroutine("ProcessAction", action);
+                fighter.ApplyEffects();
+                if (fighter != null)
+                {
+                    fighter.RecalculateActions();
+                    Action action = fighter.GetCurrentAction(); //gets current action instead of playing intention incase ronny influences it
+                    this.PlayAnimation(action.animation);
+                    Debug.Log($"{action.originator.name}'s turn!");
+                    fighter.ToggleCanvas();
+                    fighter.StartCoroutine("BattleActionMove", action);
+                    yield return new WaitForSeconds(action.duration);
+
+                    StartCoroutine("ProcessAction", action);
+                }
             }
         }
+        yield return new WaitForSeconds(1); // wait 1 second for new turn to start!;
         this.NewTurn();
         yield return null;
     }
@@ -330,8 +356,17 @@ public class BattleMaster : Kami
     public void SetEnemyID(int ID)
     {
         this.enemyID = ID;
-    } 
-    
+    }
+    private void SubmitVirtueToAlly(int virtue)
+    {
+        for (int i = 0; i < allFighters.BeingDatas.Count; i++)
+        {
+            if (allFighters.BeingDatas[i].gameObject.tag == "Party")
+            {
+                allFighters.BeingDatas[i].gameObject.GetComponent<Human>().AddToVirtue(virtue);
+            }
+        }
+    }
     private void UpdateBothPartiesFromAllFigthers()
     {
         ListBeingData allyMembers = new ListBeingData();
@@ -351,7 +386,6 @@ public class BattleMaster : Kami
     }
     public void UpdateVirtueText(int increase)
     {
-        this.virtueValue += increase;
         this.virtue.text = $"Virtue expectation: {virtueValue}/{this.virtueMax}";
     }
 }

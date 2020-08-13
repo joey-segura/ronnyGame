@@ -17,6 +17,27 @@ public class Ronny : Human
     private int index = 0;
     private string relation = null;
     //end turn data
+
+    public IEnumerator BattleMove()
+    {
+        float distance = 0;
+        if (this.transform.position.x > 0)
+        {
+            distance = -.25f;
+        }
+        else
+        {
+            distance = .25f;
+        }
+        Vector3 newPos = new Vector3(this.transform.position.x + distance, this.transform.position.y, this.transform.position.z);
+
+        while (this.transform.position != newPos)
+        {
+            this.transform.position = Vector3.MoveTowards(this.transform.position, newPos, .01f);
+            yield return new WaitForEndOfFrame();
+        }
+    }
+    
     public void ChangeSpeed(float newSpeed)
     {
         this.gameObject.GetComponent<playerMovement>().speed = newSpeed;
@@ -57,12 +78,13 @@ public class Ronny : Human
     }
     public override void InitializeBattle()
     {
-        this.isBattle = true;
         this.GetComponent<playerMovement>().enabled = false;
         this.GetComponent<cameraRotation>().enabled = false;
+        base.InitializeBattle();
     }
     public void InitializeTurn()
     {
+        this.currentAction = null;
         this.turnTarget = null;
         this.drawn = false;
         this.index = 0;
@@ -92,6 +114,14 @@ public class Ronny : Human
     {
         
     }
+    public IEnumerator MoveToBattlePosition()
+    {
+        while (this.transform.position != this.battlePosition)
+        {
+            this.transform.position = Vector3.MoveTowards(this.transform.position, this.battlePosition, .01f);
+            yield return new WaitForEndOfFrame();
+        }
+    }
 
     public override void RecalculateActions()
     {
@@ -118,7 +148,7 @@ public class Ronny : Human
     {
         if (this.currentAction != null)
         {
-            action.target = this.currentAction.target;
+            action.targets = this.currentAction.targets;
         }
         action.originator = this.gameObject;
         this.currentAction = action;
@@ -143,30 +173,36 @@ public class Ronny : Human
             this.SetNewAction(this.actionList[this.index]);
         }
         
-        GameObject newTarget = this.ChooseTarget(allFighters);
-        if ((this.turnTarget == null || (newTarget != this.turnTarget)) && newTarget != null)
+        if (this.currentAction.IsActionAOE())
         {
-            this.turnTarget = newTarget;
-            this.currentAction.target = this.turnTarget;
-            relation = this.TargetRelationToSelf(newTarget.tag);
-            if (!this.currentAction.IsValidAction(relation) && drawn) this.ToggleCanvas();
-            this.drawn = false;
-        }
+            this.currentAction.GetAOETargets(allFighters);
+        } else
+        {
+            GameObject newTarget = this.ChooseTarget(allFighters);
+            if ((this.turnTarget == null || (newTarget != this.turnTarget)) && newTarget != null)
+            {
+                this.turnTarget = newTarget;
+                this.currentAction.targets = new GameObject[] { this.turnTarget };
+                relation = this.TargetRelationToSelf(newTarget.tag);
+                if (!this.currentAction.IsValidAction(relation) && drawn) this.ToggleCanvas();
+                this.drawn = false;
+            }
 
-        if (this.turnTarget != null && this.currentAction != null && !this.drawn && relation != null && this.currentAction.IsValidAction(relation))
-        {
-            this.drawn = true;
-            StartCoroutine(this.DrawIntentions(this.currentAction));
+            if (this.turnTarget != null && this.currentAction != null && !this.drawn && relation != null && this.currentAction.IsValidAction(relation))
+            {
+                this.drawn = true;
+                StartCoroutine(this.DrawIntentions(this.currentAction));
+            }
+            else if (relation != null && !this.currentAction.IsValidAction(relation) && this.drawn)
+            {
+                this.drawn = false;
+                this.ToggleCanvas();
+            }
         }
-        else if (relation != null && !this.currentAction.IsValidAction(relation) && this.drawn)
-        {
-            this.drawn = false;
-            this.ToggleCanvas();
-        }
+        
 
         if (Input.GetKey(KeyCode.Return) && relation != null && this.currentAction.IsValidAction(relation))
         {
-            this.currentAction.target = this.turnTarget;
             return this.currentAction;
         } else
         {

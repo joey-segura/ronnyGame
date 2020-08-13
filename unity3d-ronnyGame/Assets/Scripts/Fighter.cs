@@ -16,6 +16,8 @@ public class Fighter : Being
     private List<Effect> currentEffects = new List<Effect>();
     protected List<Action> actionList = new List<Action>();
 
+    protected Vector3 battlePosition;
+
     public virtual void Awake()
     {
         Invoke("InititializeBaseActions", 1);
@@ -56,19 +58,70 @@ public class Fighter : Being
             }
         }
     }
-    public virtual Action ChooseAction(GameObject target)
+    public IEnumerator BattleActionMove(Action action)
     {
+        float distance = 0;
+        if (this.transform.position.x > 0)
+        {
+            distance = -.25f;
+        }
+        else
+        {
+            distance = .25f;
+        }
+        Vector3 newPos = new Vector3(this.transform.position.x + distance, this.transform.position.y, this.transform.position.z);
+
+        while (this.transform.position != newPos)
+        {
+            this.transform.position = Vector3.MoveTowards(this.transform.position, newPos, .01f);
+            yield return new WaitForEndOfFrame();
+        }
+        yield return new WaitForSeconds(action.duration);
+        while (this.transform.position != battlePosition)
+        {
+            this.transform.position = Vector3.MoveTowards(this.transform.position, this.battlePosition, .01f);
+            yield return new WaitForEndOfFrame();
+        }
+    }
+    public virtual Action TurnAction(ListBeingData allFighters)
+    {
+        this.RecalculateActions();
         Action action = null;
-        string relation = this.TargetRelationToSelf(target.tag);
+        string relation = null;
         bool valid = false;
         while (!valid)
         {
             int actionIndex = Random.Range(0, this.actionList.Count);
             action = this.actionList[actionIndex]; //random action for enemy and friendly units
-            if (action.IsValidAction(relation))
+            action.originator = this.gameObject;
+            if (action.IsActionAOE())
             {
-                action.originator = this.gameObject;
-                action.target = target;
+                action.targets = action.GetAOETargets(allFighters);
+                this.currentAction = action;
+                valid = true;
+            } else
+            {
+                GameObject target = null;
+                bool validTarget = false;
+                int attempts = 0;
+                while (!validTarget)
+                {
+                    target = this.ChooseTarget(allFighters);
+                    relation = this.TargetRelationToSelf(target.tag);
+                    if (action.IsValidAction(relation))
+                    {
+                        validTarget = true;
+                    }
+                    if (attempts >= 10) //If no target could be found with valid actions (E.G., a buffer type unit who only has buff friendlies has no more teammates left)
+                    {
+                        return null;
+                    }
+                    else
+                    {
+                        attempts++;
+                    }
+                }
+                action.targets = new GameObject[] { target };
                 this.currentAction = action;
                 valid = true;
             }
@@ -77,28 +130,8 @@ public class Fighter : Being
     }
     public virtual GameObject ChooseTarget(ListBeingData allFighters) //chooses a target at random!
     {
-        GameObject target = null;
-        
-        bool validTarget = false;
-        int attempts = 0;
-        while (!validTarget)
-        {
-            int targetIndex = Random.Range(0, allFighters.BeingDatas.Count);
-            target = allFighters.BeingDatas[targetIndex].gameObject;
-            string relation = this.TargetRelationToSelf(target.tag);
-            if (this.ValidTarget(relation))
-            {
-                validTarget = true;
-            }
-            if (attempts >= 10) //If no target could be found with valid actions (E.G., a buffer type unit who only has buff friendlies has no more teammates left)
-            {
-                return null; 
-            } else
-            {
-                attempts++;
-            }
-        }
-        return target;
+        int targetIndex = Random.Range(0, allFighters.BeingDatas.Count);
+        return allFighters.BeingDatas[targetIndex].gameObject;
     }
     private static int CompareEffectsByDuration(Effect x, Effect y)
     {
@@ -131,7 +164,7 @@ public class Fighter : Being
     public IEnumerator DrawIntentions(Action action)
     {
         yield return new WaitForEndOfFrame(); //waiting a frame to make sure data is settled before we do this call (Not a fan)
-        Debug.Log($"{action.originator.name} is doing the action {action.name} to {action.target.name}");
+        Debug.Log($"{action.originator.name} is doing the action {action.name} to {action.targets[0].name}");
         if (!this.canvas.gameObject.activeInHierarchy) this.ToggleCanvas();
         Image intention = null;
         Image direction = null;
@@ -154,7 +187,7 @@ public class Fighter : Being
         direction.transform.position = action.originator.transform.position;
         direction.transform.rotation = Quaternion.Euler(90, 0, 0);
         Vector3 self = direction.rectTransform.position;
-        Vector3 target = new Vector3(action.target.transform.position.x, direction.rectTransform.position.y, action.target.transform.position.z);
+        Vector3 target = new Vector3(action.targets[0].transform.position.x, direction.rectTransform.position.y, action.targets[0].transform.position.z);
 
         float angle = Vector3.SignedAngle(target - self, transform.forward, Vector3.up);
         
@@ -176,6 +209,7 @@ public class Fighter : Being
     public virtual void InitializeBattle()
     {
         this.isBattle = true;
+        this.battlePosition = this.transform.position;
         return; // this is for any enemy script to disable their movement script once the battle starts
     }
     private void OnGUI()
@@ -184,7 +218,12 @@ public class Fighter : Being
         {
             Vector3 mouse = Input.mousePosition;
             Rect rect = new Rect(mouse.x + 10, (Screen.height - mouse.y + 10), 200, 100);
-            GUI.Box(rect, $"Action name: {currentAction.name}\n Target name: {currentAction.target.name}\n Value: {currentAction.GetValue()}");
+            string names = null;
+            for (int i = 0; i < currentAction.targetCount; i++)
+            {
+                names += $"{currentAction.targets[i].name} ";
+            }
+            GUI.Box(rect, $"Action name: {currentAction.name}\n Targets name: {names}\n Value: {currentAction.GetValue()}");
         }
     }
     public virtual void RecalculateActions()
@@ -232,10 +271,8 @@ public class Fighter : Being
             this.ApplyEffects();
             return null;
         }
-        this.ApplyEffects();
-        this.RecalculateActions();
-        GameObject target = this.ChooseTarget(allFighters);
-        Action action = this.ChooseAction(target);
+        
+        Action action = this.TurnAction(allFighters);
         this.StartCoroutine("DrawIntentions", action);
         return action;
     }
