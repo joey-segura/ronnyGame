@@ -20,14 +20,10 @@ public class Ronny : Human
 
     public IEnumerator BattleMove()
     {
-        float distance = 0;
+        float distance = .25f;
         if (this.transform.position.x > 0)
         {
-            distance = -.25f;
-        }
-        else
-        {
-            distance = .25f;
+            distance = distance * -1;
         }
         Vector3 newPos = new Vector3(this.transform.position.x + distance, this.transform.position.y, this.transform.position.z);
 
@@ -125,7 +121,7 @@ public class Ronny : Human
 
     public override void RecalculateActions()
     {
-        this.actionList = new List<Action>();
+        this.actionList = new List<FighterAction>();
         this.actionList.Add(new Attack(3, this.damage * this.damageMultiplier, null));
         this.actionList.Add(new Heal(3, 3, null));
         this.actionList.Add(new BuffAttack(3, 3, 5, null));
@@ -144,7 +140,7 @@ public class Ronny : Human
         }
         return null;
     }
-    private void SetNewAction(Action action)
+    private void SetNewAction(FighterAction action)
     {
         if (this.currentAction != null)
         {
@@ -154,7 +150,7 @@ public class Ronny : Human
         this.currentAction = action;
         this.transform.GetComponentInParent<BattleMaster>().SetActionText(action.name);
     }
-    public Action Turn(ListBeingData allFighters, List<Action> actionList)
+    public FighterAction Turn(ListBeingData allFighters, List<FighterAction> actionList)
     {
         if (Input.GetKeyDown(KeyCode.RightArrow))
         {

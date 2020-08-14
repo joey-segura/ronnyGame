@@ -21,7 +21,7 @@ public class Ritter : Human
             ronny = this.GetRonny();
         }
     }
-    public override Action TurnAction(ListBeingData allFighters)
+    public override FighterAction TurnAction(ListBeingData allFighters)
     {
         return base.TurnAction(allFighters);
     }
@@ -88,11 +88,12 @@ public class Ritter : Human
     }
     public override void RecalculateActions()
     {
-        this.actionList = new List<Action>();
-        this.actionList.Add(new Attack(3, this.damage * this.damageMultiplier, null));
+        this.actionList = new List<FighterAction>();
+        this.actionList.Add(new ApplyThorns(3, 3, .5f, null));
+        /*this.actionList.Add(new Attack(3, this.damage * this.damageMultiplier, null));
         this.actionList.Add(new WeakAttack(3, 3, 2, null));
         this.actionList.Add(new BuffAttack(3, 3, 2, null));
         this.actionList.Add(new BolsterDefense(3, 3, 2, null));
-        this.actionList.Add(new VulnerableAttack(3, 3, 2, null));
+        this.actionList.Add(new VulnerableAttack(3, 3, 2, null));*/
     }
 }

@@ -11,7 +11,7 @@ public class BattleMaster : Kami
     public bool isBattle = false;
     private int enemyID { get; set; }
     private int turnCounter;
-    private List<Action> intentions = new List<Action>();
+    private List<FighterAction> intentions = new List<FighterAction>();
     public ListBeingData allFighters = new ListBeingData();
     public ListBeingData partyMembers = new ListBeingData();
     public ListBeingData enemyMembers = new ListBeingData();
@@ -72,11 +72,11 @@ public class BattleMaster : Kami
             {
                 case "Party":
                     Fighter fighter = allFighters.BeingDatas[i].gameObject.GetComponent<Fighter>();
-                    partyMember += Mathf.RoundToInt(((fighter.health / 2) + fighter.damage) / 3);
+                    partyMember += Mathf.RoundToInt(fighter.damage);
                     break;
                 case "Enemy":
                     Fighter enemy = allFighters.BeingDatas[i].gameObject.GetComponent<Fighter>();
-                    enemies += Mathf.RoundToInt((enemy.health + enemy.damage) / 2);
+                    enemies += Mathf.RoundToInt(enemy.health);
                     break;
                 default:
                     break;
@@ -84,9 +84,9 @@ public class BattleMaster : Kami
             }
         }
         Debug.Log($"party ->{partyMember} and then enemies{enemies}");
-        this.virtueMax = Mathf.RoundToInt((enemies * 2) / partyMember);
+        this.virtueMax = Mathf.RoundToInt(enemies / partyMember);
     }
-    private static int CompareActionsByOriginatorTag(Action x, Action y)
+    private static int CompareActionsByOriginatorTag(FighterAction x, FighterAction y)
     {
         if (x.originator.tag == "Party")
         {
@@ -123,7 +123,7 @@ public class BattleMaster : Kami
             StopAllCoroutines();
             this.canvas.gameObject.SetActive(false);
             gameMaster.isSceneChanging = true;
-            this.intentions = new List<Action>();
+            this.intentions = new List<FighterAction>();
             this.allFighters = new ListBeingData();
             this.partyMembers = new ListBeingData();
             this.enemyMembers = new ListBeingData();
@@ -146,9 +146,9 @@ public class BattleMaster : Kami
         partyMembers = ronnyParty;
         enemyMembers = enemyParty;
     }
-    private List<Action> GetIntentions()
+    private List<FighterAction> GetIntentions()
     {
-        List<Action> actions = new List<Action>();
+        List<FighterAction> actions = new List<FighterAction>();
 
         for (int i = 0; i < allFighters.BeingDatas.Count; i++)
         {
@@ -226,7 +226,7 @@ public class BattleMaster : Kami
     }
     private void NewTurn()
     {
-        intentions = new List<Action>();
+        intentions = new List<FighterAction>();
         intentions = this.GetIntentions();
         StartCoroutine("PlayerAction");
     }
@@ -246,11 +246,11 @@ public class BattleMaster : Kami
         this.turn = true;
         GameObject player = this.GetPlayerObject();
         Ronny ronny = player.GetComponent<Ronny>();
-        ronny.ApplyEffects();
+        ronny.TickEffects();
         ronny.RecalculateActions();
         ronny.InitializeTurn();
-        List<Action> actionList = ronny.GetActions().ToList<Action>();
-        Action action = null;
+        List<FighterAction> actionList = ronny.GetActions().ToList<FighterAction>();
+        FighterAction action = null;
         yield return new WaitUntil(() => (action = ronny.Turn(allFighters, actionList)) != null);
         this.turnCounter++;
         ronny.ToggleCanvas();
@@ -266,7 +266,7 @@ public class BattleMaster : Kami
         turn = false;
         StartCoroutine("ProcessAIActions");
     }
-    private IEnumerator ProcessAction(Action action)
+    private IEnumerator ProcessAction(FighterAction action)
     {
         if (action.targets != null)
         {
@@ -279,14 +279,11 @@ public class BattleMaster : Kami
             float damage = action.GetValue();
             if (damage != 0 && action.originator.tag == "Party")
             {
-                Debug.Log($"Local Virtue increased by {Mathf.RoundToInt(Mathf.Abs(action.virtueValue) / 3)}");
-                this.AddToVirtue(Mathf.RoundToInt(Mathf.Abs(action.virtueValue) / 3));
+                Debug.Log($"Local Virtue increased by {Mathf.RoundToInt(Mathf.Abs(action.virtueValue) / 5)}");
+                this.AddToVirtue(Mathf.RoundToInt(Mathf.Abs(action.virtueValue) / 5));
             }
-            yield return true;
-        } else
-        {
-            yield return true;
         }
+        yield return true;
     }
     public IEnumerator ProcessAIActions()
     {
@@ -296,11 +293,11 @@ public class BattleMaster : Kami
             if (intentions[i].originator != null)
             {
                 Fighter fighter = intentions[i].originator.GetComponent<Fighter>();
-                fighter.ApplyEffects();
+                fighter.TickEffects();
                 if (fighter != null)
                 {
                     fighter.RecalculateActions();
-                    Action action = fighter.GetCurrentAction(); //gets current action instead of playing intention incase ronny influences it
+                    FighterAction action = fighter.GetCurrentAction(); //gets current action instead of playing intention incase ronny influences it
                     this.PlayAnimation(action.animation);
                     Debug.Log($"{action.originator.name}'s turn!");
                     fighter.ToggleCanvas();
@@ -359,11 +356,12 @@ public class BattleMaster : Kami
     }
     private void SubmitVirtueToAlly(int virtue)
     {
+        int virtueGain = virtue - this.virtueMax;
         for (int i = 0; i < allFighters.BeingDatas.Count; i++)
         {
             if (allFighters.BeingDatas[i].gameObject.tag == "Party")
             {
-                allFighters.BeingDatas[i].gameObject.GetComponent<Human>().AddToVirtue(virtue);
+                allFighters.BeingDatas[i].gameObject.GetComponent<Human>().AddToVirtue(virtueGain);
             }
         }
     }

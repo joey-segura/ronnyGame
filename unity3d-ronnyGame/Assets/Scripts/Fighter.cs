@@ -1,5 +1,7 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -10,13 +12,15 @@ public class Fighter : Being
     public float health, damage, damageMultiplier = 1, defenseMultiplier = 1;
     public bool isStunned = false, isPoisoned = false;
     protected bool isBattle = false;
-    
+
     public string[] party;
-    protected Action currentAction = null;
-    private List<Effect> currentEffects = new List<Effect>();
-    protected List<Action> actionList = new List<Action>();
+    protected FighterAction currentAction = null;
+    private Dictionary<int, Effect> currentEffects = new Dictionary<int, Effect>();
+    //private List<Effect> currentEffects = new List<Effect>();
+    protected List<FighterAction> actionList = new List<FighterAction>();
 
     protected Vector3 battlePosition;
+    private Dictionary<int, Func<float,Fighter, float>> onHitEffects = new Dictionary<int, Func<float, Fighter, float>>();
 
     public virtual void Awake()
     {
@@ -30,35 +34,63 @@ public class Fighter : Being
         this.actionList.Add(new BolsterDefense(3, 3, 2, null));
         this.actionList.Add(new VulnerableAttack(3, 3, 2, null));
     }
-    public void AddEffect(Effect effect)
+    public void AddEffect(Fighter fighter, Effect effect)
     {
-        currentEffects.Add(effect);
-        currentEffects.Sort(CompareEffectsByDuration);
+        effect.Affliction(fighter);
+        currentEffects.Add(effect.GetKey(), effect);
+        currentEffects.OrderByDescending(x => effect.duration);
     }
-    public float AddToHealth(float change)
+    public float AddToHealth(float change, Fighter causer)
     {
+        foreach(Func<float, Fighter, float> a in onHitEffects.Values)
+        {
+            change = a.Invoke(change, causer);
+        }
+        Debug.Log($"{this.name} has {onHitEffects.Count} onhit functions");
         change = change / this.defenseMultiplier;
         Debug.Log($"{this.name}'s health just got changed by {change}");
         this.health += change;
         this.DeathCheck();
         return change;
     }
-    public void ApplyEffects()
+    public bool AddToCurrentEffects(int key, Effect effect)
     {
-        this.damageMultiplier = 1; //these values get reset every turn so that 1 effect doesn't proc twice
-        this.defenseMultiplier = 1;
-        for(int i = 0; i < currentEffects.Count; i++)
+        if (currentEffects.ContainsKey(key))
         {
-            currentEffects[i].Affliction(this);
-            currentEffects[i].duration -= 1;
-            if (currentEffects[i].duration <= 0)
+            return false;
+        }
+        else
+        {
+            currentEffects.Add(key, effect);
+            return true;
+        }
+    }
+    public bool AddToOnHitEffects(int key, Func<float, Fighter, float> method)
+    {
+        if (onHitEffects.ContainsKey(key))
+        {
+            return false;
+        } else
+        {
+            onHitEffects.Add(key, method);
+            return true;
+        }
+    }
+    public void TickEffects() // happens every fighters turn
+    {
+        for (int i = 0; i < currentEffects.Count; i++)
+        {
+            var effect = currentEffects.ElementAt(i);
+            effect.Value.OnTick(this);
+            effect.Value.duration -= 1;
+            if (effect.Value.duration <= 0)
             {
-                currentEffects[i].Cleanse(this);
-                currentEffects.Remove(currentEffects[i]);
+                effect.Value.Cleanse(this);
+                RemoveEffect(effect.Key);
             }
         }
     }
-    public IEnumerator BattleActionMove(Action action)
+    public IEnumerator BattleActionMove(FighterAction action)
     {
         float distance = 0;
         if (this.transform.position.x > 0)
@@ -83,15 +115,15 @@ public class Fighter : Being
             yield return new WaitForEndOfFrame();
         }
     }
-    public virtual Action TurnAction(ListBeingData allFighters)
+    public virtual FighterAction TurnAction(ListBeingData allFighters)
     {
         this.RecalculateActions();
-        Action action = null;
+        FighterAction action = null;
         string relation = null;
         bool valid = false;
         while (!valid)
         {
-            int actionIndex = Random.Range(0, this.actionList.Count);
+            int actionIndex = UnityEngine.Random.Range(0, this.actionList.Count);
             action = this.actionList[actionIndex]; //random action for enemy and friendly units
             action.originator = this.gameObject;
             if (action.IsActionAOE())
@@ -130,7 +162,7 @@ public class Fighter : Being
     }
     public virtual GameObject ChooseTarget(ListBeingData allFighters) //chooses a target at random!
     {
-        int targetIndex = Random.Range(0, allFighters.BeingDatas.Count);
+        int targetIndex = UnityEngine.Random.Range(0, allFighters.BeingDatas.Count);
         return allFighters.BeingDatas[targetIndex].gameObject;
     }
     private static int CompareEffectsByDuration(Effect x, Effect y)
@@ -161,7 +193,7 @@ public class Fighter : Being
             return;
         }
     }
-    public IEnumerator DrawIntentions(Action action)
+    public IEnumerator DrawIntentions(FighterAction action)
     {
         yield return new WaitForEndOfFrame(); //waiting a frame to make sure data is settled before we do this call (Not a fan)
         Debug.Log($"{action.originator.name} is doing the action {action.name} to {action.targets[0].name}");
@@ -235,7 +267,7 @@ public class Fighter : Being
     }
     public void RemoveAllEffects()//strong cleanse (used after a battle is concluded?)
     {
-        this.currentEffects = new List<Effect>();
+        this.currentEffects = new Dictionary<int, Effect>();
     }
     public void RemoveAllEffectsOfName(string name)//might be used by actions to cleanse debuffs etc
     {
@@ -243,11 +275,11 @@ public class Fighter : Being
         {
             if (currentEffects[i].name == name)
             {
-                currentEffects.Remove(currentEffects[i]);
+                currentEffects.Remove(currentEffects[i].GetKey());
             }
         }
     }
-    public void SetAction(Action action)
+    public void SetAction(FighterAction action)
     {
         this.currentAction = action;
         StartCoroutine("DrawIntentions", action);
@@ -256,25 +288,33 @@ public class Fighter : Being
     {
         this.health = health;
     }
-    public List<Action> GetActions()
+    public List<FighterAction> GetActions()
     {
         return this.actionList;
     }
-    public Action GetCurrentAction()
+    public FighterAction GetCurrentAction()
     {
         return this.currentAction;
     }
-    public Action GetIntention(ListBeingData allFighters)
+    public FighterAction GetIntention(ListBeingData allFighters)
     {
         if (this.isStunned)
         {
-            this.ApplyEffects();
+            this.TickEffects();
             return null;
         }
-        
-        Action action = this.TurnAction(allFighters);
+
+        FighterAction action = this.TurnAction(allFighters);
         this.StartCoroutine("DrawIntentions", action);
         return action;
+    }
+    public Dictionary<int, Effect> GetCurrentEffects()
+    {
+        return currentEffects;
+    }
+    public Dictionary<int, Func<float, Fighter, float>> GetOnHitEffects()
+    {
+        return onHitEffects;
     }
     public string[] GetParty()
     {
@@ -285,6 +325,27 @@ public class Fighter : Being
         {
             string[] party = { this.gameObject.name };
             return party;
+        }
+    }
+    public bool RemoveEffect(int key)
+    {
+        if (currentEffects.Remove(key))
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+    public bool RemoveOnHitEffect(int key)
+    {
+        if (onHitEffects.Remove(key))
+        {
+            return true;
+        } else
+        {
+            return false;
         }
     }
     public string TargetRelationToSelf(string targetTag)
@@ -303,17 +364,5 @@ public class Fighter : Being
         {
             return "Foe";
         }
-    }
-    private bool ValidTarget(string targetTag)
-    {
-        bool valid = false;
-        for (int i = 0; i < actionList.Count; i++)
-        {
-            if (actionList[i].IsValidAction(targetTag))
-            {
-                valid = true;
-            }
-        }
-        return valid;
     }
 } 

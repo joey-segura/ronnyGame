@@ -4,7 +4,7 @@ using System.Linq;
 using UnityEngine;
 
 
-public abstract class Action
+public abstract class FighterAction
 {
     public GameObject originator { get; set; }
     public GameObject[] targets { get; set; }
@@ -102,7 +102,7 @@ public class CoroutineWithData
         }
     }
 }
-public class Attack : Action
+public class Attack : FighterAction
 {
     public float damage;
     public Attack (int _duration, float _damage, Animation _animation)
@@ -121,7 +121,7 @@ public class Attack : Action
 
         for (int i = 0; i < targets.Length; i++)
         {
-            Mathf.RoundToInt(targets[i].GetComponent<Fighter>().AddToHealth(this.damage * -1));
+            Mathf.RoundToInt(targets[i].GetComponent<Fighter>().AddToHealth(this.damage * -1, this.originator.GetComponent<Fighter>()));
         }
         yield return true;
     }
@@ -130,7 +130,37 @@ public class Attack : Action
         return this.damage;
     }
 }
-public class BolsterDefense : Action
+public class ApplyThorns : FighterAction
+{
+    public float percentValue;
+    public ApplyThorns(int _duration, int _effectDuration, float _percentValue, Animation _animation)
+    {
+        this.name = "Thorns";
+        this.duration = _duration;
+        this.effectDuration = _effectDuration;
+        this.percentValue = _percentValue;
+        this.animation = _animation;
+        this.targetCount = 1;
+        this.validTargets = new string[] { "Friend" };
+        this.virtueValue = Mathf.RoundToInt(_effectDuration + (_effectDuration * _percentValue));
+        this.IMAGEPATH = "UI/UI_buff";
+    }
+    public override IEnumerator Execute()
+    {
+        Effect thorns = new Thorns(this.effectDuration, this.percentValue);
+        for (int i = 0; i < targets.Length; i++)
+        {
+            Fighter fighter = targets[i].GetComponent<Fighter>();
+            fighter.AddEffect(fighter, thorns);
+        }
+        yield return true;
+    }
+    public override float GetValue()
+    {
+        return this.percentValue;
+    }
+}
+public class BolsterDefense : FighterAction
 {
     public int buffValue;
     public BolsterDefense(int _duration, int _effectDuration ,int _buffValue, Animation _animation)
@@ -150,7 +180,8 @@ public class BolsterDefense : Action
         Effect bolster = new Bolster(this.effectDuration, this.buffValue);
         for (int i = 0; i < targets.Length; i++)
         {
-            targets[i].GetComponent<Fighter>().AddEffect(bolster);
+            Fighter fighter = targets[i].GetComponent<Fighter>();
+            fighter.AddEffect(fighter, bolster);
         }
         yield return true;
     }
@@ -159,7 +190,7 @@ public class BolsterDefense : Action
         return this.buffValue;
     }
 }
-public class BuffAttack : Action
+public class BuffAttack : FighterAction
 {
     public int buffValue;
     public BuffAttack(int _duration, int _effectDuration ,int _buffValue, Animation _animation)
@@ -179,7 +210,8 @@ public class BuffAttack : Action
         Effect strengthen = new Strengthen(this.effectDuration, this.buffValue);
         for (int i = 0; i < targets.Length; i++)
         {
-            targets[i].GetComponent<Fighter>().AddEffect(strengthen);
+            Fighter fighter = targets[i].GetComponent<Fighter>();
+            fighter.AddEffect(fighter, strengthen);
         }
         yield return true;
     }
@@ -188,120 +220,7 @@ public class BuffAttack : Action
         return this.buffValue;
     }
 }
-public class Heal : Action
-{
-    public int healValue;
-    public Heal(int _duration, int _healValue, Animation _animation)
-    {
-        this.name = "Heal";
-        this.duration = _duration;
-        this.healValue = _healValue;
-        this.animation = _animation;
-        this.targetCount = 1;
-        this.validTargets = new string[] { "Friend" };
-        this.virtueValue = _healValue;
-        this.IMAGEPATH = "UI/UI_buff";
-    }
-    public override IEnumerator Execute()
-    {
-        for (int i = 0; i < targets.Length; i++)
-        {
-            Mathf.RoundToInt(targets[i].GetComponent<Fighter>().AddToHealth(this.healValue));
-        }
-        yield return null;
-    }
-    public override float GetValue()
-    {
-        return this.healValue;
-    }
-}
-public class PoisonAttack : Action
-{
-    public int poisonDamage;
-    public PoisonAttack (int _duration, int _effectDuration ,int _poisonDamage, Animation _animation)
-    {
-        this.name = "Poison Attack";
-        this.duration = _duration;
-        this.effectDuration = _effectDuration;
-        this.poisonDamage = _poisonDamage;
-        this.animation = _animation;
-        this.targetCount = 1;
-        this.validTargets = new string[] { "Foe" };
-        this.virtueValue = _effectDuration * _poisonDamage;
-        this.IMAGEPATH = "UI/UI_attack";
-        
-    }
-    public override IEnumerator Execute()
-    {
-        Effect poison = new Poison(this.effectDuration, this.poisonDamage, this.originator);
-        for (int i = 0; i < targets.Length; i++)
-        {
-            targets[i].GetComponent<Fighter>().AddEffect(poison);
-        }
-        yield return true;
-    }
-    public override float GetValue()
-    {
-        return this.poisonDamage;
-    }
-}
-public class VulnerableAttack : Action
-{
-    public int vulnerableValue;
-    public VulnerableAttack(int _duration, int _effectDuration ,int _vulnerableValue, Animation _animation)
-    {
-        this.name = "Vulnerable Attack";
-        this.duration = _duration;
-        this.effectDuration = _effectDuration;
-        this.vulnerableValue = _vulnerableValue;
-        this.animation = _animation;
-        this.targetCount = 1;
-        this.validTargets = new string[] { "Foe" };
-        this.IMAGEPATH = "UI/UI_debuff";
-    }
-    public override IEnumerator Execute()
-    {
-        Effect vulnerable = new Vulnerable(this.effectDuration, this.vulnerableValue);
-        for (int i = 0; i < targets.Length; i++)
-        {
-            targets[i].GetComponent<Fighter>().AddEffect(vulnerable);
-        }
-        yield return null;
-    }
-    public override float GetValue()
-    {
-        return this.vulnerableValue;
-    }
-}
-public class WeakAttack : Action
-{
-    public int weakValue;
-    public WeakAttack (int _duration, int _effectDuration ,int _weakValue, Animation _animation)
-    {
-        this.name = "Weak Attack";
-        this.duration = _duration;
-        this.effectDuration = _effectDuration;
-        this.weakValue = _weakValue;
-        this.animation = _animation;
-        this.targetCount = 1;
-        this.validTargets = new string[] { "Foe" };
-        this.IMAGEPATH = "UI/UI_debuff";
-    }
-    public override IEnumerator Execute()
-    {
-        Effect weak = new Weak(this.effectDuration, this.weakValue);
-        for (int i = 0; i < targets.Length; i++)
-        {
-            targets[i].GetComponent<Fighter>().AddEffect(weak);
-        }
-        yield return null;
-    }
-    public override float GetValue()
-    {
-        return this.weakValue;
-    }
-}
-public class CommandToAttack : Action
+public class CommandToAttack : FighterAction
 {
     public GameObject attackTarget;
     public CommandToAttack(int _duration, Animation _animation)
@@ -341,4 +260,150 @@ public class CommandToAttack : Action
         return 0;
     }
 }
+public class DoubleAttack : FighterAction
+{
+    public float damage;
+    public DoubleAttack(int _duration, float _damage, Animation _animation)
+    {
+        this.name = "Attack";
+        this.duration = _duration;
+        this.damage = _damage / 2;
+        this.animation = _animation;
+        this.targetCount = 1;
+        this.validTargets = new string[] { "Foe" };
+        this.virtueValue = Mathf.RoundToInt(this.GetValue());
+        this.IMAGEPATH = "UI/UI_attack";
+    }
+    public override IEnumerator Execute()
+    {
+
+        for (int i = 0; i < targets.Length; i++)
+        {
+            Mathf.RoundToInt(targets[i].GetComponent<Fighter>().AddToHealth(this.damage * -1, this.originator.GetComponent<Fighter>()));
+        }
+        yield return true;
+    }
+    public override float GetValue()
+    {
+        return this.damage * 2;
+    }
+}
+public class Heal : FighterAction
+{
+    public int healValue;
+    public Heal(int _duration, int _healValue, Animation _animation)
+    {
+        this.name = "Heal";
+        this.duration = _duration;
+        this.healValue = _healValue;
+        this.animation = _animation;
+        this.targetCount = 1;
+        this.validTargets = new string[] { "Friend" };
+        this.virtueValue = _healValue;
+        this.IMAGEPATH = "UI/UI_buff";
+    }
+    public override IEnumerator Execute()
+    {
+        for (int i = 0; i < targets.Length; i++)
+        {
+            Mathf.RoundToInt(targets[i].GetComponent<Fighter>().AddToHealth(this.healValue, this.originator.GetComponent<Fighter>()));
+        }
+        yield return true;
+    }
+    public override float GetValue()
+    {
+        return this.healValue;
+    }
+}
+public class PoisonAttack : FighterAction
+{
+    public int poisonDamage;
+    public PoisonAttack (int _duration, int _effectDuration ,int _poisonDamage, Animation _animation)
+    {
+        this.name = "Poison Attack";
+        this.duration = _duration;
+        this.effectDuration = _effectDuration;
+        this.poisonDamage = _poisonDamage;
+        this.animation = _animation;
+        this.targetCount = 1;
+        this.validTargets = new string[] { "Foe" };
+        this.virtueValue = _effectDuration * _poisonDamage;
+        this.IMAGEPATH = "UI/UI_attack";
+        
+    }
+    public override IEnumerator Execute()
+    {
+        Effect poison = new Poison(this.effectDuration, this.poisonDamage, this.originator);
+        for (int i = 0; i < targets.Length; i++)
+        {
+            Fighter fighter = targets[i].GetComponent<Fighter>();
+            fighter.AddEffect(fighter, poison);
+        }
+        yield return true;
+    }
+    public override float GetValue()
+    {
+        return this.poisonDamage;
+    }
+}
+
+public class VulnerableAttack : FighterAction
+{
+    public int vulnerableValue;
+    public VulnerableAttack(int _duration, int _effectDuration ,int _vulnerableValue, Animation _animation)
+    {
+        this.name = "Vulnerable Attack";
+        this.duration = _duration;
+        this.effectDuration = _effectDuration;
+        this.vulnerableValue = _vulnerableValue;
+        this.animation = _animation;
+        this.targetCount = 1;
+        this.validTargets = new string[] { "Foe" };
+        this.IMAGEPATH = "UI/UI_debuff";
+    }
+    public override IEnumerator Execute()
+    {
+        Effect vulnerable = new Vulnerable(this.effectDuration, this.vulnerableValue);
+        for (int i = 0; i < targets.Length; i++)
+        {
+            Fighter fighter = targets[i].GetComponent<Fighter>();
+            fighter.AddEffect(fighter, vulnerable);
+        }
+        yield return true;
+    }
+    public override float GetValue()
+    {
+        return this.vulnerableValue;
+    }
+}
+public class WeakAttack : FighterAction
+{
+    public int weakValue;
+    public WeakAttack (int _duration, int _effectDuration ,int _weakValue, Animation _animation)
+    {
+        this.name = "Weak Attack";
+        this.duration = _duration;
+        this.effectDuration = _effectDuration;
+        this.weakValue = _weakValue;
+        this.animation = _animation;
+        this.targetCount = 1;
+        this.validTargets = new string[] { "Foe" };
+        this.IMAGEPATH = "UI/UI_debuff";
+    }
+    public override IEnumerator Execute()
+    {
+        Effect weak = new Weak(this.effectDuration, this.weakValue);
+        for (int i = 0; i < targets.Length; i++)
+        {
+            Fighter fighter = targets[i].GetComponent<Fighter>();
+            fighter.AddEffect(fighter, weak);
+        }
+        yield return true;
+    }
+    public override float GetValue()
+    {
+        return this.weakValue;
+    }
+}
+
 
