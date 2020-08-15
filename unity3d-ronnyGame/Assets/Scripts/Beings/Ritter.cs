@@ -5,15 +5,17 @@ using UnityEngine;
 public class RitterJson
 {
     public GameObject ronny;
-    public float courage, speed, health, damage;
+    public int virtue;
+    public float speed, health, damage;
 }
 public class Ritter : Human
 {
     public GameObject ronny;
-    public float courage, speed;
+    public float speed;
+    private bool follow = true;
     private void Update()
     {
-        if (ronny != null)
+        if (ronny != null && follow)
         {
             this.FollowRonny();
         } else
@@ -35,13 +37,7 @@ public class Ritter : Human
         being.prefabName = this.gameObject.name;
         being.objectID = this.ID;
 
-        RitterJson ritter = new RitterJson();
-        ritter.damage = this.damage;
-        ritter.health = this.health;
-        ritter.ronny = this.ronny;
-        ritter.speed = this.speed;
-
-        being.jsonData = JsonUtility.ToJson(ritter);
+        being.jsonData = this.UpdateBeingJsonData();
 
         return JsonUtility.ToJson(being);
     }
@@ -59,7 +55,7 @@ public class Ritter : Human
     }
     public override void InitializeBattle()
     {
-        this.speed = 0;
+        this.follow = false;
         base.InitializeBattle();
     }
     public override void InjectData(string jsonData)
@@ -76,6 +72,7 @@ public class Ritter : Human
                 this.health = ritter.health;
                 this.ronny = ritter.ronny;
                 this.speed = ritter.speed;
+                this.virtue = ritter.virtue;
             }
             this.ID = being.objectID;
             this.beingData = jsonData;
@@ -89,11 +86,25 @@ public class Ritter : Human
     public override void RecalculateActions()
     {
         this.actionList = new List<FighterAction>();
-        this.actionList.Add(new ApplyThorns(3, 3, .5f, null));
-        /*this.actionList.Add(new Attack(3, this.damage * this.damageMultiplier, null));
+        this.actionList.Add(new Attack(3, this.damage * this.damageMultiplier, null));
+        //this.actionList.Add(new ApplyThorns(3, 3, .5f, null));
+        /*
         this.actionList.Add(new WeakAttack(3, 3, 2, null));
         this.actionList.Add(new BuffAttack(3, 3, 2, null));
         this.actionList.Add(new BolsterDefense(3, 3, 2, null));
-        this.actionList.Add(new VulnerableAttack(3, 3, 2, null));*/
+        this.actionList.Add(new VulnerableAttack(3, 3, 2, null));
+        */
+        base.RecalculateActions();
+    }
+    public override string UpdateBeingJsonData()
+    {
+        RitterJson ritter = new RitterJson();
+        ritter.damage = this.damage;
+        ritter.health = this.health;
+        ritter.ronny = this.ronny;
+        ritter.speed = this.speed;
+        ritter.virtue = this.virtue;
+
+        return JsonUtility.ToJson(ritter);
     }
 }

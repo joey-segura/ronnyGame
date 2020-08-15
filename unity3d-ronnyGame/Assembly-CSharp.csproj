@@ -71,6 +71,7 @@
     <Compile Include="Assets\Scripts\Actions.cs" />
     <Compile Include="Assets\Scripts\BattleMaster.cs" />
     <Compile Include="Assets\Scripts\Being.cs" />
+    <Compile Include="Assets\Scripts\Beings\Joey.cs" />
     <Compile Include="Assets\Scripts\Beings\Ritter.cs" />
     <Compile Include="Assets\Scripts\Beings\Rogue.cs" />
     <Compile Include="Assets\Scripts\Beings\Ronny.cs" />

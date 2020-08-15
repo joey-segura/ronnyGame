@@ -20,7 +20,7 @@ public class Fighter : Being
     protected List<FighterAction> actionList = new List<FighterAction>();
 
     protected Vector3 battlePosition;
-    private Dictionary<int, Func<float,Fighter, float>> onHitEffects = new Dictionary<int, Func<float, Fighter, float>>();
+    private Dictionary<int, Func<float, Fighter, float>> onHitEffects = new Dictionary<int, Func<float, Fighter, float>>();
 
     public virtual void Awake()
     {
@@ -249,44 +249,25 @@ public class Fighter : Being
         if (isBattle && currentAction != null && this.isHovering)
         {
             Vector3 mouse = Input.mousePosition;
-            Rect rect = new Rect(mouse.x + 10, (Screen.height - mouse.y + 10), 200, 100);
-            string names = null;
-            for (int i = 0; i < currentAction.targetCount; i++)
+            Rect rect;
+            if (mouse.x > (Screen.width / 2))
             {
-                names += $"{currentAction.targets[i].name} ";
+                rect = new Rect(mouse.x - 200, (Screen.height - mouse.y + 10), 200, 100);
+            } else
+            {
+                rect = new Rect(mouse.x + 10, (Screen.height - mouse.y + 10), 200, 100);
+            }
+            
+            string names = null;
+            if (currentAction.targets != null)
+            {
+                for (int i = 0; i < currentAction.targetCount; i++)
+                {
+                    names += $"{currentAction.targets[i].name} ";
+                }
             }
             GUI.Box(rect, $"Action name: {currentAction.name}\n Targets name: {names}\n Value: {currentAction.GetValue()}");
         }
-    }
-    public virtual void RecalculateActions()
-    {
-        //This function should be instantiated by each individual fighter with their unique actions
-        //Recalculating actions is important to apply certain affects
-        //(E.G) if you apply a damage buff we need to apply that affect to the persons attack damage
-        return;
-    }
-    public void RemoveAllEffects()//strong cleanse (used after a battle is concluded?)
-    {
-        this.currentEffects = new Dictionary<int, Effect>();
-    }
-    public void RemoveAllEffectsOfName(string name)//might be used by actions to cleanse debuffs etc
-    {
-        for (int i = 0; i < currentEffects.Count; i++)
-        {
-            if (currentEffects[i].name == name)
-            {
-                currentEffects.Remove(currentEffects[i].GetKey());
-            }
-        }
-    }
-    public void SetAction(FighterAction action)
-    {
-        this.currentAction = action;
-        StartCoroutine("DrawIntentions", action);
-    }
-    public void SetHealth(float health)
-    {
-        this.health = health;
     }
     public List<FighterAction> GetActions()
     {
@@ -321,12 +302,56 @@ public class Fighter : Being
         if (party != null)
         {
             return party;
-        } else
+        }
+        else
         {
             string[] party = { this.gameObject.name };
             return party;
         }
     }
+    public virtual void RecalculateActions()
+    {
+        //This function should be instantiated by each individual fighter with their unique actions
+        //Recalculating actions is important to apply certain affects
+        //(E.G) if you apply a damage buff we need to apply that affect to the persons attack damage
+        if (currentAction != null)
+        {
+            foreach (FighterAction action in this.actionList)
+            {
+                if (action.name == currentAction.name)
+                {
+                    action.originator = currentAction.originator;
+                    action.targets = currentAction.targets;
+                    currentAction = action;
+                }
+            }
+        }
+        return;
+    }
+    public void RemoveAllEffects()//strong cleanse (used after a battle is concluded?)
+    {
+        this.currentEffects = new Dictionary<int, Effect>();
+    }
+    public void RemoveAllEffectsOfName(string name)//might be used by actions to cleanse debuffs etc
+    {
+        for (int i = 0; i < currentEffects.Count; i++)
+        {
+            if (currentEffects[i].name == name)
+            {
+                currentEffects.Remove(currentEffects[i].GetKey());
+            }
+        }
+    }
+    public void SetAction(FighterAction action)
+    {
+        this.currentAction = action;
+        StartCoroutine("DrawIntentions", action);
+    }
+    public void SetHealth(float health)
+    {
+        this.health = health;
+    }
+    
     public bool RemoveEffect(int key)
     {
         if (currentEffects.Remove(key))

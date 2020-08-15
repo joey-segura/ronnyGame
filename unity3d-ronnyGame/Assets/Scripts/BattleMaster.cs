@@ -103,9 +103,13 @@ public class BattleMaster : Kami
     {
         for (int i = 0; i < allFighters.BeingDatas.Count; i++)
         {
+            Being being = allFighters.BeingDatas[i].gameObject.GetComponent<Being>();
+            BeingData beingData = allFighters.BeingDatas[i];
+            beingData.jsonData = being.UpdateBeingJsonData();
+            gameMaster.UpdateBeingJsonDataInList(beingData);
             Destroy(allFighters.BeingDatas[i].gameObject);
-            allFighters.BeingDatas.Remove(allFighters.BeingDatas[i]);
         }
+        this.RemoveAllMembers();
     }
     private IEnumerator EndBattle(bool victory)
     {
@@ -120,17 +124,13 @@ public class BattleMaster : Kami
             this.DestroyAllFighters();
             this.RemoveMemberReferenceInGameMasterByID(this.enemyID); //destroy the enemy reference before we load back in
             Destroy(Camera.main.gameObject);
-            StopAllCoroutines();
             this.canvas.gameObject.SetActive(false);
-            gameMaster.isSceneChanging = true;
             this.intentions = new List<FighterAction>();
-            this.allFighters = new ListBeingData();
-            this.partyMembers = new ListBeingData();
-            this.enemyMembers = new ListBeingData();
+            gameMaster.isSceneChanging = true;
             this.isBattle = false;
-            //yield return new WaitForSeconds(1); // have to wait to destroy every object before moving to the next scene
+            //yield return new WaitForEndOfFrame();
+            yield return new WaitForSeconds(1); // have to wait to destroy every object before moving to the next scene
             sceneMaster.ChangeScene(worldSceneName);
-
         } else
         {
             //play defeat animations and ui and stuff
@@ -314,6 +314,7 @@ public class BattleMaster : Kami
     }
     private void RemoveAllMembers()
     {
+        allFighters = new ListBeingData();
         partyMembers = new ListBeingData();
         enemyMembers = new ListBeingData();
     }

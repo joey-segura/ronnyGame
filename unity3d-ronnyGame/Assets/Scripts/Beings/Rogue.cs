@@ -21,13 +21,7 @@ public class Rogue : Fighter
         being.prefabName = this.gameObject.name;
         being.objectID = this.ID;
 
-        RogueJson rogue = new RogueJson();
-        rogue.speed = this.speed;
-        rogue.health = this.health;
-        rogue.damage = this.damage;
-        rogue.party = this.party;
-
-        being.jsonData = JsonUtility.ToJson(rogue);
+        being.jsonData = this.UpdateBeingJsonData();
 
         return JsonUtility.ToJson(being);
     }
@@ -70,5 +64,15 @@ public class Rogue : Fighter
         this.actionList.Add(new BuffAttack(3, 3, 2, null));
         this.actionList.Add(new BolsterDefense(3, 3, 2, null));
         this.actionList.Add(new VulnerableAttack(3, 3, 2, null));
+        base.RecalculateActions();
+    }
+    public override string UpdateBeingJsonData()
+    {
+        RogueJson rogue = new RogueJson();
+        rogue.speed = this.speed;
+        rogue.health = this.health;
+        rogue.damage = this.damage;
+        rogue.party = this.party;
+        return JsonUtility.ToJson(rogue);
     }
 }

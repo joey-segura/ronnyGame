@@ -29,9 +29,16 @@ public class MainMenuMaster : MonoBehaviour
     void LoadGame()
     {
         StreamReader reader = new StreamReader(KamiDataPath);
-        DataMasterJson data = JsonUtility.FromJson<DataMasterJson>(reader.ReadLine());
-        reader.Close();
-        sceneMaster.ChangeScene(data.levelName);
+        if (reader.Peek() != -1)
+        {
+            DataMasterJson data = JsonUtility.FromJson<DataMasterJson>(reader.ReadLine());
+            reader.Close();
+            sceneMaster.ChangeScene(data.levelName);
+        } else
+        {
+            Debug.LogWarning("No file data found");
+            return;
+        }
     }
     void Options()
     {

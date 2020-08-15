@@ -32,7 +32,7 @@ public class GameMaster : Kami
     public ListBeingData GameMasterBeingDataList = new ListBeingData();
 
     public bool isSceneChanging = true;
-    
+
     public int objectIDCounter;
 
     private string sceneJsonData;
@@ -49,7 +49,7 @@ public class GameMaster : Kami
         GameObject entity = Instantiate(Resources.Load($"Prefabs/{beingData.prefabName}", typeof(GameObject)), beingData.location, beingData.angle, this.gameObject.transform) as GameObject;
         entity.transform.name = beingData.prefabName;
 
-        if (beingData.scale != new Vector3(0,0,0))
+        if (beingData.scale != new Vector3(0, 0, 0))
         {
             entity.transform.localScale = beingData.scale;
         }
@@ -89,7 +89,7 @@ public class GameMaster : Kami
     {
         ListBeingData list = new ListBeingData();
         list = GameMasterBeingDataList;
-        for(int i = 0; i < list.BeingDatas.Count; i++)
+        for (int i = 0; i < list.BeingDatas.Count; i++)
         {
             InstantiateObject(JsonUtility.ToJson(list.BeingDatas[i]));
         }
@@ -141,6 +141,16 @@ public class GameMaster : Kami
             if (beingData.objectID == GameMasterBeingDataList.BeingDatas[i].objectID)
             {
                 GameMasterBeingDataList.BeingDatas[i] = beingData;
+            }
+        }
+    }
+    public void UpdateBeingJsonDataInList(BeingData beingData)
+    {
+        for (int i = 0; i < GameMasterBeingDataList.BeingDatas.Count; i++)
+        {
+            if (beingData.objectID == GameMasterBeingDataList.BeingDatas[i].objectID)
+            {
+                GameMasterBeingDataList.BeingDatas[i].jsonData = beingData.jsonData;
             }
         }
     }

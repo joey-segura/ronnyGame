@@ -165,6 +165,18 @@ public class Being : MonoBehaviour
     {
         this.isHovering = false;
     }
+    public void OnTriggerEnter(Collider other)
+    {
+        interactable = true;
+        if (this.gameObject.tag == "Enemy" && other.gameObject.tag == "Player")
+        {
+            gameMasterScript.InitializeBattle(gameMasterScript.GetBeingDataByID(this.ID));
+        }
+    }
+    public void OnTriggerExit(Collider other)
+    {
+        interactable = false;
+    }
     public void Say(string[] text)
     {
         if (canvas != null && text.Length > 0)
@@ -172,7 +184,6 @@ public class Being : MonoBehaviour
             StartCoroutine("InstantiateMessage", text);
         }
     }
-    
     public void TeleportTo(Vector3 location)
     {
         this.transform.position = location;
@@ -189,17 +200,8 @@ public class Being : MonoBehaviour
     {
         this.debugMode = !this.debugMode;
     }
-    public void OnTriggerEnter(Collider other)
+    public virtual string UpdateBeingJsonData()
     {
-        interactable = true;
-        if (this.gameObject.tag == "Enemy" && other.gameObject.tag == "Player")
-        {
-            gameMasterScript.InitializeBattle(gameMasterScript.GetBeingDataByID(this.ID));
-        }
-    }
-    public void OnTriggerExit(Collider other)
-    {
-        interactable = false;
-    }
-
+        return beingData;
+    }  
 }

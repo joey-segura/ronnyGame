@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class RonnyJson
 {
+    public int virtue;
     public float speed, health, damage;
 }
 public class Ronny : Human
@@ -62,13 +63,7 @@ public class Ronny : Human
         being.prefabName = this.gameObject.name;
         being.objectID = this.ID;
 
-        RonnyJson ronny = new RonnyJson();
-        //! needs to assign RonnyJson values to updated values
-        ronny.speed = this.speed;
-        ronny.health = this.health;
-        ronny.damage = this.damage;
-        //
-        being.jsonData = JsonUtility.ToJson(ronny);
+        being.jsonData = this.UpdateBeingJsonData();
 
         return JsonUtility.ToJson(being);
     }
@@ -99,6 +94,7 @@ public class Ronny : Human
                 this.health = ronny.health;
                 this.damage = ronny.damage;
                 this.speed = ronny.speed;
+                this.virtue = ronny.virtue;
                 this.ChangeSpeed(this.speed);
             }
             this.ID = being.objectID;
@@ -126,6 +122,7 @@ public class Ronny : Human
         this.actionList.Add(new Heal(3, 3, null));
         this.actionList.Add(new BuffAttack(3, 3, 5, null));
         this.actionList.Add(new CommandToAttack(3, null));
+        base.RecalculateActions();
     }
     public GameObject ReturnChoosenGameObject()
     {
@@ -204,5 +201,15 @@ public class Ronny : Human
         {
             return null;
         }
+    }
+    public override string UpdateBeingJsonData()
+    {
+        RonnyJson ronny = new RonnyJson();
+        ronny.speed = this.speed;
+        ronny.health = this.health;
+        ronny.damage = this.damage;
+        ronny.virtue = this.virtue;
+        
+        return JsonUtility.ToJson(ronny);
     }
 }
