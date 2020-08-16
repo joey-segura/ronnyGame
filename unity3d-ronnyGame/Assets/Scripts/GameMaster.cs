@@ -187,6 +187,7 @@ public class GameMaster : Kami
     }
     public void InitializeBattle(BeingData enemy)
     {
+        this.UpdateAllBeingsInList();
         ListBeingData partyMembers = new ListBeingData();
         ListBeingData enemyMembers = new ListBeingData();
 

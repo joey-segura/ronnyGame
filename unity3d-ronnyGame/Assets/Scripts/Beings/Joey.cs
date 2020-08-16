@@ -15,7 +15,7 @@ public class Joey : Human
     private bool follow = true;
     private void Update()
     {
-        if (ronny != null)
+        if (ronny != null && follow)
         {
             this.FollowRonny();
         }

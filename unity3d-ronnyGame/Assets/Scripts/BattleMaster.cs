@@ -226,9 +226,12 @@ public class BattleMaster : Kami
     }
     private void NewTurn()
     {
-        intentions = new List<FighterAction>();
-        intentions = this.GetIntentions();
-        StartCoroutine("PlayerAction");
+        if (this.isBattle)
+        {
+            intentions = new List<FighterAction>();
+            intentions = this.GetIntentions();
+            StartCoroutine("PlayerAction");
+        }
     }
     private void PlayAnimation(Animation anim)
     {
