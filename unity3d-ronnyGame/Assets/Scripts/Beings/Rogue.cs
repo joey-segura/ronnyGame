@@ -60,10 +60,12 @@ public class Rogue : Fighter
     {
         this.actionList = new List<FighterAction>();
         this.actionList.Add(new Attack(3, this.damage * this.damageMultiplier, null));
+        /*
         this.actionList.Add(new WeakAttack(3, 3, 2, null));
         this.actionList.Add(new BuffAttack(3, 3, 2, null));
         this.actionList.Add(new BolsterDefense(3, 3, 2, null));
         this.actionList.Add(new VulnerableAttack(3, 3, 2, null));
+        */
         base.RecalculateActions();
     }
     public override string UpdateBeingJsonData()

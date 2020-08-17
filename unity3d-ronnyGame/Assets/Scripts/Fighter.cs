@@ -28,11 +28,13 @@ public class Fighter : Being
     }
     private void InititializeBaseActions()
     {
+        /*
         this.actionList.Add(new Attack(3, this.damage * this.damageMultiplier, null));
         this.actionList.Add(new WeakAttack(3, 3, 2, null));
         this.actionList.Add(new BuffAttack(3, 3, 2, null));
         this.actionList.Add(new BolsterDefense(3, 3, 2, null));
         this.actionList.Add(new VulnerableAttack(3, 3, 2, null));
+        */
     }
     public void AddEffect(Fighter fighter, Effect effect)
     {
@@ -196,8 +198,20 @@ public class Fighter : Being
     public IEnumerator DrawIntentions(FighterAction action)
     {
         yield return new WaitForEndOfFrame(); //waiting a frame to make sure data is settled before we do this call (Not a fan)
+        if (action.targets == null)
+        {
+            yield break;
+        }
         Debug.Log($"{action.originator.name} is doing the action {action.name} to {action.targets[0].name}");
-        if (!this.canvas.gameObject.activeInHierarchy) this.ToggleCanvas();
+        string relation = TargetRelationToSelf(action.targets[0].gameObject.tag);
+        if (!action.IsValidAction(relation))
+        {
+            this.ToggleCanvas();
+        }
+        else if (!this.canvas.gameObject.activeInHierarchy)
+        {
+            this.ToggleCanvas();
+        }
         Image intention = null;
         Image direction = null;
         GameObject panel = canvas.transform.GetChild(0).gameObject;

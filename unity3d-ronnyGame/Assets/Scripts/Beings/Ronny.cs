@@ -34,7 +34,6 @@ public class Ronny : Human
             yield return new WaitForEndOfFrame();
         }
     }
-    
     public void ChangeSpeed(float newSpeed)
     {
         this.gameObject.GetComponent<playerMovement>().speed = newSpeed;
@@ -67,6 +66,19 @@ public class Ronny : Human
 
         return JsonUtility.ToJson(being);
     }
+    public void CurrentActionDecrement()
+    {
+        this.index--;
+        if (this.index < 0) this.index = actionList.Count - 1;
+        this.SetNewAction(this.actionList[this.index]);
+    }
+    public void CurrentActionIncrement()
+    {
+        this.index++;
+        if (this.index > (actionList.Count - 1)) this.index = 0;
+        this.SetNewAction(this.actionList[this.index]);
+    }
+  
     public override void InitializeBattle()
     {
         this.GetComponent<playerMovement>().enabled = false;
@@ -146,20 +158,19 @@ public class Ronny : Human
         action.originator = this.gameObject;
         this.currentAction = action;
         this.transform.GetComponentInParent<BattleMaster>().SetActionText(action.name);
+
+        StartCoroutine(this.DrawIntentions(this.currentAction));
+        
     }
     public FighterAction Turn(ListBeingData allFighters, List<FighterAction> actionList)
     {
         if (Input.GetKeyDown(KeyCode.RightArrow))
         {
-            this.index++;
-            if (this.index > (actionList.Count - 1)) this.index = 0;
-            this.SetNewAction(this.actionList[this.index]);
+            CurrentActionIncrement();
         }
         else if (Input.GetKeyDown(KeyCode.LeftArrow))
         {
-            this.index--;
-            if (this.index < 0) this.index = actionList.Count - 1;
-            this.SetNewAction(this.actionList[this.index]);
+            CurrentActionDecrement();
         }
         else if (this.currentAction == null)
         {
@@ -176,24 +187,10 @@ public class Ronny : Human
             {
                 this.turnTarget = newTarget;
                 this.currentAction.targets = new GameObject[] { this.turnTarget };
-                relation = this.TargetRelationToSelf(newTarget.tag);
-                if (!this.currentAction.IsValidAction(relation) && drawn) this.ToggleCanvas();
-                this.drawn = false;
-            }
-
-            if (this.turnTarget != null && this.currentAction != null && !this.drawn && relation != null && this.currentAction.IsValidAction(relation))
-            {
-                this.drawn = true;
                 StartCoroutine(this.DrawIntentions(this.currentAction));
-            }
-            else if (relation != null && !this.currentAction.IsValidAction(relation) && this.drawn)
-            {
-                this.drawn = false;
-                this.ToggleCanvas();
             }
         }
         
-
         if (Input.GetKey(KeyCode.Return) && relation != null && this.currentAction.IsValidAction(relation))
         {
             return this.currentAction;

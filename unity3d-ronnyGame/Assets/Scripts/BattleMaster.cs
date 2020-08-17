@@ -22,6 +22,8 @@ public class BattleMaster : Kami
     [SerializeField]
     private Canvas canvas;
     [SerializeField]
+    public Button leftArrow, rightArrow;
+    [SerializeField]
     private Text virtue, action;
     private int virtueValue = 0, virtueMax = 0;
 
@@ -189,12 +191,19 @@ public class BattleMaster : Kami
         this.turnCounter = 0;
         this.virtueValue = 0;
         this.InitializeFighters();
+        this.InitializeButtons();
         this.MoveCameraTo(1.4f, 4, -6);
         this.CalculateVirtueMax();
         this.UpdateVirtueText(0);
         this.canvas.gameObject.SetActive(true);
         this.isBattle = true;
         this.NewTurn();
+    }
+    public void InitializeButtons()
+    {
+        Ronny ronny = this.GetPlayerObject().GetComponent<Ronny>();
+        leftArrow.onClick.AddListener(ronny.CurrentActionDecrement);
+        rightArrow.onClick.AddListener(ronny.CurrentActionIncrement);
     }
     public void InitializeFighters()
     {
