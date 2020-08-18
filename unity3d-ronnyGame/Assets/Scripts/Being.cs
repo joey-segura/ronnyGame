@@ -13,6 +13,7 @@ public class Being : MonoBehaviour
 
     protected GameObject Kami;
     protected GameMaster gameMasterScript;
+    protected BattleMaster battleMasterScript;
 
     private bool debugMode = false;
 
@@ -101,6 +102,7 @@ public class Being : MonoBehaviour
         cam = Camera.main;
         Kami = this.gameObject.transform.parent.gameObject;
         gameMasterScript = Kami.GetComponent<GameMaster>();
+        battleMasterScript = Kami.GetComponent<BattleMaster>();
     }
     public void ChangeTransparancy(float alpha = .7f)
     {

@@ -9,22 +9,13 @@ public abstract class FighterAction
     public GameObject originator { get; set; }
     public GameObject[] targets { get; set; }
     public int duration, effectDuration;
-    public int virtueValue { get; set; }
     public int targetCount;
+    public float result = 0;
     public Animation animation;
     public string name { get; set; }
     public string[] validTargets;
     protected string IMAGEPATH;
-    public bool IsActionAOE()
-    {
-        if (targetCount != 1)
-        {
-            return true;
-        } else
-        {
-            return false;
-        }
-    } 
+   
     public GameObject[] GetAOETargets(ListBeingData list)
     {
         List<GameObject> targets = new List<GameObject>();
@@ -33,7 +24,7 @@ public abstract class FighterAction
         {
             for (int i = 0; i < list.BeingDatas.Count; i++)
             {
-                if (self.TargetRelationToSelf(list.BeingDatas[i].gameObject.tag) == "Foe")
+                if (self.TargetRelationToSelf(list.BeingDatas[i].gameObject) == "Foe")
                 {
                     targets.Add(list.BeingDatas[i].gameObject);
                 }
@@ -47,11 +38,48 @@ public abstract class FighterAction
                     targets.Add(list.BeingDatas[i].gameObject);
                 }
             }
+        } else if (targetCount == -2) // get all allies
+        {
+            for (int i = 0; i < list.BeingDatas.Count; i++)
+            {
+                if (originator.tag == list.BeingDatas[i].gameObject.tag 
+                    || (originator.tag == "Party" && list.BeingDatas[i].gameObject.tag == "Player") 
+                    || (originator.tag == "Player" && list.BeingDatas[i].gameObject.tag == "Party")) // have to handle all cases :(
+                {
+                    targets.Add(list.BeingDatas[i].gameObject);
+                }
+            }
         }
         return targets.ToArray();
     }
     public abstract IEnumerator Execute();
+    public string GetImagePath()
+    {
+        return this.IMAGEPATH;
+    }
     public abstract float GetValue();
+    public VisualEffectMaster GetVisualEffectMaster()
+    {
+        if (this.originator)
+        {
+            return this.originator.GetComponentInParent<VisualEffectMaster>();
+        }
+        {
+            Debug.LogError($"ERROR - {this.name} could not locate its originator to then return the visual effect master");
+            return null;
+        }
+    }
+    public bool IsActionAOE()
+    {
+        if (targetCount != 1)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
     public bool IsValidAction(string targetTag)
     {
         if (validTargets.Contains(targetTag))
@@ -62,10 +90,7 @@ public abstract class FighterAction
             return false;
         }
     }
-    public string GetImagePath()
-    {
-        return this.IMAGEPATH;
-    }
+    
 }
 public class CoroutineWithData
 {
@@ -113,7 +138,6 @@ public class Attack : FighterAction
         this.animation = _animation;
         this.targetCount = 1;
         this.validTargets = new string[] { "Foe" };
-        this.virtueValue = Mathf.RoundToInt(this.GetValue());
         this.IMAGEPATH = "UI/UI_attack";
     }
     public override IEnumerator Execute()
@@ -121,7 +145,39 @@ public class Attack : FighterAction
 
         for (int i = 0; i < targets.Length; i++)
         {
-            Mathf.RoundToInt(targets[i].GetComponent<Fighter>().AddToHealth(this.damage * -1, this.originator.GetComponent<Fighter>()));
+            result += Mathf.RoundToInt(targets[i].GetComponent<Fighter>().AddToHealth(this.damage * -1, this.originator.GetComponent<Fighter>()));
+        }
+        yield return true;
+    }
+    public override float GetValue()
+    {
+        return this.damage;
+    }
+}
+public class AttackAndBuff : FighterAction
+{
+    public float buffValue;
+    public float damage;
+    public AttackAndBuff(int _duration, float _damage, int _effectDuration, float _buffValue, Animation _animation)
+    {
+        this.name = "Attack and Buff";
+        this.duration = _duration;
+        this.damage = _damage;
+        this.effectDuration = _effectDuration;
+        this.buffValue = _buffValue;
+        this.animation = _animation;
+        this.targetCount = 1;
+        this.validTargets = new string[] { "Foe" };
+        this.IMAGEPATH = "UI/UI_Attack";
+    }
+    public override IEnumerator Execute()
+    {
+        Effect strengthen = new Strengthen(this.effectDuration, this.buffValue);
+        for (int i = 0; i < targets.Length; i++)
+        {
+            Fighter fighter = targets[i].GetComponent<Fighter>();
+            result += Mathf.RoundToInt(fighter.AddToHealth(this.damage * -1, this.originator.GetComponent<Fighter>()));
+            fighter.AddEffect(fighter, strengthen);
         }
         yield return true;
     }
@@ -141,8 +197,7 @@ public class ApplyThorns : FighterAction
         this.percentValue = _percentValue;
         this.animation = _animation;
         this.targetCount = 1;
-        this.validTargets = new string[] { "Friend" };
-        this.virtueValue = Mathf.RoundToInt(_effectDuration + (_effectDuration * _percentValue));
+        this.validTargets = new string[] { "Friend", "Self" };
         this.IMAGEPATH = "UI/UI_buff";
     }
     public override IEnumerator Execute()
@@ -162,8 +217,8 @@ public class ApplyThorns : FighterAction
 }
 public class BolsterDefense : FighterAction
 {
-    public int buffValue;
-    public BolsterDefense(int _duration, int _effectDuration ,int _buffValue, Animation _animation)
+    public float buffValue;
+    public BolsterDefense(int _duration, int _effectDuration , float _buffValue, Animation _animation)
     {
         this.name = "Bolster Defense";
         this.duration = _duration;
@@ -172,7 +227,6 @@ public class BolsterDefense : FighterAction
         this.animation = _animation;
         this.targetCount = 1;
         this.validTargets = new string[] { "Friend" };
-        this.virtueValue = _effectDuration * _buffValue;
         this.IMAGEPATH = "UI/UI_buff";
     }
     public override IEnumerator Execute()
@@ -192,8 +246,8 @@ public class BolsterDefense : FighterAction
 }
 public class BuffAttack : FighterAction
 {
-    public int buffValue;
-    public BuffAttack(int _duration, int _effectDuration ,int _buffValue, Animation _animation)
+    public float buffValue;
+    public BuffAttack(int _duration, int _effectDuration , float _buffValue, Animation _animation)
     {
         this.name = "Buff Attack";
         this.duration = _duration;
@@ -202,7 +256,6 @@ public class BuffAttack : FighterAction
         this.animation = _animation;
         this.targetCount = 1;
         this.validTargets = new string[] { "Friend" };
-        this.virtueValue = _effectDuration * _buffValue;
         this.IMAGEPATH = "UI/UI_buff";
     }
     public override IEnumerator Execute()
@@ -218,6 +271,32 @@ public class BuffAttack : FighterAction
     public override float GetValue()
     {
         return this.buffValue;
+    }
+}
+public class Cleave : FighterAction
+{
+    public float damage;
+    public Cleave(int _duration, float _damage, Animation _animation)
+    {
+        this.name = "Cleave";
+        this.duration = _duration;
+        this.damage = _damage;
+        this.animation = _animation;
+        this.targetCount = 0; // all enemies
+        this.validTargets = new string[] { "Foe" };
+        this.IMAGEPATH = "UI/UI_Attack";
+    }
+    public override IEnumerator Execute()
+    {
+        for (int i = 0; i < targets.Length; i++)
+        {
+            result += Mathf.RoundToInt(targets[i].GetComponent<Fighter>().AddToHealth(this.damage * -1, this.originator.GetComponent<Fighter>()));
+        }
+        yield return true;
+    }
+    public override float GetValue()
+    {
+        return this.damage;
     }
 }
 public class CommandToAttack : FighterAction
@@ -271,7 +350,6 @@ public class DoubleAttack : FighterAction
         this.animation = _animation;
         this.targetCount = 1;
         this.validTargets = new string[] { "Foe" };
-        this.virtueValue = Mathf.RoundToInt(this.GetValue());
         this.IMAGEPATH = "UI/UI_attack";
     }
     public override IEnumerator Execute()
@@ -291,6 +369,7 @@ public class DoubleAttack : FighterAction
 public class Heal : FighterAction
 {
     public int healValue;
+    public string prefabPath = "Prefabs/Effects/Heal";
     public Heal(int _duration, int _healValue, Animation _animation)
     {
         this.name = "Heal";
@@ -299,7 +378,6 @@ public class Heal : FighterAction
         this.animation = _animation;
         this.targetCount = 1;
         this.validTargets = new string[] { "Friend" };
-        this.virtueValue = _healValue;
         this.IMAGEPATH = "UI/UI_buff";
     }
     public override IEnumerator Execute()
@@ -307,6 +385,8 @@ public class Heal : FighterAction
         for (int i = 0; i < targets.Length; i++)
         {
             Mathf.RoundToInt(targets[i].GetComponent<Fighter>().AddToHealth(this.healValue, this.originator.GetComponent<Fighter>()));
+            Vector3 pos = new Vector3(targets[i].transform.position.x, targets[i].transform.position.y - .05f, targets[i].transform.position.z);
+            GetVisualEffectMaster().InstantiateVisualSprite(Resources.Load(prefabPath), pos, targets[i].transform.rotation, targets[i].transform, this.duration);
         }
         yield return true;
     }
@@ -327,7 +407,6 @@ public class PoisonAttack : FighterAction
         this.animation = _animation;
         this.targetCount = 1;
         this.validTargets = new string[] { "Foe" };
-        this.virtueValue = _effectDuration * _poisonDamage;
         this.IMAGEPATH = "UI/UI_attack";
         
     }

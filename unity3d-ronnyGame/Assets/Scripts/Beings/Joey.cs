@@ -73,6 +73,7 @@ public class Joey : Human
                 this.health = joey.health;
                 this.ronny = joey.ronny;
                 this.speed = joey.speed;
+                this.virtue = joey.virtue;
             }
             this.ID = being.objectID;
             this.beingData = jsonData;
@@ -87,6 +88,7 @@ public class Joey : Human
     {
         this.actionList = new List<FighterAction>();
         this.actionList.Add(new Attack(3, this.damage * this.damageMultiplier, null));
+        //this.actionList.Add(new Cleave(3, this.damage * this.damageMultiplier, null));
         //this.actionList.Add(new ApplyThorns(3, 3, .5f, null));
         /*
         this.actionList.Add(new WeakAttack(3, 3, 2, null));

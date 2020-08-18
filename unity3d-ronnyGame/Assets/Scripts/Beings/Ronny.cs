@@ -133,6 +133,7 @@ public class Ronny : Human
         this.actionList.Add(new Attack(3, this.damage * this.damageMultiplier, null));
         this.actionList.Add(new Heal(3, 3, null));
         this.actionList.Add(new BuffAttack(3, 3, 5, null));
+        this.actionList.Add(new Cleave(3, this.damage * this.damageMultiplier, null));
         this.actionList.Add(new CommandToAttack(3, null));
         base.RecalculateActions();
     }
@@ -157,10 +158,9 @@ public class Ronny : Human
         }
         action.originator = this.gameObject;
         this.currentAction = action;
+       
         this.transform.GetComponentInParent<BattleMaster>().SetActionText(action.name);
-
         StartCoroutine(this.DrawIntentions(this.currentAction));
-        
     }
     public FighterAction Turn(ListBeingData allFighters, List<FighterAction> actionList)
     {
@@ -179,19 +179,23 @@ public class Ronny : Human
         
         if (this.currentAction.IsActionAOE())
         {
-            this.currentAction.GetAOETargets(allFighters);
+            this.currentAction.targets = this.currentAction.GetAOETargets(allFighters);
         } else
         {
             GameObject newTarget = this.ChooseTarget(allFighters);
             if ((this.turnTarget == null || (newTarget != this.turnTarget)) && newTarget != null)
             {
-                this.turnTarget = newTarget;
-                this.currentAction.targets = new GameObject[] { this.turnTarget };
-                StartCoroutine(this.DrawIntentions(this.currentAction));
+                string relation = this.TargetRelationToSelf(newTarget);
+                if (this.currentAction.IsValidAction(relation))
+                {
+                    this.turnTarget = newTarget;
+                    this.currentAction.targets = new GameObject[] { this.turnTarget };
+                    StartCoroutine(this.DrawIntentions(this.currentAction));
+                }
             }
         }
         
-        if (Input.GetKey(KeyCode.Return) && relation != null && this.currentAction.IsValidAction(relation))
+        if (Input.GetKey(KeyCode.Return) && this.currentAction.targets != null)
         {
             return this.currentAction;
         } else

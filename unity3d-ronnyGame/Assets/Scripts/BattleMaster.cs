@@ -36,12 +36,14 @@ public class BattleMaster : Kami
         worldSceneName = sceneMaster.GetCurrentSceneName();
         battleSceneName = sceneMaster.GetBattleSceneName(worldSceneName);
     }
-    public void AddToVirtue(int value)
+    public void AddToVirtue(float initValue)
     {
+        int value = Mathf.RoundToInt(Mathf.Abs(initValue) / 5);
         if (value < 1)
         {
             value = 1;
         }
+        Debug.Log($"Local virtue changed by {value}");
         this.virtueValue += value;
         UpdateVirtueText(this.virtueValue);
     }
@@ -287,12 +289,6 @@ public class BattleMaster : Kami
             while (!cd.finished)
             {
                 yield return new WaitForEndOfFrame();
-            }
-            float damage = action.GetValue();
-            if (damage != 0 && action.originator.tag == "Party")
-            {
-                Debug.Log($"Local Virtue increased by {Mathf.RoundToInt(Mathf.Abs(action.virtueValue) / 5)}");
-                this.AddToVirtue(Mathf.RoundToInt(Mathf.Abs(action.virtueValue) / 5));
             }
         }
         yield return true;

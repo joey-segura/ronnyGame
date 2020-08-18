@@ -19,23 +19,10 @@ public class Fighter : Being
     //private List<Effect> currentEffects = new List<Effect>();
     protected List<FighterAction> actionList = new List<FighterAction>();
 
+    public GameObject[] direction;
     protected Vector3 battlePosition;
     private Dictionary<int, Func<float, Fighter, float>> onHitEffects = new Dictionary<int, Func<float, Fighter, float>>();
 
-    public virtual void Awake()
-    {
-        Invoke("InititializeBaseActions", 1);
-    }
-    private void InititializeBaseActions()
-    {
-        /*
-        this.actionList.Add(new Attack(3, this.damage * this.damageMultiplier, null));
-        this.actionList.Add(new WeakAttack(3, 3, 2, null));
-        this.actionList.Add(new BuffAttack(3, 3, 2, null));
-        this.actionList.Add(new BolsterDefense(3, 3, 2, null));
-        this.actionList.Add(new VulnerableAttack(3, 3, 2, null));
-        */
-    }
     public void AddEffect(Fighter fighter, Effect effect)
     {
         effect.Affliction(fighter);
@@ -51,21 +38,13 @@ public class Fighter : Being
         Debug.Log($"{this.name} has {onHitEffects.Count} onhit functions");
         change = change / this.defenseMultiplier;
         Debug.Log($"{this.name}'s health just got changed by {change}");
+        if (causer.gameObject.tag == "Party") // ugly but sensical solution, every fighther on health change should check if the causer was a party member (this accounts for all buff values etc)
+        {
+            battleMasterScript.AddToVirtue(change);
+        }
         this.health += change;
         this.DeathCheck();
         return change;
-    }
-    public bool AddToCurrentEffects(int key, Effect effect)
-    {
-        if (currentEffects.ContainsKey(key))
-        {
-            return false;
-        }
-        else
-        {
-            currentEffects.Add(key, effect);
-            return true;
-        }
     }
     public bool AddToOnHitEffects(int key, Func<float, Fighter, float> method)
     {
@@ -141,7 +120,7 @@ public class Fighter : Being
                 while (!validTarget)
                 {
                     target = this.ChooseTarget(allFighters);
-                    relation = this.TargetRelationToSelf(target.tag);
+                    relation = this.TargetRelationToSelf(target);
                     if (action.IsValidAction(relation))
                     {
                         validTarget = true;
@@ -167,7 +146,7 @@ public class Fighter : Being
         int targetIndex = UnityEngine.Random.Range(0, allFighters.BeingDatas.Count);
         return allFighters.BeingDatas[targetIndex].gameObject;
     }
-    private static int CompareEffectsByDuration(Effect x, Effect y)
+    private static int CompareEffectsByDuration(Effect x, Effect y) // might need it later
     {
         if (x.duration > y.duration)
         {
@@ -202,53 +181,55 @@ public class Fighter : Being
         {
             yield break;
         }
-        Debug.Log($"{action.originator.name} is doing the action {action.name} to {action.targets[0].name}");
-        string relation = TargetRelationToSelf(action.targets[0].gameObject.tag);
-        if (!action.IsValidAction(relation))
+        string relation = TargetRelationToSelf(action.targets[0].gameObject);
+        if (!action.IsValidAction(relation) && action.targetCount == 1 && this.canvas.gameObject.activeInHierarchy)
         {
             this.ToggleCanvas();
         }
-        else if (!this.canvas.gameObject.activeInHierarchy)
+        else if (!this.canvas.gameObject.activeInHierarchy && action.IsValidAction(relation))
         {
             this.ToggleCanvas();
         }
-        Image intention = null;
-        Image direction = null;
         GameObject panel = canvas.transform.GetChild(0).gameObject;
-
-        for (int i = 0; i < panel.transform.childCount; i++)
-        {
-            switch (panel.transform.GetChild(i).name)
-            {
-                case "Intention":
-                    intention = panel.transform.GetChild(i).GetComponent<Image>();
-                    break;
-                case "Direction":
-                    direction = panel.transform.GetChild(i).GetComponent<Image>();
-                    break;
-                default:
-                    break;
-            }
-        }
-        direction.transform.position = action.originator.transform.position;
-        direction.transform.rotation = Quaternion.Euler(90, 0, 0);
-        Vector3 self = direction.rectTransform.position;
-        Vector3 target = new Vector3(action.targets[0].transform.position.x, direction.rectTransform.position.y, action.targets[0].transform.position.z);
-
-        float angle = Vector3.SignedAngle(target - self, transform.forward, Vector3.up);
-        
-        direction.transform.rotation = Quaternion.Euler(new Vector3(direction.transform.rotation.eulerAngles.x, direction.transform.rotation.eulerAngles.y, angle));
-        direction.transform.position = Vector3.MoveTowards(self, target, Vector3.Distance(self, target) / 2);
-        direction.transform.position += new Vector3(0, -.35f, 0);
-        direction.rectTransform.sizeDelta = new Vector2(direction.rectTransform.sizeDelta.x, Vector3.Distance(target, self));
-        /*Color tempColor = direction.color; //Might be necessary?
-        tempColor.a = .1f;
-        direction.color = tempColor;*/
-
+        Image intention = panel.transform.GetComponentInChildren<Image>();
         Texture2D image = Resources.Load(action.GetImagePath()) as Texture2D;
         Sprite sprite = Sprite.Create(image, new Rect(0, 0, image.width, image.height), new Vector2(0, 0));
         sprite.name = action.GetImagePath();
         intention.sprite = sprite;
+        
+        for (int i = 0; i < direction.Length; i++)
+        {
+            Destroy(direction[i]);
+        }
+        direction = new GameObject[action.targets.Length];
+        for (int i = 0; i < action.targets.Length; i++)
+        {
+            string directionPath = "Prefabs/UI/Direction";
+            VisualEffectMaster visual = action.GetVisualEffectMaster();
+            direction[i] = visual.InstantiateVisualSprite(Resources.Load(directionPath), action.targets[i].transform.position, action.targets[i].transform.rotation, panel.transform);
+
+            direction[i].transform.position = action.originator.transform.position;
+            direction[i].transform.rotation = Quaternion.Euler(90, 0, 0);
+            RectTransform rect = direction[i].GetComponent<RectTransform>();
+            Vector3 self = rect.position;
+            Vector3 target = new Vector3(action.targets[i].transform.position.x, self.y, action.targets[i].transform.position.z);
+
+            float angle = Vector3.SignedAngle(target - self, transform.forward, Vector3.up);
+
+            direction[i].transform.rotation = Quaternion.Euler(new Vector3(direction[i].transform.rotation.eulerAngles.x, direction[i].transform.rotation.eulerAngles.y, angle));
+            direction[i].transform.position = Vector3.MoveTowards(self, target, Vector3.Distance(self, target) / 2);
+            direction[i].transform.position += new Vector3(0, -.35f, 0);
+            rect.sizeDelta = new Vector2(rect.sizeDelta.x, Vector3.Distance(target, self));
+            /*Color tempColor = direction.color; //Might be necessary?
+            tempColor.a = .1f;
+            direction.color = tempColor;*/
+        }
+        Debug.Log($"{action.originator.name} is doing the action {action.name} to {action.targets[0].name}");
+        
+
+        
+
+        
 
         yield return null;
     }
@@ -387,9 +368,13 @@ public class Fighter : Being
             return false;
         }
     }
-    public string TargetRelationToSelf(string targetTag)
+    public string TargetRelationToSelf(GameObject target)
     {
-        if (this.gameObject.tag == "Party" && targetTag == "Player")
+        string targetTag = target.tag;
+        if (this.gameObject == target)
+        {
+            return "Self";
+        } else if (this.gameObject.tag == "Party" && targetTag == "Player")
         {
             return "Friend";
         } else if (this.gameObject.tag == "Player" && targetTag == "Party")

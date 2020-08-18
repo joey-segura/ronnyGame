@@ -93,6 +93,7 @@
     <Compile Include="Assets\Scripts\MainMenuMaster.cs" />
     <Compile Include="Assets\Scripts\Relater.cs" />
     <Compile Include="Assets\Scripts\SceneMaster.cs" />
+    <Compile Include="Assets\Scripts\VisualEffectMaster.cs" />
     <Compile Include="Assets\Scripts\cameraRotation.cs" />
     <Compile Include="Assets\Scripts\playerMovement.cs" />
     <None Include="Assets\TextMesh Pro\Resources\Shaders\TMPro.cginc" />

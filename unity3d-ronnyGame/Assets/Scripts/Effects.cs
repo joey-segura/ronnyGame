@@ -104,11 +104,7 @@ public class Poison : Effect
     }
     public override void OnTick(Fighter fighter)
     {
-        int virtue = Mathf.RoundToInt(Mathf.Abs(fighter.AddToHealth(this.poisonDamage * -1, fighter)) / 5);
-        if (causer.tag == "Party")
-        {
-            causer.GetComponentInParent<BattleMaster>().AddToVirtue(virtue);
-        }
+        fighter.AddToHealth(this.poisonDamage * -1, fighter);
     }
 }
 public class Strengthen : Effect
