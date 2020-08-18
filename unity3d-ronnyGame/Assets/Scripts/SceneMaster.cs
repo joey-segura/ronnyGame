@@ -6,9 +6,9 @@ using UnityEngine.SceneManagement;
 public class SceneMaster : Kami
 {
     public static SceneMaster Instance { get; private set; }
-    public bool[] levelLoaded = { false, false, false, false, false, false, false, false, false, false, false };
+    public bool[] levelLoaded = { false, false, false, false, false, false, false, false, false, false, false, false };
 
-    public static string[] SCENENAMES = { "exploreScene", "rotation_testScene", "Battle_Scene_Test", "Ritter", "Ritter_Battle", "Joey", "Joey_Battle", "Main_Menu" };
+    public static string[] SCENENAMES = { "exploreScene", "rotation_testScene", "Battle_Scene_Test", "Ritter", "Ritter_Battle", "Joey", "Joey_Battle", "Main_Menu", "Opening_Cinematic" };
 
     public string currentSceneName;
     public string lastSceneName = "Main_Menu";
@@ -78,6 +78,7 @@ public class SceneMaster : Kami
     {
         this.levelLoaded = data.levelLoaded;
         this.currentSceneName = data.currentSceneName;
+        this.newGame = data.newGame;
     }
     private bool LevelLoaded(string sceneName)
     {

@@ -23,8 +23,7 @@ public class MainMenuMaster : MonoBehaviour
     {
         Debug.LogWarning("New Game currently set to Ritter scene when we plan on having Joeys dungeon first");
         File.WriteAllText(KamiDataPath, string.Empty);
-        sceneMaster.NewGame();
-        sceneMaster.ChangeScene("Ritter");
+        sceneMaster.ChangeScene("Opening_Cinematic");
     }
     void LoadGame()
     {

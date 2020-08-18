@@ -76,6 +76,7 @@
     <Compile Include="Assets\Scripts\Beings\Rogue.cs" />
     <Compile Include="Assets\Scripts\Beings\Ronny.cs" />
     <Compile Include="Assets\Scripts\Beings\Sign.cs" />
+    <Compile Include="Assets\Scripts\CinematicPlayer.cs" />
     <Compile Include="Assets\Scripts\ConsoleMaster.cs" />
     <Compile Include="Assets\Scripts\Console_Commands\CommandBeingDebug.cs" />
     <Compile Include="Assets\Scripts\Console_Commands\CommandChangeScene.cs" />

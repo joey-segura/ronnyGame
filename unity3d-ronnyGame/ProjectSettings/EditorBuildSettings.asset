@@ -29,4 +29,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Main_Menu.unity
     guid: 05da6ac52ae05a241bac40907a9593e1
+  - enabled: 1
+    path: Assets/Scenes/Opening_Cinematic.unity
+    guid: bc5651f2dbec96b49aa2d39354b5671c
   m_configObjects: {}

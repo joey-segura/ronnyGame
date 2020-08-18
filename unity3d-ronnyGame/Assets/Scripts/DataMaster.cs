@@ -27,6 +27,7 @@ public class GameMasterJson
 public class SceneMasterJson
 {
     public bool[] levelLoaded;
+    public bool newGame;
     public static string[] SCENENAMES;
     public string currentSceneName;
     public string lastSceneName;
@@ -68,6 +69,25 @@ public class DataMaster : Kami
             gameMaster.DestroyAllBeings();
             gameMaster.InjectData(gameMasterJson);
             sceneMaster.InjectData(sceneMasterJson);
+        }
+    }
+    public string GetMasterJson(string name)
+    {
+        StreamReader reader = new StreamReader(KamiDataPath);
+        string dataMaster = reader.ReadLine();
+        string gameMaster = reader.ReadLine();
+        string sceneMaster = reader.ReadLine();
+
+        switch (name)
+        {
+            case "dataMaster":
+                return dataMaster;
+            case "gameMaster":
+                return gameMaster;
+            case "sceneMaster":
+                return sceneMaster;
+            default:
+                return null;
         }
     }
 }
