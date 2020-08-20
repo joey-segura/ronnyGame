@@ -27,20 +27,6 @@ public class Ritter : Human
     {
         return base.TurnAction(allFighters);
     }
-    public override string CompactBeingDataIntoJson()
-    {
-        BeingData being = JsonUtility.FromJson<BeingData>(this.beingData);
-        being.location = this.gameObject.transform.position;
-        being.angle = this.gameObject.transform.rotation;
-        being.scale = this.gameObject.transform.localScale;
-        being.gameObject = this.gameObject;
-        being.prefabName = this.gameObject.name;
-        being.objectID = this.ID;
-
-        being.jsonData = this.UpdateBeingJsonData();
-
-        return JsonUtility.ToJson(being);
-    }
     private void FollowRonny()
     {
         if (Vector3.Distance(this.transform.position, ronny.transform.position) > .5f)

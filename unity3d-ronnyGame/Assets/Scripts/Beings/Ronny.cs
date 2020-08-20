@@ -51,21 +51,6 @@ public class Ronny : Human
         }
         return this.target;
     }
-  
-    public override string CompactBeingDataIntoJson()
-    {
-        BeingData being = JsonUtility.FromJson<BeingData>(this.beingData);
-        being.location = this.gameObject.transform.position;
-        being.angle = this.gameObject.transform.rotation;
-        being.scale = this.gameObject.transform.localScale;
-        being.gameObject = this.gameObject;
-        being.prefabName = this.gameObject.name;
-        being.objectID = this.ID;
-
-        being.jsonData = this.UpdateBeingJsonData();
-
-        return JsonUtility.ToJson(being);
-    }
     public void CurrentActionDecrement()
     {
         this.index--;
@@ -202,6 +187,14 @@ public class Ronny : Human
         {
             return null;
         }
+    }
+    public void ToggleMovementAndCamera()
+    {
+        playerMovement pm = this.GetComponent<playerMovement>();
+        cameraRotation cr = this.GetComponent<cameraRotation>();
+        pm.Idle();
+        pm.enabled = pm.isActiveAndEnabled ? false : true;
+        cr.enabled = cr.isActiveAndEnabled ? false : true;
     }
     public override string UpdateBeingJsonData()
     {

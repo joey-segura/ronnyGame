@@ -60,5 +60,9 @@ public class playerMovement : MonoBehaviour
             anim.SetBool("Moving", false);
         }
     }
-
+    public void Idle()
+    {
+        //anim.SetFloat("Facing", 1);
+        anim.SetBool("Moving", false);
+    }
 }

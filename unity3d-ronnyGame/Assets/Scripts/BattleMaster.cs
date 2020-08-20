@@ -194,7 +194,7 @@ public class BattleMaster : Kami
         this.virtueValue = 0;
         this.InitializeFighters();
         this.InitializeButtons();
-        this.MoveCameraTo(1.4f, 4, -6);
+        this.MoveCameraTo(-0.05f, 7.23f, -13.4f, 30.066f, 0, 0);
         this.CalculateVirtueMax();
         this.UpdateVirtueText(0);
         this.canvas.gameObject.SetActive(true);
@@ -229,10 +229,11 @@ public class BattleMaster : Kami
         }
         this.UpdateBothPartiesFromAllFigthers();
     }
-    private void MoveCameraTo(float x, float y, float z)
+    private void MoveCameraTo(float x, float y, float z, float ex, float ey, float ez)
     {
         Camera cam = Camera.main;
-        cam.transform.position += new Vector3(x, y, z);
+        cam.transform.position = new Vector3(x, y, z);
+        cam.transform.rotation = Quaternion.Euler(ex, ey, ez);
         cam.transform.parent = this.transform;
     }
     private void NewTurn()

@@ -25,8 +25,6 @@ public class Being : MonoBehaviour
 
     public string beingData;
 
-    public float multiplier;
-
     private Camera cam;
 
     public Canvas canvas;
@@ -110,11 +108,17 @@ public class Being : MonoBehaviour
     }
     public virtual string CompactBeingDataIntoJson()
     {
-        //the function overriding this one will need to return string jsonData
-        //will be overriden by extended objects but left to be referenced by Being.CompactBeingDataIntoJson
-        //need to bundle up class specific json (jsonUtility.ToJson('individual class'))
-        //need to update values in beingData (location, angle, scale, jsonData (class specific json))
-        return JsonUtility.ToJson(beingData);
+        BeingData being = JsonUtility.FromJson<BeingData>(this.beingData);
+        being.location = this.gameObject.transform.position;
+        being.angle = this.gameObject.transform.rotation;
+        being.scale = this.gameObject.transform.localScale;
+        being.gameObject = this.gameObject;
+        being.prefabName = this.gameObject.name;
+        being.objectID = this.ID;
+
+        being.jsonData = this.UpdateBeingJsonData();
+
+        return JsonUtility.ToJson(being);
     }
     public void DestroyBeing()
     {
