@@ -377,7 +377,7 @@ public class Heal : FighterAction
         this.healValue = _healValue;
         this.animation = _animation;
         this.targetCount = 1;
-        this.validTargets = new string[] { "Friend" };
+        this.validTargets = new string[] { "Friend", "Self"};
         this.IMAGEPATH = "UI/UI_buff";
     }
     public override IEnumerator Execute()
@@ -425,7 +425,36 @@ public class PoisonAttack : FighterAction
         return this.poisonDamage;
     }
 }
-
+public class TauntAll :FighterAction
+{
+    public GameObject attackTarget;
+    public TauntAll(int _duration, Animation _animation)
+    {
+        this.name = "Taunt";
+        this.duration = _duration;
+        this.animation = _animation;
+        this.targetCount = 0;
+        this.validTargets = new string[] { "Foe" };
+        this.IMAGEPATH = "UI/UI_Attack";
+    }
+    public override IEnumerator Execute()
+    {
+        for (int i = 0; i < targets.Length; i++)
+        {
+            Fighter fighter = targets[i].GetComponent<Fighter>();
+            Attack attack = new Attack(3, fighter.damage * fighter.damageMultiplier, null);
+            attack.originator = targets[i];
+            attack.targets = new GameObject[] { originator };
+            fighter.SetAction(attack);
+        }
+        
+        yield return true;
+    }
+    public override float GetValue()
+    {
+        return 0;
+    }
+}
 public class VulnerableAttack : FighterAction
 {
     public int vulnerableValue;

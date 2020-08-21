@@ -73,7 +73,26 @@ public class Joey : Human
     public override void RecalculateActions()
     {
         this.actionList = new List<FighterAction>();
-        this.actionList.Add(new Attack(3, this.damage * this.damageMultiplier, null));
+        switch (GetLevel())
+        {
+            case 0:
+                this.actionList.Add(new Attack(3, this.damage * this.damageMultiplier, null));
+                break;
+            case 1:
+                this.actionList.Add(new Attack(3, this.damage * this.damageMultiplier, null));
+                this.actionList.Add(new Cleave(3, this.damage * this.damageMultiplier, null));
+                break;
+            case 2:
+                break;
+            case 3:
+                break;
+            case 4:
+                break;
+            case 5:
+                break;
+        }
+        
+        
         //this.actionList.Add(new Cleave(3, this.damage * this.damageMultiplier, null));
         //this.actionList.Add(new ApplyThorns(3, 3, .5f, null));
         /*

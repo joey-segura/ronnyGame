@@ -213,23 +213,20 @@ public class Fighter : Being
             RectTransform rect = direction[i].GetComponent<RectTransform>();
             Vector3 self = rect.position;
             Vector3 target = new Vector3(action.targets[i].transform.position.x, self.y, action.targets[i].transform.position.z);
+            
 
             float angle = Vector3.SignedAngle(target - self, transform.forward, Vector3.up);
 
             direction[i].transform.rotation = Quaternion.Euler(new Vector3(direction[i].transform.rotation.eulerAngles.x, direction[i].transform.rotation.eulerAngles.y, angle));
             direction[i].transform.position = Vector3.MoveTowards(self, target, Vector3.Distance(self, target) / 2);
             direction[i].transform.position += new Vector3(0, -.35f, 0);
-            rect.sizeDelta = new Vector2(rect.sizeDelta.x, Vector3.Distance(target, self));
+            //rect.sizeDelta = new Vector2(rect.sizeDelta.x, Vector3.Distance(self, action.targets[i].transform.position));
+            rect.sizeDelta = new Vector2(rect.sizeDelta.x, (Vector3.Distance(target, self) / action.originator.transform.localScale.x));
             /*Color tempColor = direction.color; //Might be necessary?
             tempColor.a = .1f;
             direction.color = tempColor;*/
         }
         Debug.Log($"{action.originator.name} is doing the action {action.name} to {action.targets[0].name}");
-        
-
-        
-
-        
 
         yield return null;
     }

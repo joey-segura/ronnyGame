@@ -44,8 +44,7 @@ public class CinematicPlayer : MonoBehaviour
     }
     private void End()
     {
-        sceneMaster.ChangeScene("Ritter");
+        sceneMaster.ChangeScene("Joey");
         sceneMaster.NewGame(); // have to call new game after so sceneMaster's data is finalized with new game data
-        Debug.LogWarning("Have to change these Ritters to Joey's Eventually!");
     }
 }

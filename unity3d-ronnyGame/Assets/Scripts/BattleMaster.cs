@@ -182,11 +182,11 @@ public class BattleMaster : Kami
         this.AssignScenes();
         for (int i = 0; i < partyMembers.BeingDatas.Count; i++)
         {
-            partyMembers.BeingDatas[i].location = new Vector3(-1.45f, .4f, -1.5f + (1.5f * i));
+            partyMembers.BeingDatas[i].location = new Vector3(-6f, .4f, -7.5f + (7.5f * i));
         }
         for (int i = 0; i < enemyMembers.BeingDatas.Count; i++)
         {
-            enemyMembers.BeingDatas[i].location = new Vector3(1.45f, .4f, -1.5f + (1.5f * i));
+            enemyMembers.BeingDatas[i].location = new Vector3(6f, .4f, -7.5f + (7.5f * i));
         }
         this.FillMembers(partyMembers, enemyMembers);
         sceneMaster.ChangeScene(this.battleSceneName);

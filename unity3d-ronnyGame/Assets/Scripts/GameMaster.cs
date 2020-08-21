@@ -222,7 +222,7 @@ public class GameMaster : Kami
         this.GameMasterBeingDataList = new ListBeingData();
         this.isSceneChanging = true;
         this.objectIDCounter = 0;
-        this.LoadInitialSceneData("Ritter");
+        this.LoadInitialSceneData("Joey");
         Debug.LogWarning("Loaded New game but Ritter isn't the first scene that should be loaded! Change this!");
     }
 }

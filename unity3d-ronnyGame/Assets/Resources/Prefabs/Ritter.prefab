@@ -245,7 +245,7 @@ Transform:
   m_GameObject: {fileID: 9143861982053479823}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -7.45, y: 4.52, z: 12.138901}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 5, y: 5, z: 5}
   m_Children:
   - {fileID: 5390856609377977951}
   m_Father: {fileID: 0}
@@ -328,7 +328,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   interactable: 0
   beingData: 
-  multiplier: 0
   canvas: {fileID: 0}
   health: 0
   damage: 0
@@ -337,6 +336,7 @@ MonoBehaviour:
   isStunned: 0
   isPoisoned: 0
   party: []
+  direction: []
   virtue: 0
   ronny: {fileID: 0}
   speed: 0

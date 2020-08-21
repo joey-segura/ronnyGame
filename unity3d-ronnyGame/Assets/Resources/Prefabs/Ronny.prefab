@@ -26,7 +26,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1875209977991061001}
   m_LocalRotation: {x: 0.25937888, y: -0, z: -0, w: 0.96577567}
-  m_LocalPosition: {x: 0, y: 2.83, z: -5.912037}
+  m_LocalPosition: {x: 0, y: 1, z: -2}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1875209978368580811}
@@ -59,7 +59,7 @@ Camera:
   far clip plane: 1000
   field of view: 52.2
   orthographic: 1
-  orthographic size: 2
+  orthographic size: 8
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -115,7 +115,7 @@ Transform:
   m_GameObject: {fileID: 1875209978368580813}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -1.159, y: 1.35, z: 0.34203672}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 5, y: 5, z: 5}
   m_Children:
   - {fileID: 1875209977991060998}
   - {fileID: 1488840244812298384}
@@ -262,7 +262,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   interactable: 0
   beingData: 
-  multiplier: 0
   canvas: {fileID: 0}
   health: 0
   damage: 0
