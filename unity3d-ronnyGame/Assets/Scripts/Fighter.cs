@@ -219,7 +219,7 @@ public class Fighter : Being
 
             direction[i].transform.rotation = Quaternion.Euler(new Vector3(direction[i].transform.rotation.eulerAngles.x, direction[i].transform.rotation.eulerAngles.y, angle));
             direction[i].transform.position = Vector3.MoveTowards(self, target, Vector3.Distance(self, target) / 2);
-            direction[i].transform.position += new Vector3(0, -.35f, 0);
+            direction[i].transform.position += new Vector3(0, -1.75f, 0);
             //rect.sizeDelta = new Vector2(rect.sizeDelta.x, Vector3.Distance(self, action.targets[i].transform.position));
             rect.sizeDelta = new Vector2(rect.sizeDelta.x, (Vector3.Distance(target, self) / action.originator.transform.localScale.x));
             /*Color tempColor = direction.color; //Might be necessary?
@@ -258,7 +258,7 @@ public class Fighter : Being
                     names += $"{currentAction.targets[i].name} ";
                 }
             }
-            GUI.Box(rect, $"Action name: {currentAction.name}\n Targets name: {names}\n Value: {currentAction.GetValue()}");
+            GUI.Box(rect, $"Character Name: {name}\n HP: {health}\n Action name: {currentAction.name}\n Targets name: {names}\n Value: {currentAction.GetValue()}");
         }
     }
     public List<FighterAction> GetActions()
@@ -339,11 +339,6 @@ public class Fighter : Being
         this.currentAction = action;
         StartCoroutine("DrawIntentions", action);
     }
-    public void SetHealth(float health)
-    {
-        this.health = health;
-    }
-    
     public bool RemoveEffect(int key)
     {
         if (currentEffects.Remove(key))

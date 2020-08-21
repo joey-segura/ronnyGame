@@ -42,6 +42,27 @@ public class Joey : Human
     }
     public override void InitializeBattle()
     {
+        switch (GetLevel())
+        {
+            case 0:
+                health = 10;
+                break;
+            case 1:
+                health = 20;
+                break;
+            case 2:
+                health = 30;
+                break;
+            case 3:
+                health = 40;
+                break;
+            case 4:
+                health = 50;
+                break;
+            case 5:
+                health = 60;
+                break;
+        }
         this.follow = false;
         base.InitializeBattle();
     }

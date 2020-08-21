@@ -53,6 +53,14 @@ public abstract class FighterAction
         return targets.ToArray();
     }
     public abstract IEnumerator Execute();
+    public virtual float GetCost()
+    {
+        return 0;
+    }
+    public virtual float GetEffectValue()
+    {
+        return 0;
+    }
     public string GetImagePath()
     {
         return this.IMAGEPATH;
@@ -181,6 +189,10 @@ public class AttackAndBuff : FighterAction
         }
         yield return true;
     }
+    public override float GetEffectValue()
+    {
+        return this.buffValue;
+    }
     public override float GetValue()
     {
         return this.damage;
@@ -239,6 +251,10 @@ public class BolsterDefense : FighterAction
         }
         yield return true;
     }
+    public override float GetEffectValue()
+    {
+        return this.buffValue;
+    }
     public override float GetValue()
     {
         return this.buffValue;
@@ -267,6 +283,14 @@ public class BuffAttack : FighterAction
             fighter.AddEffect(fighter, strengthen);
         }
         yield return true;
+    }
+    public override float GetEffectValue()
+    {
+        return this.buffValue;
+    }
+    public override float GetCost()
+    {
+        return 10;
     }
     public override float GetValue()
     {
@@ -334,6 +358,10 @@ public class CommandToAttack : FighterAction
         fighter.SetAction(attack);
         yield return true;
     }
+    public override float GetCost()
+    {
+        return 10;
+    }
     public override float GetValue()
     {
         return 0;
@@ -389,6 +417,10 @@ public class Heal : FighterAction
             GetVisualEffectMaster().InstantiateVisualSprite(Resources.Load(prefabPath), pos, targets[i].transform.rotation, targets[i].transform, this.duration);
         }
         yield return true;
+    }
+    public override float GetCost()
+    {
+        return 7.5f;
     }
     public override float GetValue()
     {
@@ -450,6 +482,10 @@ public class TauntAll :FighterAction
         
         yield return true;
     }
+    public override float GetCost()
+    {
+        return 10;
+    }
     public override float GetValue()
     {
         return 0;
@@ -479,6 +515,10 @@ public class VulnerableAttack : FighterAction
         }
         yield return true;
     }
+    public override float GetEffectValue()
+    {
+        return this.vulnerableValue;
+    }
     public override float GetValue()
     {
         return this.vulnerableValue;
@@ -507,6 +547,10 @@ public class WeakAttack : FighterAction
             fighter.AddEffect(fighter, weak);
         }
         yield return true;
+    }
+    public override float GetEffectValue()
+    {
+        return this.weakValue;
     }
     public override float GetValue()
     {

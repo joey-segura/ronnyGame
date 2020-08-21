@@ -24,7 +24,7 @@ public class BattleMaster : Kami
     [SerializeField]
     public Button leftArrow, rightArrow;
     [SerializeField]
-    private Text virtue, action;
+    private Text virtue, virtueExpectation, action;
     private int virtueValue = 0, virtueMax = 0;
 
     public void AddFighter(BeingData being)
@@ -150,6 +150,18 @@ public class BattleMaster : Kami
         partyMembers = ronnyParty;
         enemyMembers = enemyParty;
     }
+    private GameObject GetAllyObject()
+    {
+        GameObject ally = null;
+        for (int i = 0; i < allFighters.BeingDatas.Count; i++)
+        {
+            if (allFighters.BeingDatas[i].gameObject.tag == "Party")
+            {
+                ally = allFighters.BeingDatas[i].gameObject;
+            }
+        }
+        return ally;
+    }
     private List<FighterAction> GetIntentions()
     {
         List<FighterAction> actions = new List<FighterAction>();
@@ -242,6 +254,7 @@ public class BattleMaster : Kami
         {
             intentions = new List<FighterAction>();
             intentions = this.GetIntentions();
+            PredictVirtueGain();
             StartCoroutine("PlayerAction");
         }
     }
@@ -277,9 +290,84 @@ public class BattleMaster : Kami
         {
             yield return new WaitForEndOfFrame();
         }
+        ronny.AddToHealth(action.GetCost() * -1, ronny);
         ronny.StartCoroutine("MoveToBattlePosition");
         turn = false;
         StartCoroutine("ProcessAIActions");
+    }
+    private void PredictVirtueGain() //nastiest function to date (not a fan because it doesn't include the player altering other intentions
+    {
+        GameObject ally = GetAllyObject();
+        Fighter allyF = ally.GetComponent<Fighter>();
+        FighterAction allyAction = intentions.Last<FighterAction>();
+        float[] defenseMult = new float[allyAction.targets.Length];
+        float damageMult = allyF.damageMultiplier;
+        for (int i = 0; i < allyAction.targets.Length; i++)
+        {
+            defenseMult[i] = allyAction.targets[i].GetComponent<Fighter>().defenseMultiplier;
+        }
+        foreach (FighterAction action in intentions)
+        {
+            if (action.originator.tag == "Party")
+            {
+                if (action.name.Contains("Attack"))
+                {
+                    float virtue = 0;
+                    for(int i = 0; i < action.targets.Length; i++)
+                    {
+                        virtue += (allyF.damage * damageMult) / defenseMult[i];
+                    }
+                    virtueExpectation.text = $"Expected Gain: {Mathf.RoundToInt(Mathf.Abs(virtue / 5))}";
+                }
+            }else
+            {
+                if ((action.name.Contains("Buff") || action.name.Contains("Weak")) && action.targets.Contains<GameObject>(ally))
+                {
+                    if (action.name.Contains("Buff"))
+                    {
+                        damageMult = damageMult * action.GetEffectValue();
+                    }
+                    else // its just weak
+                    {
+                        Debug.Log("weak");
+                        damageMult = damageMult / action.GetEffectValue();
+                    }
+                } else if (action.name.Contains("Vulnerable") || action.name.Contains("Bolster"))
+                {
+                    for (int i = 0; i < action.targets.Length; i++)
+                    {
+                        for (int j = 0; j < allyAction.targets.Length; j++)
+                        {
+                            if (action.targets[i] == allyAction.targets[j] && action.name.Contains("Bolster"))
+                            {
+                                defenseMult[j] = defenseMult[j] * action.GetEffectValue();
+                            } else if (action.targets[i] == allyAction.targets[j]) //all thats left is vulnerable
+                            {
+                                defenseMult[j] = defenseMult[j] / action.GetEffectValue();
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    public void PredictVirtueGainWithPlayerAction(FighterAction action)
+    {
+        bool included = false;
+        for (int i = 0; i < intentions.Count; i++)
+        {
+            if (intentions[i].originator == action.originator)
+            {
+                included = true;
+                intentions[i] = action;
+            }
+        }
+        if (!included)
+        {
+            intentions.Add(action);
+        }
+        intentions.Sort(CompareActionsByOriginatorTag);
+        this.PredictVirtueGain();
     }
     private IEnumerator ProcessAction(FighterAction action)
     {

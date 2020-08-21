@@ -66,6 +66,7 @@ public class Ronny : Human
   
     public override void InitializeBattle()
     {
+        this.health = 60; //default value
         playerMovement pm = this.GetComponent<playerMovement>();
         pm.anim.SetFloat("Facing", 1);
         pm.enabled = false;
@@ -118,8 +119,8 @@ public class Ronny : Human
     {
         this.actionList = new List<FighterAction>();
         //this.actionList.Add(new Attack(3, this.damage * this.damageMultiplier, null));
-        this.actionList.Add(new Heal(3, 3, null));
-        this.actionList.Add(new BuffAttack(3, 3, 5, null));
+        this.actionList.Add(new Heal(3, 5, null));
+        this.actionList.Add(new BuffAttack(3, 3, 5f, null));
         //this.actionList.Add(new Cleave(3, this.damage * this.damageMultiplier, null));
         this.actionList.Add(new CommandToAttack(3, null));
         this.actionList.Add(new TauntAll(3, null));
@@ -146,9 +147,12 @@ public class Ronny : Human
         }
         action.originator = this.gameObject;
         this.currentAction = action;
-       
-        this.transform.GetComponentInParent<BattleMaster>().SetActionText(action.name);
+
+        BattleMaster battleMaster = this.transform.GetComponentInParent<BattleMaster>();
+        battleMaster.SetActionText(action.name);
         StartCoroutine(this.DrawIntentions(this.currentAction));
+        if (this.currentAction.targets != null) battleMaster.PredictVirtueGainWithPlayerAction(this.currentAction);
+
     }
     public FighterAction Turn(ListBeingData allFighters, List<FighterAction> actionList)
     {
@@ -171,14 +175,14 @@ public class Ronny : Human
         } else
         {
             GameObject newTarget = this.ChooseTarget(allFighters);
-            if ((this.turnTarget == null || (newTarget != this.turnTarget)) && newTarget != null)
+            if (newTarget != null)
             {
                 string relation = this.TargetRelationToSelf(newTarget);
                 if (this.currentAction.IsValidAction(relation))
                 {
-                    this.turnTarget = newTarget;
-                    this.currentAction.targets = new GameObject[] { this.turnTarget };
+                    this.currentAction.targets = new GameObject[] { newTarget };
                     StartCoroutine(this.DrawIntentions(this.currentAction));
+                    this.transform.GetComponentInParent<BattleMaster>().PredictVirtueGainWithPlayerAction(this.currentAction);
                 }
             }
         }
