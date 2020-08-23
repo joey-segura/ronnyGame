@@ -3,7 +3,22 @@ guid: 207c343b1c91a3947bafbef0bca4aed1
 ModelImporter:
   serializedVersion: 19300
   internalIDToNameTable: []
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Bridge
+    second: {fileID: 2100000, guid: 62685fe440bb90e41a037f5ebf2e1ab8, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: vines
+    second: {fileID: 2100000, guid: 31b846ee1bf9c8a44ab65f9906526572, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: wall
+    second: {fileID: 2100000, guid: 27397be3aeab1074a8dde687fa6ac562, type: 2}
   materials:
     materialImportMode: 1
     materialName: 0
@@ -80,7 +95,7 @@ ModelImporter:
     armStretch: 0.05
     legStretch: 0.05
     feetSpacing: 0
-    globalScale: 1
+    globalScale: 100
     rootMotionBoneName: 
     hasTranslationDoF: 0
     hasExtraRoot: 0
