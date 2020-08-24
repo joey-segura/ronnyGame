@@ -1,14 +1,12 @@
 fileFormatVersion: 2
-guid: a8fb7d340abb4b14c96b6323d4b4a3ef
+guid: dfd4b20c4d5aaeb4cbbabaa025b8af5a
 ModelImporter:
   serializedVersion: 19300
-  internalIDToNameTable: []
-  externalObjects:
+  internalIDToNameTable:
   - first:
-      type: UnityEngine:Texture2D
-      assembly: UnityEngine.CoreModule
-      name: fenceBoard
-    second: {fileID: 2800000, guid: e478cd13233bd3441bed15e6dbba5a93, type: 3}
+      74: 1827226128182048838
+    second: Take 001
+  externalObjects: {}
   materials:
     materialImportMode: 1
     materialName: 0
