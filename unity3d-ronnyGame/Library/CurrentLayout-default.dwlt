@@ -43,8 +43,8 @@ MonoBehaviour:
     y: 0
     width: 826
     height: 790
-  m_MinSize: {x: 202, y: 221}
-  m_MaxSize: {x: 4002, y: 4021}
+  m_MinSize: {x: 200, y: 200}
+  m_MaxSize: {x: 4000, y: 4000}
   m_ActualView: {fileID: 18}
   m_Panes:
   - {fileID: 18}
@@ -71,10 +71,10 @@ MonoBehaviour:
     y: 30
     width: 2560
     height: 1308
-  m_MinSize: {x: 878, y: 492}
-  m_MaxSize: {x: 16003, y: 14042}
+  m_MinSize: {x: 881, y: 492}
+  m_MaxSize: {x: 16006, y: 14042}
   vertical: 0
-  controlID: 34
+  controlID: 111
 --- !u!114 &4
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -176,7 +176,7 @@ MonoBehaviour:
     y: 0
     width: 2560
     height: 1358
-  m_MinSize: {x: 875, y: 542}
+  m_MinSize: {x: 875, y: 300}
   m_MaxSize: {x: 10000, y: 10000}
 --- !u!114 &8
 MonoBehaviour:
@@ -242,10 +242,10 @@ MonoBehaviour:
     y: 0
     width: 2041
     height: 1308
-  m_MinSize: {x: 602, y: 492}
-  m_MaxSize: {x: 12002, y: 14042}
+  m_MinSize: {x: 605, y: 492}
+  m_MaxSize: {x: 12005, y: 14042}
   vertical: 1
-  controlID: 35
+  controlID: 112
 --- !u!114 &11
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -268,10 +268,10 @@ MonoBehaviour:
     y: 0
     width: 2041
     height: 790
-  m_MinSize: {x: 602, y: 221}
-  m_MaxSize: {x: 12002, y: 4021}
+  m_MinSize: {x: 605, y: 221}
+  m_MaxSize: {x: 12005, y: 4021}
   vertical: 0
-  controlID: 36
+  controlID: 113
 --- !u!114 &12
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -364,19 +364,19 @@ MonoBehaviour:
     m_SkipHidden: 0
     m_SearchArea: 1
     m_Folders:
-    - Assets/Scenes
+    - Assets/Materials/tiles_grass/64x64
   m_ViewMode: 1
   m_StartGridSize: 64
   m_LastFolders:
-  - Assets/Scenes
+  - Assets/Materials/tiles_grass/64x64
   m_LastFoldersGridSize: -1
   m_LastProjectPath: C:\Users\otejp\Documents\GIT\OTE\ronnyGame\unity3d-ronnyGame
   m_LockTracker:
     m_IsLocked: 0
   m_FolderTreeState:
     scrollPos: {x: 0, y: 0}
-    m_SelectedIDs: 64380000
-    m_LastClickedID: 14436
+    m_SelectedIDs: 4a380000
+    m_LastClickedID: 14410
     m_ExpandedIDs: 000000002438000026380000283800002a3800002c3800002e3800003038000000ca9a3b
     m_RenameOverlay:
       m_UserAcceptedRename: 0
@@ -527,10 +527,10 @@ MonoBehaviour:
   m_ViewDataDictionary: {fileID: 0}
   m_SceneHierarchy:
     m_TreeViewState:
-      scrollPos: {x: 0, y: 0}
-      m_SelectedIDs: b23a0000
+      scrollPos: {x: 0, y: 260}
+      m_SelectedIDs: 
       m_LastClickedID: 0
-      m_ExpandedIDs: 5e9effff18abffffb0b8ffffeecaffff9ad4fffffadcffff7cf3ffff68f4ffff68fbffff723f0000225f0000
+      m_ExpandedIDs: 3aedffff4aedffff68fbffff56450000
       m_RenameOverlay:
         m_UserAcceptedRename: 0
         m_Name: 
@@ -590,9 +590,9 @@ MonoBehaviour:
   m_PlayAudio: 0
   m_AudioPlay: 0
   m_Position:
-    m_Target: {x: 0.54204434, y: 5.507866, z: 26.955732}
+    m_Target: {x: 248.8344, y: -37.94528, z: 3.2305646}
     speed: 2
-    m_Value: {x: 0.54204434, y: 5.507866, z: 26.955732}
+    m_Value: {x: 248.8344, y: -37.94528, z: 3.2305646}
   m_RenderMode: 0
   m_CameraMode:
     drawMode: 0
@@ -638,17 +638,17 @@ MonoBehaviour:
     m_GridAxis: 1
     m_gridOpacity: 0.5
   m_Rotation:
-    m_Target: {x: 0.1695768, y: 0.0014777977, z: -0.0002561245, w: 0.98552865}
+    m_Target: {x: 0.49009597, y: 0.024834033, z: -0.013979688, w: 0.8712671}
     speed: 2
-    m_Value: {x: 0.16957465, y: 0.0014777791, z: -0.00025612128, w: 0.9855162}
+    m_Value: {x: 0.4926355, y: 0.027399695, z: -0.01553133, w: 0.86966574}
   m_Size:
-    m_Target: 47.3526
+    m_Target: 447.78354
     speed: 2
-    m_Value: 47.3526
+    m_Value: 428.501
   m_Ortho:
-    m_Target: 1
+    m_Target: 0
     speed: 2
-    m_Value: 1
+    m_Value: 0
   m_CameraSettings:
     m_Speed: 1
     m_SpeedNormalized: 0.5
@@ -738,18 +738,18 @@ MonoBehaviour:
       y: 21
       width: 824
       height: 748
-    m_Scale: {x: 1.4288498, y: 1.4288498}
-    m_Translation: {x: 412, y: 374}
+    m_Scale: {x: 1.3859844, y: 1.3859844}
+    m_Translation: {x: 411.99997, y: 374}
     m_MarginLeft: 0
     m_MarginRight: 0
     m_MarginTop: 0
     m_MarginBottom: 0
     m_LastShownAreaInsideMargins:
       serializedVersion: 2
-      x: -288.3438
-      y: -261.749
-      width: 576.6876
-      height: 523.498
+      x: -297.26163
+      y: -269.8443
+      width: 594.52325
+      height: 539.6886
     m_MinimalGUI: 1
   m_defaultScale: 1
   m_LastWindowPixelSize: {x: 1236, y: 1153.5}
