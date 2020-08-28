@@ -66,7 +66,6 @@ public class DialogueCauser : Being
         {
             return null;
         }
-        GameObject Kami = this.transform.parent.gameObject;
         int duplicateCheck = 0;
         for (int i = 0; i < Kami.transform.childCount; i++)
         {

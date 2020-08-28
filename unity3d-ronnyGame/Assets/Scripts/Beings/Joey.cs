@@ -37,7 +37,6 @@ public class Joey : Human
     }
     private GameObject GetRonny()
     {
-        GameObject Kami = this.transform.parent.gameObject;
         return Kami.GetComponent<GameMaster>().GetPlayerGameObject();
     }
     public override void InitializeBattle()
