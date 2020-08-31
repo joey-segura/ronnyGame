@@ -11,9 +11,9 @@ public class Being : MonoBehaviour
     // InjectData(string jsonData) <- instantiates individual class data (jsonData should be in class format)
     // Interact() <- no return value
 
-    protected GameObject Kami;
-    protected GameMaster gameMasterScript;
-    protected BattleMaster battleMasterScript;
+    public GameObject Kami;
+    public GameMaster gameMasterScript;
+    public BattleMaster battleMasterScript;
 
     private bool debugMode = false;
 

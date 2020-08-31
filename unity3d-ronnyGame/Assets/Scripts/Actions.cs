@@ -15,7 +15,8 @@ public abstract class FighterAction
     public string name { get; set; }
     public string[] validTargets;
     protected string IMAGEPATH;
-   
+
+    public abstract FighterAction Clone();
     public GameObject[] GetAOETargets(ListBeingData list)
     {
         List<GameObject> targets = new List<GameObject>();
@@ -98,6 +99,10 @@ public abstract class FighterAction
             return false;
         }
     }
+    public virtual void ReEvaluateActionValues(Fighter self)
+    {
+
+    }
     
 }
 public class CoroutineWithData
@@ -148,6 +153,10 @@ public class Attack : FighterAction
         this.validTargets = new string[] { "Foe" };
         this.IMAGEPATH = "UI/UI_attack";
     }
+    public override FighterAction Clone()
+    {
+        return new Attack(this.duration, this.damage, this.animation);
+    }
     public override IEnumerator Execute()
     {
 
@@ -160,6 +169,10 @@ public class Attack : FighterAction
     public override float GetValue()
     {
         return this.damage;
+    }
+    public override void ReEvaluateActionValues(Fighter self)
+    {
+        this.damage = self.damage * self.damageMultiplier;
     }
 }
 public class AttackAndBuff : FighterAction
@@ -177,6 +190,10 @@ public class AttackAndBuff : FighterAction
         this.targetCount = 1;
         this.validTargets = new string[] { "Foe" };
         this.IMAGEPATH = "UI/UI_Attack";
+    }
+    public override FighterAction Clone()
+    {
+        return new AttackAndBuff(this.duration, this.damage, this.effectDuration, this.buffValue, this.animation);
     }
     public override IEnumerator Execute()
     {
@@ -197,6 +214,10 @@ public class AttackAndBuff : FighterAction
     {
         return this.damage;
     }
+    public override void ReEvaluateActionValues(Fighter self)
+    {
+        this.damage = self.damage * self.damageMultiplier;
+    }
 }
 public class ApplyThorns : FighterAction
 {
@@ -211,6 +232,10 @@ public class ApplyThorns : FighterAction
         this.targetCount = 1;
         this.validTargets = new string[] { "Friend", "Self" };
         this.IMAGEPATH = "UI/UI_buff";
+    }
+    public override FighterAction Clone()
+    {
+        return new ApplyThorns(this.duration, this.effectDuration, this.percentValue, this.animation);
     }
     public override IEnumerator Execute()
     {
@@ -240,6 +265,10 @@ public class BolsterDefense : FighterAction
         this.targetCount = 1;
         this.validTargets = new string[] { "Friend" };
         this.IMAGEPATH = "UI/UI_buff";
+    }
+    public override FighterAction Clone()
+    {
+        return new BolsterDefense(this.duration, this.effectDuration, this.buffValue, this.animation);
     }
     public override IEnumerator Execute()
     {
@@ -273,6 +302,10 @@ public class BuffAttack : FighterAction
         this.targetCount = 1;
         this.validTargets = new string[] { "Friend" };
         this.IMAGEPATH = "UI/UI_buff";
+    }
+    public override FighterAction Clone()
+    {
+        return new BuffAttack(this.duration, this.effectDuration, this.buffValue, this.animation);
     }
     public override IEnumerator Execute()
     {
@@ -310,6 +343,10 @@ public class Cleave : FighterAction
         this.validTargets = new string[] { "Foe" };
         this.IMAGEPATH = "UI/UI_Attack";
     }
+    public override FighterAction Clone()
+    {
+        return new Cleave(this.duration, this.damage, this.animation);
+    }
     public override IEnumerator Execute()
     {
         for (int i = 0; i < targets.Length; i++)
@@ -321,6 +358,10 @@ public class Cleave : FighterAction
     public override float GetValue()
     {
         return this.damage;
+    }
+    public override void ReEvaluateActionValues(Fighter self)
+    {
+        this.damage = self.damage * self.damageMultiplier;
     }
 }
 public class CommandToAttack : FighterAction
@@ -335,28 +376,38 @@ public class CommandToAttack : FighterAction
         this.validTargets = new string[] { "Friend", "Foe" };
         this.IMAGEPATH = "UI/UI_Attack";
     }
+    public override FighterAction Clone()
+    {
+        return new CommandToAttack(this.duration, this.animation);
+    }
     public override IEnumerator Execute()
     {
-        Ronny ronny = this.originator.GetComponent<Ronny>();
-        Fighter fighter = null;
-        GameObject targ = null;
-        for (int i = 0; i < targets.Length; i++)
+        if (!this.originator.name.Contains("Shadow"))
         {
-            fighter = targets[i].GetComponent<Fighter>();
-            targ = targets[i];
-        }
-        Attack attack = new Attack(3, fighter.damage * fighter.damageMultiplier, null);
-        GameObject selectedTarget = null;
-        Debug.Log("Please select a fighter!");
-        while (selectedTarget == null)
+            Ronny ronny = this.originator.GetComponent<Ronny>();
+            Fighter fighter = null;
+            GameObject targ = null;
+            for (int i = 0; i < targets.Length; i++)
+            {
+                fighter = targets[i].GetComponent<Fighter>();
+                targ = targets[i];
+            }
+            Attack attack = new Attack(3, fighter.damage * fighter.damageMultiplier, null);
+            GameObject selectedTarget = null;
+            Debug.Log("Please select a fighter!");
+            while (selectedTarget == null)
+            {
+                selectedTarget = ronny.ReturnChoosenGameObject();
+                yield return new WaitForEndOfFrame();
+            }
+            attack.targets = new GameObject[] { selectedTarget };
+            attack.originator = targ;
+            fighter.SetAction(attack);
+            yield return true;
+        } else
         {
-            selectedTarget = ronny.ReturnChoosenGameObject();
-            yield return new WaitForEndOfFrame();
+            yield return true;
         }
-        attack.targets = new GameObject[] { selectedTarget };
-        attack.originator = targ;
-        fighter.SetAction(attack);
-        yield return true;
     }
     public override float GetCost()
     {
@@ -380,6 +431,10 @@ public class DoubleAttack : FighterAction
         this.validTargets = new string[] { "Foe" };
         this.IMAGEPATH = "UI/UI_attack";
     }
+    public override FighterAction Clone()
+    {
+        return new DoubleAttack(this.duration, this.damage, this.animation);
+    }
     public override IEnumerator Execute()
     {
 
@@ -392,6 +447,10 @@ public class DoubleAttack : FighterAction
     public override float GetValue()
     {
         return this.damage * 2;
+    }
+    public override void ReEvaluateActionValues(Fighter self)
+    {
+        this.damage = self.damage * self.damageMultiplier;
     }
 }
 public class Heal : FighterAction
@@ -407,6 +466,10 @@ public class Heal : FighterAction
         this.targetCount = 1;
         this.validTargets = new string[] { "Friend", "Self"};
         this.IMAGEPATH = "UI/UI_buff";
+    }
+    public override FighterAction Clone()
+    {
+        return new Heal(this.duration, this.healValue, this.animation);
     }
     public override IEnumerator Execute()
     {
@@ -440,8 +503,12 @@ public class PoisonAttack : FighterAction
         this.targetCount = 1;
         this.validTargets = new string[] { "Foe" };
         this.IMAGEPATH = "UI/UI_attack";
-        
     }
+    public override FighterAction Clone()
+    {
+        return new PoisonAttack(this.duration, this.effectDuration, this.poisonDamage, this.animation);
+    }
+
     public override IEnumerator Execute()
     {
         Effect poison = new Poison(this.effectDuration, this.poisonDamage, this.originator);
@@ -469,6 +536,10 @@ public class TauntAll :FighterAction
         this.validTargets = new string[] { "Foe" };
         this.IMAGEPATH = "UI/UI_Attack";
     }
+    public override FighterAction Clone()
+    {
+        return new TauntAll(this.duration, this.animation);
+    }
     public override IEnumerator Execute()
     {
         for (int i = 0; i < targets.Length; i++)
@@ -494,7 +565,7 @@ public class TauntAll :FighterAction
 public class VulnerableAttack : FighterAction
 {
     public int vulnerableValue;
-    public VulnerableAttack(int _duration, int _effectDuration ,int _vulnerableValue, Animation _animation)
+    public VulnerableAttack(int _duration, int _effectDuration , int _vulnerableValue, Animation _animation)
     {
         this.name = "Vulnerable Attack";
         this.duration = _duration;
@@ -504,6 +575,10 @@ public class VulnerableAttack : FighterAction
         this.targetCount = 1;
         this.validTargets = new string[] { "Foe" };
         this.IMAGEPATH = "UI/UI_debuff";
+    }
+    public override FighterAction Clone()
+    {
+        return new VulnerableAttack(this.duration, this.effectDuration, this.vulnerableValue, this.animation);
     }
     public override IEnumerator Execute()
     {
@@ -527,7 +602,7 @@ public class VulnerableAttack : FighterAction
 public class WeakAttack : FighterAction
 {
     public int weakValue;
-    public WeakAttack (int _duration, int _effectDuration ,int _weakValue, Animation _animation)
+    public WeakAttack (int _duration, int _effectDuration , int _weakValue, Animation _animation)
     {
         this.name = "Weak Attack";
         this.duration = _duration;
@@ -537,6 +612,10 @@ public class WeakAttack : FighterAction
         this.targetCount = 1;
         this.validTargets = new string[] { "Foe" };
         this.IMAGEPATH = "UI/UI_debuff";
+    }
+    public override FighterAction Clone()
+    {
+        return new WeakAttack(this.duration, this.effectDuration, this.weakValue, this.animation);
     }
     public override IEnumerator Execute()
     {
@@ -557,5 +636,3 @@ public class WeakAttack : FighterAction
         return this.weakValue;
     }
 }
-
-

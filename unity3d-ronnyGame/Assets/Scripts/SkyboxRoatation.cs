@@ -16,13 +16,11 @@ public class SkyboxRoatation : MonoBehaviour
     {
         if (SkyCamera.depth >= MainCamera.depth)
         {
-            Debug.Log("Set skybox camera depth lower "+
-                      " than main camera depth in inspector");
+            Debug.Log("Set skybox camera depth lower than main camera depth in inspector");
         }
         if (MainCamera.clearFlags != CameraClearFlags.Nothing)
         {
-            Debug.Log("Main camera needs to be set to dont clear" +
-                      "in the inspector");
+            Debug.Log("Main camera needs to be set to dont clear in the inspector");
         }
     }
    
@@ -36,9 +34,8 @@ public class SkyboxRoatation : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-       
-        SkyCamera.transform.position = MainCamera.transform.position;
-        SkyCamera.transform.rotation = MainCamera.transform.rotation;
+        //SkyCamera.transform.position = MainCamera.transform.position;
+        //SkyCamera.transform.rotation = MainCamera.transform.rotation;
         SkyCamera.transform.Rotate(SkyBoxRotation);
     }
 }

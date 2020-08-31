@@ -14,14 +14,14 @@ public class Fighter : Being
     protected bool isBattle = false;
 
     public string[] party;
-    protected FighterAction currentAction = null;
-    private Dictionary<int, Effect> currentEffects = new Dictionary<int, Effect>();
+    public FighterAction currentAction = null;
+    public Dictionary<int, Effect> currentEffects = new Dictionary<int, Effect>();
     //private List<Effect> currentEffects = new List<Effect>();
     protected List<FighterAction> actionList = new List<FighterAction>();
 
     public GameObject[] direction;
-    protected Vector3 battlePosition;
-    private Dictionary<int, Func<float, Fighter, float>> onHitEffects = new Dictionary<int, Func<float, Fighter, float>>();
+    public Vector3 battlePosition;
+    public Dictionary<int, Func<float, Fighter, float>> onHitEffects = new Dictionary<int, Func<float, Fighter, float>>();
 
     public void AddEffect(Fighter fighter, Effect effect)
     {
@@ -29,7 +29,7 @@ public class Fighter : Being
         currentEffects.Add(effect.GetKey(), effect);
         currentEffects.OrderByDescending(x => effect.duration);
     }
-    public float AddToHealth(float change, Fighter causer)
+    public virtual float AddToHealth(float change, Fighter causer)
     {
         foreach(Func<float, Fighter, float> a in onHitEffects.Values)
         {
@@ -159,7 +159,7 @@ public class Fighter : Being
             return 0;
         }
     }
-    public void DeathCheck()
+    public virtual void DeathCheck()
     {
         if (this.health <= 0)
         {
@@ -257,6 +257,7 @@ public class Fighter : Being
                 {
                     names += $"{currentAction.targets[i].name} ";
                 }
+                StartCoroutine(GetShadow().PlayAnimations());
             }
             GUI.Box(rect, $"Character Name: {name}\n HP: {health}\n Action name: {currentAction.name}\n Targets name: {names}\n Value: {currentAction.GetValue()}");
         }
@@ -264,10 +265,6 @@ public class Fighter : Being
     public List<FighterAction> GetActions()
     {
         return this.actionList;
-    }
-    public FighterAction GetCurrentAction()
-    {
-        return this.currentAction;
     }
     public FighterAction GetIntention(ListBeingData allFighters)
     {
@@ -278,16 +275,7 @@ public class Fighter : Being
         }
 
         FighterAction action = this.TurnAction(allFighters);
-        this.StartCoroutine("DrawIntentions", action);
         return action;
-    }
-    public Dictionary<int, Effect> GetCurrentEffects()
-    {
-        return currentEffects;
-    }
-    public Dictionary<int, Func<float, Fighter, float>> GetOnHitEffects()
-    {
-        return onHitEffects;
     }
     public string[] GetParty()
     {
@@ -300,6 +288,10 @@ public class Fighter : Being
             string[] party = { this.gameObject.name };
             return party;
         }
+    }
+    private FighterShadow GetShadow()
+    {
+        return this.transform.GetComponentInChildren<FighterShadow>();
     }
     public virtual void RecalculateActions()
     {
@@ -337,7 +329,6 @@ public class Fighter : Being
     public void SetAction(FighterAction action)
     {
         this.currentAction = action;
-        StartCoroutine("DrawIntentions", action);
     }
     public bool RemoveEffect(int key)
     {

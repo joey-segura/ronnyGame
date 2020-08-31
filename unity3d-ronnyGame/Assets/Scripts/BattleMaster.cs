@@ -11,20 +11,21 @@ public class BattleMaster : Kami
     public bool isBattle = false;
     private int enemyID { get; set; }
     private int turnCounter;
-    private List<FighterAction> intentions = new List<FighterAction>();
+    public List<FighterAction> intentions = new List<FighterAction>();
     public ListBeingData allFighters = new ListBeingData();
     public ListBeingData partyMembers = new ListBeingData();
     public ListBeingData enemyMembers = new ListBeingData();
 
     private string worldSceneName;
     private string battleSceneName;
+    public GameObject[] shadows;
 
     [SerializeField]
     private Canvas canvas;
     [SerializeField]
     public Button leftArrow, rightArrow;
     [SerializeField]
-    private Text virtue, virtueExpectation, action;
+    public Text virtue, virtueExpectation, action;
     private int virtueValue = 0, virtueMax = 0;
 
     public void AddFighter(BeingData being)
@@ -101,6 +102,19 @@ public class BattleMaster : Kami
         } else
         {
             return -1;
+        }
+    }
+    private static int CompareShadowsByTag(FighterShadow x, FighterShadow y)
+    {
+        if (y.gameObject.tag == "Party")
+        {
+            return -1;
+        } else if (y.gameObject.tag == "Player")
+        {
+            return 1;
+        } else
+        {
+            return 0;
         }
     }
     private void DestroyAllFighters()
@@ -194,11 +208,11 @@ public class BattleMaster : Kami
         this.AssignScenes();
         for (int i = 0; i < partyMembers.BeingDatas.Count; i++)
         {
-            partyMembers.BeingDatas[i].location = new Vector3(-6f, .4f, -7.5f + (7.5f * i));
+            partyMembers.BeingDatas[i].location = new Vector3(-12, 0, -7.5f + (12 * i));
         }
         for (int i = 0; i < enemyMembers.BeingDatas.Count; i++)
         {
-            enemyMembers.BeingDatas[i].location = new Vector3(6f, .4f, -7.5f + (7.5f * i));
+            enemyMembers.BeingDatas[i].location = new Vector3(12, 0, -7.5f + (12 * i));
         }
         this.FillMembers(partyMembers, enemyMembers);
         sceneMaster.ChangeScene(this.battleSceneName);
@@ -254,14 +268,14 @@ public class BattleMaster : Kami
         {
             intentions = new List<FighterAction>();
             intentions = this.GetIntentions();
-            PredictVirtueGain();
-            StartCoroutine("PlayerAction");
+            StartCoroutine(PlayerAction());
         }
     }
     private void PlayAnimation(Animation anim)
     {
         if (anim != null)
         {
+            Debug.Log("Animation tied to battlemaster? seems wrong");
             anim.Play();
         } else
         {
@@ -281,7 +295,7 @@ public class BattleMaster : Kami
         FighterAction action = null;
         yield return new WaitUntil(() => (action = ronny.Turn(allFighters, actionList)) != null);
         this.turnCounter++;
-        ronny.ToggleCanvas();
+        //ronny.ToggleCanvas();
         ronny.StartCoroutine("BattleMove");
         this.PlayAnimation(action.animation);
         yield return new WaitForSeconds(action.duration);
@@ -294,80 +308,6 @@ public class BattleMaster : Kami
         ronny.StartCoroutine("MoveToBattlePosition");
         turn = false;
         StartCoroutine("ProcessAIActions");
-    }
-    private void PredictVirtueGain() //nastiest function to date (not a fan because it doesn't include the player altering other intentions
-    {
-        GameObject ally = GetAllyObject();
-        Fighter allyF = ally.GetComponent<Fighter>();
-        FighterAction allyAction = intentions.Last<FighterAction>();
-        float[] defenseMult = new float[allyAction.targets.Length];
-        float damageMult = allyF.damageMultiplier;
-        for (int i = 0; i < allyAction.targets.Length; i++)
-        {
-            defenseMult[i] = allyAction.targets[i].GetComponent<Fighter>().defenseMultiplier;
-        }
-        foreach (FighterAction action in intentions)
-        {
-            if (action.originator.tag == "Party")
-            {
-                if (action.name.Contains("Attack"))
-                {
-                    float virtue = 0;
-                    for(int i = 0; i < action.targets.Length; i++)
-                    {
-                        virtue += (allyF.damage * damageMult) / defenseMult[i];
-                    }
-                    virtueExpectation.text = $"Expected Gain: {Mathf.RoundToInt(Mathf.Abs(virtue / 5))}";
-                }
-            }else
-            {
-                if ((action.name.Contains("Buff") || action.name.Contains("Weak")) && action.targets.Contains<GameObject>(ally))
-                {
-                    if (action.name.Contains("Buff"))
-                    {
-                        damageMult = damageMult * action.GetEffectValue();
-                    }
-                    else // its just weak
-                    {
-                        Debug.Log("weak");
-                        damageMult = damageMult / action.GetEffectValue();
-                    }
-                } else if (action.name.Contains("Vulnerable") || action.name.Contains("Bolster"))
-                {
-                    for (int i = 0; i < action.targets.Length; i++)
-                    {
-                        for (int j = 0; j < allyAction.targets.Length; j++)
-                        {
-                            if (action.targets[i] == allyAction.targets[j] && action.name.Contains("Bolster"))
-                            {
-                                defenseMult[j] = defenseMult[j] * action.GetEffectValue();
-                            } else if (action.targets[i] == allyAction.targets[j]) //all thats left is vulnerable
-                            {
-                                defenseMult[j] = defenseMult[j] / action.GetEffectValue();
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-    public void PredictVirtueGainWithPlayerAction(FighterAction action)
-    {
-        bool included = false;
-        for (int i = 0; i < intentions.Count; i++)
-        {
-            if (intentions[i].originator == action.originator)
-            {
-                included = true;
-                intentions[i] = action;
-            }
-        }
-        if (!included)
-        {
-            intentions.Add(action);
-        }
-        intentions.Sort(CompareActionsByOriginatorTag);
-        this.PredictVirtueGain();
     }
     private IEnumerator ProcessAction(FighterAction action)
     {
@@ -394,10 +334,10 @@ public class BattleMaster : Kami
                 if (fighter != null)
                 {
                     fighter.RecalculateActions();
-                    FighterAction action = fighter.GetCurrentAction(); //gets current action instead of playing intention incase ronny influences it
+                    FighterAction action = fighter.currentAction; //gets current action instead of playing intention in case ronny influences it
                     this.PlayAnimation(action.animation);
                     Debug.Log($"{action.originator.name}'s turn!");
-                    fighter.ToggleCanvas();
+                    //fighter.ToggleCanvas();
                     fighter.StartCoroutine("BattleActionMove", action);
                     yield return new WaitForSeconds(action.duration);
 
@@ -451,6 +391,35 @@ public class BattleMaster : Kami
     public void SetEnemyID(int ID)
     {
         this.enemyID = ID;
+    }
+    public void SimulateBattle()
+    {
+        for (int i = 0; i < shadows.Length; i++)
+        {
+            DestroyImmediate(shadows[i]);
+            //Destroy(shadows[i]);
+        }
+        shadows = new GameObject[allFighters.BeingDatas.Count];
+        FighterShadow[] shadowScripts = new FighterShadow[allFighters.BeingDatas.Count];
+        Debug.Log("new fighters! Simulate!");
+        for (int i = 0; i < allFighters.BeingDatas.Count; i++)
+        {
+            Vector3 spawnLoc = allFighters.BeingDatas[i].gameObject.transform.position + new Vector3(allFighters.BeingDatas[i].gameObject.transform.position.x > 0 ? -6f : 6f, 0,0);
+            Fighter origin = allFighters.BeingDatas[i].gameObject.GetComponent<Fighter>();
+            shadows[i] = visualEffectMaster.InstantiateVisualSprite(Resources.Load("Prefabs/Shadow"),
+                spawnLoc,
+                allFighters.BeingDatas[i].gameObject.transform.rotation,
+                allFighters.BeingDatas[i].gameObject.transform);
+            shadowScripts[i] = shadows[i].GetComponent<FighterShadow>();
+            shadowScripts[i].InjectShadowData(origin);
+        }
+        List<FighterShadow> list = shadowScripts.ToList<FighterShadow>();
+        list.Sort(CompareShadowsByTag);
+        shadowScripts = list.ToArray();
+        for (int i = 0; i < shadowScripts.Length; i++)
+        {
+            shadowScripts[i].SimulateAction();
+        }
     }
     private void SubmitVirtueToAlly(int virtue)
     {

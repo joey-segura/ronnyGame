@@ -22,7 +22,7 @@ public abstract class Effect
     {
         int newKey = GenerateRandomKey();
         int count = 0;
-        while (fighter.GetCurrentEffects().ContainsKey(newKey))
+        while (fighter.currentEffects.ContainsKey(newKey))
         {
             newKey = GenerateRandomKey();
             count++;
@@ -38,7 +38,7 @@ public abstract class Effect
     {
         int newKey = GenerateRandomKey();
         int count = 0;
-        while(fighter.GetOnHitEffects().ContainsKey(newKey))
+        while(fighter.onHitEffects.ContainsKey(newKey))
         {
             newKey = GenerateRandomKey();
             count++;

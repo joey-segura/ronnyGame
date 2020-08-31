@@ -229,13 +229,14 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1875209978368580813}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fc629a87b39fdf940b3f1e1e85e65e83, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   MainCamera: {fileID: 1875209977991060999}
   SkyCamera: {fileID: 8937049694162663214}
+  SkyBoxRotation: {x: -0.05, y: 0, z: 0}
 --- !u!65 &4006656159466941805
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -288,6 +289,7 @@ MonoBehaviour:
   isPoisoned: 0
   party: []
   direction: []
+  battlePosition: {x: 0, y: 0, z: 0}
   virtue: 0
   speed: 0
   turnTarget: {fileID: 0}
@@ -301,10 +303,9 @@ GameObject:
   m_Component:
   - component: {fileID: 7075739538991241693}
   - component: {fileID: 8937049694162663214}
-  - component: {fileID: 6541592019719344509}
   m_Layer: 0
   m_Name: Skybox Camera
-  m_TagString: MainCamera
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -366,14 +367,6 @@ Camera:
   m_OcclusionCulling: 1
   m_StereoConvergence: 10
   m_StereoSeparation: 0.022
---- !u!81 &6541592019719344509
-AudioListener:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3408231567989719375}
-  m_Enabled: 1
 --- !u!1 &3788965260656630737
 GameObject:
   m_ObjectHideFlags: 0

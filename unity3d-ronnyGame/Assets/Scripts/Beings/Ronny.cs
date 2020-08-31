@@ -14,9 +14,7 @@ public class Ronny : Human
 
     //turn data
     public GameObject turnTarget = null;
-    private bool drawn = false;
     private int index = 0;
-    private string relation = null;
     //end turn data
 
     public IEnumerator BattleMove()
@@ -71,15 +69,14 @@ public class Ronny : Human
         pm.anim.SetFloat("Facing", 1);
         pm.enabled = false;
         this.GetComponent<cameraRotation>().enabled = false;
+        this.GetComponent<SkyboxRoatation>().enabled = false;
         base.InitializeBattle();
     }
     public void InitializeTurn()
     {
         this.currentAction = null;
         this.turnTarget = null;
-        this.drawn = false;
         this.index = 0;
-        this.relation = null;
     }
     public override void InjectData(string jsonData)
     {
@@ -150,8 +147,7 @@ public class Ronny : Human
 
         BattleMaster battleMaster = this.transform.GetComponentInParent<BattleMaster>();
         battleMaster.SetActionText(action.name);
-        StartCoroutine(this.DrawIntentions(this.currentAction));
-        if (this.currentAction.targets != null) battleMaster.PredictVirtueGainWithPlayerAction(this.currentAction);
+        battleMaster.SimulateBattle();
 
     }
     public FighterAction Turn(ListBeingData allFighters, List<FighterAction> actionList)
@@ -178,11 +174,10 @@ public class Ronny : Human
             if (newTarget != null)
             {
                 string relation = this.TargetRelationToSelf(newTarget);
-                if (this.currentAction.IsValidAction(relation))
+                if (this.currentAction.IsValidAction(relation) && (this.currentAction.targets == null || this.currentAction.targets[0] != newTarget)) //we can access the first area because we know it only has 1 member (if/else proves this)
                 {
                     this.currentAction.targets = new GameObject[] { newTarget };
-                    StartCoroutine(this.DrawIntentions(this.currentAction));
-                    this.transform.GetComponentInParent<BattleMaster>().PredictVirtueGainWithPlayerAction(this.currentAction);
+                    battleMasterScript.SimulateBattle();
                 }
             }
         }
