@@ -204,6 +204,7 @@ public class GameMaster : Kami
             BeingData being = new BeingData();
             being.prefabName = party[i];
             being.objectID = -1;
+            if (i == 0 && party[0] == enemy.prefabName) being = enemy;
             enemyMembers.BeingDatas.Add(being);
         }
         battleMaster.SetEnemyID(enemy.objectID);

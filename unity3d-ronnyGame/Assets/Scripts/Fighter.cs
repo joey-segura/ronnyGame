@@ -42,6 +42,10 @@ public class Fighter : Being
         {
             battleMasterScript.AddToVirtue(change);
         }
+        if (change < 0)
+        {
+            StartCoroutine(GetHitJiggle());
+        }
         this.health += change;
         this.DeathCheck();
         return change;
@@ -262,9 +266,29 @@ public class Fighter : Being
             GUI.Box(rect, $"Character Name: {name}\n HP: {health}\n Action name: {currentAction.name}\n Targets name: {names}\n Value: {currentAction.GetValue()}");
         }
     }
+    public IEnumerator FlashWhite(float seconds)
+    {
+        Shader whiteGUI = Shader.Find("GUI/Text Shader");
+        SpriteRenderer self = this.GetComponent<SpriteRenderer>();
+        Shader defaultShad = self.material.shader;
+        self.material.shader = whiteGUI;
+        yield return new WaitForSeconds(seconds);
+        self.material.shader = defaultShad;
+    }
     public List<FighterAction> GetActions()
     {
         return this.actionList;
+    }
+    public IEnumerator GetHitJiggle()
+    {
+        Vector3 pos = this.transform.position;
+        float distance = .2f;
+        StartCoroutine(FlashWhite(.4f));
+        this.transform.position = Vector3.MoveTowards(pos, new Vector3(pos.x + distance, pos.y, pos.z), 1);
+        yield return new WaitForSeconds(.05f);
+        this.transform.position = Vector3.MoveTowards(this.transform.position, new Vector3(pos.x - 2 * distance, pos.y, pos.z), 1);
+        yield return new WaitForSeconds(.05f);
+        this.transform.position = Vector3.MoveTowards(this.transform.position, pos, 1);
     }
     public FighterAction GetIntention(ListBeingData allFighters)
     {

@@ -17,7 +17,6 @@ public class Rogue : Fighter
         {
 
             BeingData being = JsonUtility.FromJson<BeingData>(jsonData);
-
             if (being.jsonData != null && being.jsonData != string.Empty)
             {
                 RogueJson rogue = JsonUtility.FromJson<RogueJson>(being.jsonData);
@@ -29,7 +28,7 @@ public class Rogue : Fighter
             else
             {
                 this.speed = 0;
-                this.health = 10;
+                this.health = 5;
                 this.damage = 3;
                 this.party = null;
             }
@@ -45,7 +44,7 @@ public class Rogue : Fighter
     public override void RecalculateActions()
     {
         this.actionList = new List<FighterAction>();
-        this.actionList.Add(new AttackAndBuff(3, this.damage * this.damageMultiplier, 2, 1.5f, null));
+        this.actionList.Add(new AttackAndBuff(3, this.damage * this.damageMultiplier, 2, 2, null));
         //this.actionList.Add(new Attack(3, this.damage * this.damageMultiplier, null));
         /*
         this.actionList.Add(new WeakAttack(3, 3, 2, null));

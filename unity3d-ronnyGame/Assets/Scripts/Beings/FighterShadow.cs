@@ -31,8 +31,8 @@ public class FighterShadow : Fighter
     {
         if (health < 0)
         {
-            spriteRenderer.color = Color.red;
-            Debug.Log("this guy gonna die");
+            spriteRenderer.color += new Color(1, 0, 0, 0);
+            Debug.LogWarning("Change redness to indicate death to skull sprite");
         }
     }
     public void InjectShadowData(Fighter source)

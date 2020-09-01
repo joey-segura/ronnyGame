@@ -129,6 +129,13 @@ public class BattleMaster : Kami
         }
         this.RemoveAllMembers();
     }
+    private void DestroyAllShadows()
+    {
+        for (int i = 0; i < shadows.Length; i++)
+        {
+            DestroyImmediate(shadows[i]);
+        }
+    }
     private IEnumerator EndBattle(bool victory)
     {
         if (victory)
@@ -295,6 +302,7 @@ public class BattleMaster : Kami
         FighterAction action = null;
         yield return new WaitUntil(() => (action = ronny.Turn(allFighters, actionList)) != null);
         this.turnCounter++;
+        DestroyAllShadows();
         //ronny.ToggleCanvas();
         ronny.StartCoroutine("BattleMove");
         this.PlayAnimation(action.animation);
@@ -394,14 +402,9 @@ public class BattleMaster : Kami
     }
     public void SimulateBattle()
     {
-        for (int i = 0; i < shadows.Length; i++)
-        {
-            DestroyImmediate(shadows[i]);
-            //Destroy(shadows[i]);
-        }
+        DestroyAllShadows();
         shadows = new GameObject[allFighters.BeingDatas.Count];
         FighterShadow[] shadowScripts = new FighterShadow[allFighters.BeingDatas.Count];
-        Debug.Log("new fighters! Simulate!");
         for (int i = 0; i < allFighters.BeingDatas.Count; i++)
         {
             Vector3 spawnLoc = allFighters.BeingDatas[i].gameObject.transform.position + new Vector3(allFighters.BeingDatas[i].gameObject.transform.position.x > 0 ? -6f : 6f, 0,0);
