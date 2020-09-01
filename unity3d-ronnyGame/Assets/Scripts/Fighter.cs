@@ -78,6 +78,7 @@ public class Fighter : Being
     public IEnumerator BattleActionMove(FighterAction action)
     {
         float distance = 0;
+        Vector3 newPos;
         if (this.transform.position.x > 0)
         {
             distance = -.25f;
@@ -86,19 +87,27 @@ public class Fighter : Being
         {
             distance = .25f;
         }
-        Vector3 newPos = new Vector3(this.transform.position.x + distance, this.transform.position.y, this.transform.position.z);
+        if (action.IsActionAOE())
+        {
+            newPos = new Vector3(this.transform.position.x + distance, this.transform.position.y, this.transform.position.z);
+        } else
+        {
+
+            newPos = Vector3.Lerp(this.transform.position, action.targets[0].transform.position, .75f);
+        }
+        
 
         while (this.transform.position != newPos)
         {
-            this.transform.position = Vector3.MoveTowards(this.transform.position, newPos, .01f);
+            this.transform.position = Vector3.MoveTowards(this.transform.position, newPos, .1f);
             yield return new WaitForEndOfFrame();
         }
         yield return new WaitForSeconds(action.duration);
         while (this.transform.position != battlePosition)
         {
-            this.transform.position = Vector3.MoveTowards(this.transform.position, this.battlePosition, .01f);
+            this.transform.position = Vector3.MoveTowards(this.transform.position, this.battlePosition, .1f);
             yield return new WaitForEndOfFrame();
-        }
+        } //not moving back slow enough
     }
     public virtual FighterAction TurnAction(ListBeingData allFighters)
     {
