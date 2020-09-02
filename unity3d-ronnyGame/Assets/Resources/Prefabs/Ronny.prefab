@@ -236,7 +236,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   MainCamera: {fileID: 1875209977991060999}
   SkyCamera: {fileID: 8937049694162663214}
-  SkyBoxRotation: {x: -0.05, y: 0, z: 0}
+  SkyBoxRotation: {x: 0.05, y: 0, z: 0}
 --- !u!65 &4006656159466941805
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -278,6 +278,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1fa2f272c70623a489d1d4ae783ee74e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Kami: {fileID: 0}
+  gameMasterScript: {fileID: 0}
+  battleMasterScript: {fileID: 0}
   interactable: 0
   beingData: 
   canvas: {fileID: 0}
