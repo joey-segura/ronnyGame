@@ -55,6 +55,34 @@ public abstract class Effect
         return key;
     }
 }
+public class Block : Effect
+{
+    public Block()
+    {
+        this.name = "Block";
+        this.duration = 1;
+    }
+    public override void Affliction(Fighter fighter)
+    {
+        this.self = fighter;
+        if (key == -1) // don't add another onHitEffect if we already have a key assigned
+        {
+            this.key = this.GenerateValidKeyForOnHitEffects(fighter);
+            fighter.AddToOnHitEffects(this.key, this.BlockDamage);
+        }
+    }
+    private float BlockDamage(float change, Fighter causer)
+    {
+        return 0;
+    }
+    public override void Cleanse(Fighter fighter)
+    {
+        if (!fighter.RemoveOnHitEffect(key))
+        {
+            Debug.LogWarning($"Effect '{this.name}' not found with key {key}");
+        }
+    }
+}
 public class Bolster : Effect
 {
     public float multiplier;

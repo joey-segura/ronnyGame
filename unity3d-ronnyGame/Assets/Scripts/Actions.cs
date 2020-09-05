@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-
 public abstract class FighterAction
 {
     public GameObject originator { get; set; }
@@ -252,6 +251,37 @@ public class ApplyThorns : FighterAction
         return this.percentValue;
     }
 }
+public class BlockAll : FighterAction
+{
+    public BlockAll(int _duration, Animation _animation)
+    {
+        this.name = "Block";
+        this.duration = _duration;
+        this.effectDuration = 1;
+        this.animation = _animation;
+        this.targetCount = 1;
+        this.validTargets = new string[] { "Friend", "Self" };
+        this.IMAGEPATH = "UI/UI_buff";
+    }
+    public override FighterAction Clone()
+    {
+        return new BlockAll(this.duration, this.animation);
+    }
+    public override IEnumerator Execute()
+    {
+        Effect block = new Block();
+        for (int i = 0; i < targets.Length; i++)
+        {
+            Fighter fighter = targets[i].GetComponent<Fighter>();
+            fighter.AddEffect(fighter, block);
+        }
+        yield return true;
+    }
+    public override float GetValue()
+    {
+        return 0;
+    }
+}
 public class BolsterDefense : FighterAction
 {
     public float buffValue;
@@ -408,6 +438,43 @@ public class CommandToAttack : FighterAction
         {
             yield return true;
         }
+    }
+    public override float GetCost()
+    {
+        return 10;
+    }
+    public override float GetValue()
+    {
+        return 0;
+    }
+}
+public class CommandToBlock : FighterAction
+{
+    public CommandToBlock(int _duration, Animation _animation)
+    {
+        this.name = "Command to Block";
+        this.duration = _duration;
+        this.animation = _animation;
+        this.targetCount = 1;
+        this.validTargets = new string[] { "Friend", "Foe" };
+        this.IMAGEPATH = "UI/UI_Attack";
+    }
+    public override FighterAction Clone()
+    {
+        return new CommandToBlock(this.duration, this.animation);
+    }
+    public override IEnumerator Execute()
+    {
+        Fighter fighter = null;
+        for (int i = 0; i < targets.Length; i++)
+        {
+            fighter = targets[i].GetComponent<Fighter>();
+        }
+        BlockAll block = new BlockAll(3, null);
+        block.targets = this.targets;
+        block.originator = fighter.gameObject;
+        fighter.SetAction(block);
+        yield return true;
     }
     public override float GetCost()
     {

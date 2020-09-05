@@ -39,7 +39,7 @@ public class BattleMaster : Kami
     }
     public void AddToVirtue(float initValue)
     {
-        int value = Mathf.RoundToInt(Mathf.Abs(initValue) / 5);
+        int value = Mathf.RoundToInt(Mathf.Abs(initValue) / 2);
         if (value < 1)
         {
             value = 1;
@@ -69,27 +69,15 @@ public class BattleMaster : Kami
     }
     private void CalculateVirtueMax()
     {
-        int partyMember = 0;
-        int enemies = 0;
+        float virt = 0;
         for (int i = 0; i < allFighters.BeingDatas.Count; i++)
         {
-            switch (allFighters.BeingDatas[i].gameObject.tag)
+            if (allFighters.BeingDatas[i].gameObject.tag == "Enemy")
             {
-                case "Party":
-                    Fighter fighter = allFighters.BeingDatas[i].gameObject.GetComponent<Fighter>();
-                    partyMember += Mathf.RoundToInt(fighter.damage);
-                    break;
-                case "Enemy":
-                    Fighter enemy = allFighters.BeingDatas[i].gameObject.GetComponent<Fighter>();
-                    enemies += Mathf.RoundToInt(enemy.health);
-                    break;
-                default:
-                    break;
-
+                virt += allFighters.BeingDatas[i].gameObject.GetComponent<Enemy>().virtueValue;
             }
         }
-        Debug.Log($"party ->{partyMember} and then enemies{enemies}");
-        this.virtueMax = Mathf.RoundToInt(enemies / partyMember);
+        this.virtueMax = Mathf.RoundToInt(virt);
     }
     private static int CompareActionsByOriginatorTag(FighterAction x, FighterAction y)
     {
@@ -275,6 +263,7 @@ public class BattleMaster : Kami
         {
             intentions = new List<FighterAction>();
             intentions = this.GetIntentions();
+            virtueExpectation.text = "0";
             StartCoroutine(PlayerAction());
         }
     }
@@ -402,6 +391,8 @@ public class BattleMaster : Kami
     }
     public void SimulateBattle()
     {
+        this.virtueExpectation.text = "Expected Gain: 0";
+
         DestroyAllShadows();
         shadows = new GameObject[allFighters.BeingDatas.Count];
         FighterShadow[] shadowScripts = new FighterShadow[allFighters.BeingDatas.Count];

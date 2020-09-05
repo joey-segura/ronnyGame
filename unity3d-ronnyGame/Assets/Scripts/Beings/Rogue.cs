@@ -4,10 +4,10 @@ using UnityEngine;
 
 public class RogueJson
 {
-    public float speed, health, damage;
+    public float speed, health, damage, virtueValue;
     public string[] party;
 }
-public class Rogue : Fighter
+public class Rogue : Enemy
 {
     public float speed;
    
@@ -24,13 +24,15 @@ public class Rogue : Fighter
                 this.health = rogue.health;
                 this.damage = rogue.damage;
                 this.party = rogue.party;
+                this.virtueValue = rogue.virtueValue;
             }
             else
             {
                 this.speed = 0;
-                this.health = 5;
+                this.health = 4;
                 this.damage = 3;
                 this.party = null;
+                this.virtueValue = 2;
             }
             this.ID = being.objectID;
             this.beingData = jsonData;
@@ -61,6 +63,7 @@ public class Rogue : Fighter
         rogue.health = this.health;
         rogue.damage = this.damage;
         rogue.party = this.party;
+        rogue.virtueValue = this.virtueValue;
         return JsonUtility.ToJson(rogue);
     }
 }

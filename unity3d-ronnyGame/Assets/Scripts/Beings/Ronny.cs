@@ -115,12 +115,14 @@ public class Ronny : Human
     public override void RecalculateActions()
     {
         this.actionList = new List<FighterAction>();
-        //this.actionList.Add(new Attack(3, this.damage * this.damageMultiplier, null));
-        this.actionList.Add(new Heal(3, 5, null));
-        this.actionList.Add(new BuffAttack(3, 3, 5f, null));
+        //this.actionList.Add(new BlockAll(3, null));
+        //this.actionList.Add(new CommandToBlock(3, null));
+        this.actionList.Add(new Attack(3, this.damage * this.damageMultiplier, null));
+        //this.actionList.Add(new Heal(3, 5, null));
+        //this.actionList.Add(new BuffAttack(3, 3, 5f, null));
         //this.actionList.Add(new Cleave(3, this.damage * this.damageMultiplier, null));
         this.actionList.Add(new CommandToAttack(3, null));
-        this.actionList.Add(new TauntAll(3, null));
+        //this.actionList.Add(new TauntAll(3, null));
         base.RecalculateActions();
     }
     public GameObject ReturnChoosenGameObject()

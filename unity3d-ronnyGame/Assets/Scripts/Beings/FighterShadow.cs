@@ -20,7 +20,7 @@ public class FighterShadow : Fighter
         if (causer.gameObject.tag == "Party") // ugly but sensical solution, every fighther on health change should check if the causer was a party member (this accounts for all buff values etc)
         {
             BattleMaster battleMasterScript = this.GetComponentInParent<BattleMaster>();
-            battleMasterScript.virtueExpectation.text = $"Expected Gain: {Mathf.RoundToInt(Mathf.Abs(change / 5))}";
+            battleMasterScript.virtueExpectation.text = $"Expected Gain: {Mathf.RoundToInt(Mathf.Abs(change / 2))}";
         }
         
         this.health += change;
