@@ -59,7 +59,7 @@ Camera:
   far clip plane: 1000
   field of view: 52.2
   orthographic: 1
-  orthographic size: 40
+  orthographic size: 35
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -235,7 +235,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   MainCamera: {fileID: 1875209977991060999}
   SkyCamera: {fileID: 8937049694162663214}
-  SkyBoxRotation: {x: 0.05, y: 0, z: 0}
+  SkyBoxRotation: {x: 0.005, y: 0, z: 0}
 --- !u!65 &4006656159466941805
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -325,7 +325,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1875209978368580811}
   m_RootOrder: 1
-  m_LocalEulerAnglesHint: {x: 30, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 30, y: -79.547005, z: -1.4030001}
 --- !u!20 &8937049694162663214
 Camera:
   m_ObjectHideFlags: 0
