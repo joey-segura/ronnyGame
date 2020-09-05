@@ -9182,6 +9182,35 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ac6e05e9a79002b42a99e5f8432b46d3, type: 3}
+--- !u!1 &1620953214 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: -1799860756879336739, guid: ac6e05e9a79002b42a99e5f8432b46d3,
+    type: 3}
+  m_PrefabInstance: {fileID: 1620953213}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1620953215
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1620953214}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e09369032ed556945880e35fb84fc10d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  renderer: {fileID: 1620953216}
+  textures:
+  - {fileID: 2800000, guid: 03e423caaf0505341876a8986e69c559, type: 3}
+  - {fileID: 2800000, guid: c9ec5a6fd4a03244f918ea56b305a5cd, type: 3}
+  currentTexture: 0
+--- !u!23 &1620953216 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 7181818936469468963, guid: ac6e05e9a79002b42a99e5f8432b46d3,
+    type: 3}
+  m_PrefabInstance: {fileID: 1620953213}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1649236709
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -60,6 +60,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\Scripts\Actions.cs" />
+    <Compile Include="Assets\Scripts\AnimateTextures.cs" />
     <Compile Include="Assets\Scripts\BattleMaster.cs" />
     <Compile Include="Assets\Scripts\Being.cs" />
     <Compile Include="Assets\Scripts\Beings\DialogueCauser.cs" />

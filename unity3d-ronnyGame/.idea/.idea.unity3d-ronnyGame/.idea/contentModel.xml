@@ -16,13 +16,14 @@
             <e p="rotation_testScene.txt" t="Include" />
           </e>
         </e>
-        <e p="Scene_Changer_test.cs" t="Include" />
         <e p="Scripts" t="Include">
           <e p="Actions.cs" t="Include" />
+          <e p="AnimateTextures.cs" t="Include" />
           <e p="BattleMaster.cs" t="Include" />
           <e p="Being.cs" t="Include" />
           <e p="Beings" t="Include">
             <e p="DialogueCauser.cs" t="Include" />
+            <e p="FighterShadow.cs" t="Include" />
             <e p="Joey.cs" t="Include" />
             <e p="Ritter.cs" t="Include" />
             <e p="Rogue.cs" t="Include" />
@@ -42,6 +43,7 @@
           <e p="ConsoleMaster.cs" t="Include" />
           <e p="DataMaster.cs" t="Include" />
           <e p="Effects.cs" t="Include" />
+          <e p="Enemy.cs" t="Include" />
           <e p="Fighter.cs" t="Include" />
           <e p="GameMaster.cs" t="Include" />
           <e p="GameMenuMaster.cs" t="Include" />
