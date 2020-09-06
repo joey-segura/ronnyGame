@@ -17,6 +17,7 @@
     <setting file="file://$PROJECT_DIR$/Assets/Scripts/playerMovement.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Scripts/cameraRotation.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Scripts/AnimateTextures.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/Scripts/BattleMaster.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Scripts/SceneMaster.cs" root0="FORCE_HIGHLIGHTING" />
   </component>
   <component name="IdeDocumentHistory">
@@ -30,6 +31,8 @@
         <option value="$PROJECT_DIR$/Assets/Scripts/SkyboxRoatation.cs" />
         <option value="$PROJECT_DIR$/Assets/Scripts/SunCycle.cs" />
         <option value="$PROJECT_DIR$/Assets/Scripts/AnimateTextures.cs" />
+        <option value="$PROJECT_DIR$/Assets/FixedBGRotation.cs" />
+        <option value="$PROJECT_DIR$/Assets/Scripts/ScrollingBackground.cs" />
       </list>
     </option>
   </component>
@@ -86,6 +89,7 @@
       <workItem from="1598626156880" duration="2387000" />
       <workItem from="1598630269151" duration="4187000" />
       <workItem from="1599334850449" duration="2249000" />
+      <workItem from="1599413589005" duration="4260000" />
     </task>
     <servers />
   </component>
