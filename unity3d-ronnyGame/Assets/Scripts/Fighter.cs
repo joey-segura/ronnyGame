@@ -159,7 +159,7 @@ public class Fighter : Being
         int targetIndex = UnityEngine.Random.Range(0, allFighters.BeingDatas.Count);
         return allFighters.BeingDatas[targetIndex].gameObject;
     }
-    private static int CompareEffectsByDuration(Effect x, Effect y) // might need it later
+    private static int CompareEffectsByDuration(Effect x, Effect y)
     {
         if (x.duration > y.duration)
         {

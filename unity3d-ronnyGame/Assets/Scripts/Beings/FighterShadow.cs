@@ -22,6 +22,10 @@ public class FighterShadow : Fighter
             BattleMaster battleMasterScript = this.GetComponentInParent<BattleMaster>();
             battleMasterScript.virtueExpectation.text = $"Expected Gain: {Mathf.RoundToInt(Mathf.Abs(change / 2))}";
         }
+        if (this.gameObject.tag == "Player")
+        {
+            this.GetComponentInParent<BattleMaster>().expectedDamageTaken += change;
+        }
         
         this.health += change;
         this.DeathCheck();

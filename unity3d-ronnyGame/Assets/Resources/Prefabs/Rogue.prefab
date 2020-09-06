@@ -333,7 +333,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 76a83a7763df49247ab40882fb4c49f8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Kami: {fileID: 0}
+  gameMasterScript: {fileID: 0}
+  battleMasterScript: {fileID: 0}
   interactable: 0
+  isStaticToCamera: 1
   beingData: 
   canvas: {fileID: 0}
   health: 0
@@ -344,6 +348,8 @@ MonoBehaviour:
   isPoisoned: 0
   party: []
   direction: []
+  battlePosition: {x: 0, y: 0, z: 0}
+  virtueValue: 0
   speed: 0
 --- !u!65 &-781544737565224773
 BoxCollider:

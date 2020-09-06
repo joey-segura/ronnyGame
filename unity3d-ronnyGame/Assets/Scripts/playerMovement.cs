@@ -9,7 +9,7 @@ public class playerMovement : MonoBehaviour
     public float angle = 0f;
     public Animator anim;
 
-    void Update()
+    void FixedUpdate()
     {
 
         float x = 0f;
@@ -49,9 +49,6 @@ public class playerMovement : MonoBehaviour
             x += 0;
             z += 0;
         }
-
-        this.transform.position += new Vector3(z * speed * Time.deltaTime, 0, x * speed * Time.deltaTime);
-
         if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.D))
         {
             anim.SetBool("Moving", true);
@@ -59,6 +56,19 @@ public class playerMovement : MonoBehaviour
         {
             anim.SetBool("Moving", false);
         }
+
+        Vector3 newPos = this.transform.position + new Vector3(z * speed * Time.deltaTime, 0, x * speed * Time.deltaTime);
+        RaycastHit hit;
+        if (Physics.Raycast(newPos, Vector3.down, out hit, 4))
+        {
+            this.transform.position = newPos;
+        } else
+        {
+            anim.SetBool("Moving", false);
+        }
+        //this.transform.position += new Vector3(z * speed * Time.deltaTime, 0, x * speed * Time.deltaTime);
+
+        
     }
     public void Idle()
     {

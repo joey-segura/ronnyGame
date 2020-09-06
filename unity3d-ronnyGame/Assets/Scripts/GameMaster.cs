@@ -227,4 +227,3 @@ public class GameMaster : Kami
         Debug.LogWarning("Loaded New game but Ritter isn't the first scene that should be loaded! Change this!");
     }
 }
-

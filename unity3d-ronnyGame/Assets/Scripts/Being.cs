@@ -19,6 +19,8 @@ public class Being : MonoBehaviour
 
     public bool interactable = false;
 
+    public bool isStaticToCamera = false;
+
     protected bool isHovering = false;
 
     public int ID { get; set; }
@@ -81,26 +83,30 @@ public class Being : MonoBehaviour
                 GUI.Box(new Rect(minX, (Screen.height - maxY), width, height), $"{this.gameObject.name} {ID.ToString()}");
         }
     }
-    private void Update()
+    protected void Update()
     {
         if (interactable && Input.GetKeyDown(KeyCode.R)) //Interact Key (need to generalize in the future to allow remapping etc)
         {
             this.Interact();
         }
+        if (this.isStaticToCamera)
+        {
+            this.transform.rotation = gameMasterScript.GetPlayerGameObject().transform.rotation;
+        }
     }
 
-    private void Start()
+    protected void Start()
     {
+        cam = Camera.main;
+        Kami = this.gameObject.transform.parent.gameObject;
+        gameMasterScript = Kami.GetComponent<GameMaster>();
+        battleMasterScript = Kami.GetComponent<BattleMaster>();
         if (this.gameObject.GetComponentInChildren<Canvas>() != null)
         {
             
             this.canvas = this.gameObject.GetComponentInChildren<Canvas>();
             this.ToggleCanvas();
         }
-        cam = Camera.main;
-        Kami = this.gameObject.transform.parent.gameObject;
-        gameMasterScript = Kami.GetComponent<GameMaster>();
-        battleMasterScript = Kami.GetComponent<BattleMaster>();
     }
     public void ChangeTransparancy(float alpha = .7f)
     {

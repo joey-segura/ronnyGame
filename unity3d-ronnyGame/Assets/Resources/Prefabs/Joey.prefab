@@ -183,6 +183,7 @@ GameObject:
   - component: {fileID: 2626224200035602328}
   - component: {fileID: 3128985945869412710}
   - component: {fileID: 8627784214247840167}
+  - component: {fileID: -6349488381571853840}
   - component: {fileID: 2337990418545024983}
   m_Layer: 0
   m_Name: Joey
@@ -269,6 +270,24 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 0.4375, y: 0.6875, z: 0.2}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!143 &-6349488381571853840
+CharacterController:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5851495943130966409}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Height: 0.6875
+  m_Radius: 0.21875
+  m_SlopeLimit: 45
+  m_StepOffset: 0.3
+  m_SkinWidth: 0.08
+  m_MinMoveDistance: 0.001
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &2337990418545024983
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -281,7 +300,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: acb400b9c8061404fba34d4b339637da, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Kami: {fileID: 0}
+  gameMasterScript: {fileID: 0}
+  battleMasterScript: {fileID: 0}
   interactable: 0
+  isStaticToCamera: 1
   beingData: 
   canvas: {fileID: 0}
   health: 0
@@ -292,6 +315,7 @@ MonoBehaviour:
   isPoisoned: 0
   party: []
   direction: []
+  battlePosition: {x: 0, y: 0, z: 0}
   virtue: 0
   ronny: {fileID: 0}
   speed: 0

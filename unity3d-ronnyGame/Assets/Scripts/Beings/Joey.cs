@@ -13,7 +13,7 @@ public class Joey : Human
     public GameObject ronny;
     public float speed;
     private bool follow = true;
-    private void Update()
+    private new void Update()
     {
         if (ronny != null && follow)
         {
@@ -23,6 +23,7 @@ public class Joey : Human
         {
             ronny = this.GetRonny();
         }
+        base.Update();
     }
     public override FighterAction TurnAction(ListBeingData allFighters)
     {
@@ -30,7 +31,7 @@ public class Joey : Human
     }
     private void FollowRonny()
     {
-        if (Vector3.Distance(this.transform.position, ronny.transform.position) > .5f)
+        if (Vector3.Distance(this.transform.position, ronny.transform.position) > 5)
         {
             this.transform.position = Vector3.MoveTowards(this.transform.position, ronny.transform.position, this.speed * Time.deltaTime);
         }

@@ -22,10 +22,12 @@ public class BattleMaster : Kami
 
     [SerializeField]
     private Canvas canvas;
-    [SerializeField]
     public Button leftArrow, rightArrow;
-    [SerializeField]
     public Text virtue, virtueExpectation, action;
+    public Texture holder, healthBar, damageBar, costBar;
+    public float expectedDamageTaken, costDamage;
+    private bool isFlashing = false;
+    private float ronnyMaxHP = 0, guiX = (Screen.width / 2) - (Screen.width / 2) / 2, guiY = Screen.height / 10;
     private int virtueValue = 0, virtueMax = 0;
 
     public void AddFighter(BeingData being)
@@ -154,6 +156,12 @@ public class BattleMaster : Kami
         }
         yield return null;
     }
+    public IEnumerator FlashingBars ()
+    {
+        isFlashing = !isFlashing;
+        yield return new WaitForSeconds(.5f);
+        StartCoroutine(FlashingBars());
+    }
     public void FillMembers(ListBeingData ronnyParty, ListBeingData enemyParty)
     {
         partyMembers = ronnyParty;
@@ -215,8 +223,10 @@ public class BattleMaster : Kami
         this.virtueValue = 0;
         this.InitializeFighters();
         this.InitializeButtons();
+        this.ronnyMaxHP = GetPlayerObject().GetComponent<Ronny>().health;
         this.MoveCameraTo(-0.05f, 7.23f, -13.4f, 30.066f, 0, 0);
         this.CalculateVirtueMax();
+        StartCoroutine(FlashingBars());
         this.UpdateVirtueText(0);
         this.canvas.gameObject.SetActive(true);
         this.isBattle = true;
@@ -264,7 +274,36 @@ public class BattleMaster : Kami
             intentions = new List<FighterAction>();
             intentions = this.GetIntentions();
             virtueExpectation.text = "0";
+            expectedDamageTaken = 0;
+            costDamage = 0;
             StartCoroutine(PlayerAction());
+        }
+    }
+    private void OnGUI()
+    {
+        if (isBattle)
+        {
+            Ronny ronny = GetPlayerObject().GetComponent<Ronny>();
+            float healthWidth = (Screen.width / 2) / (ronnyMaxHP / ronny.health);
+            float costWidth = 0;
+            Rect holderRect = new Rect(guiX, guiY, Screen.width / 2, Screen.height / 25);
+            Rect healthRect = new Rect(guiX, guiY, healthWidth, Screen.height / 25);
+            GUI.DrawTexture(holderRect, holder);
+            GUI.DrawTexture(healthRect, healthBar);
+
+            if (costDamage > 0 && isFlashing)
+            {
+                costWidth = healthWidth / (ronny.health / costDamage);
+                Rect costRect = new Rect(guiX + (healthWidth - costWidth), guiY, costWidth, Screen.height / 25);
+                GUI.DrawTexture(costRect, costBar);
+            }
+            if (expectedDamageTaken < 0 && isFlashing)
+            {
+                float damageWidth = healthWidth / (ronny.health / Mathf.Abs(expectedDamageTaken));
+                Rect damageRect = new Rect(guiX + (healthWidth - damageWidth - costWidth), guiY, damageWidth, Screen.height / 25);
+                GUI.DrawTexture(damageRect, damageBar);
+            }
+            
         }
     }
     private void PlayAnimation(Animation anim)

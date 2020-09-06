@@ -149,8 +149,8 @@ public class Ronny : Human
 
         BattleMaster battleMaster = this.transform.GetComponentInParent<BattleMaster>();
         battleMaster.SetActionText(action.name);
+        battleMaster.costDamage = action.GetCost();
         battleMaster.SimulateBattle();
-
     }
     public FighterAction Turn(ListBeingData allFighters, List<FighterAction> actionList)
     {
