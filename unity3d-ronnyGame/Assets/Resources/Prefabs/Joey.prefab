@@ -185,6 +185,7 @@ GameObject:
   - component: {fileID: 8627784214247840167}
   - component: {fileID: -6349488381571853840}
   - component: {fileID: 2337990418545024983}
+  - component: {fileID: 3384306590978372497}
   m_Layer: 0
   m_Name: Joey
   m_TagString: Party
@@ -319,6 +320,25 @@ MonoBehaviour:
   virtue: 0
   ronny: {fileID: 0}
   speed: 0
+--- !u!95 &3384306590978372497
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5851495943130966409}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 71d39e1f6c068b54a9f83fe15ec9ed92, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!1 &5997198699661429992
 GameObject:
   m_ObjectHideFlags: 0
@@ -329,6 +349,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7461140825747875643}
   - component: {fileID: 6360694203771996161}
+  - component: {fileID: 2545960778991113846}
   m_Layer: 0
   m_Name: Panel
   m_TagString: Untagged
@@ -364,3 +385,22 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5997198699661429992}
   m_CullTransparentMesh: 0
+--- !u!95 &2545960778991113846
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5997198699661429992}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 0}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
