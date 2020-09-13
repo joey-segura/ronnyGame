@@ -8,7 +8,7 @@ ModelImporter:
       type: UnityEngine:Texture2D
       assembly: UnityEngine.CoreModule
       name: water_run1
-    second: {fileID: 2800000, guid: 5c4e8a0de43ed0d479353cdc77c3050c, type: 3}
+    second: {fileID: 2800000, guid: 8056b5eedc1400443a78c5129c95e8b3, type: 3}
   materials:
     materialImportMode: 1
     materialName: 0
