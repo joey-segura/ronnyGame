@@ -176,6 +176,7 @@ public class Fighter : Being
     {
         if (this.health <= 0)
         {
+            this.DeathTrigger(false);
             BattleMaster battleMaster = this.transform.parent.GetComponentInParent<BattleMaster>();
             battleMaster.RemoveMemberByID(this.ID);
             battleMaster.BattleEndCheck();
@@ -186,6 +187,10 @@ public class Fighter : Being
         {
             return;
         }
+    }
+    public virtual void DeathTrigger(bool shadow)
+    {
+
     }
     public IEnumerator DrawIntentions(FighterAction action)
     {
@@ -243,38 +248,7 @@ public class Fighter : Being
 
         yield return null;
     }
-    public virtual void InitializeBattle()
-    {
-        this.isBattle = true;
-        this.battlePosition = this.transform.position;
-        return; // this is for any enemy script to disable their movement script once the battle starts
-    }
-    private void OnGUI()
-    {
-        if (isBattle && currentAction != null && this.isHovering)
-        {
-            Vector3 mouse = Input.mousePosition;
-            Rect rect;
-            if (mouse.x > (Screen.width / 2))
-            {
-                rect = new Rect(mouse.x - 200, (Screen.height - mouse.y + 10), 200, 100);
-            } else
-            {
-                rect = new Rect(mouse.x + 10, (Screen.height - mouse.y + 10), 200, 100);
-            }
-            
-            string names = null;
-            if (currentAction.targets != null)
-            {
-                for (int i = 0; i < currentAction.targetCount; i++)
-                {
-                    names += $"{currentAction.targets[i].name} ";
-                }
-                StartCoroutine(GetShadow().PlayAnimations());
-            }
-            GUI.Box(rect, $"Character Name: {name}\n HP: {health}\n Action name: {currentAction.name}\n Targets name: {names}\n Value: {currentAction.GetValue()}");
-        }
-    }
+    
     public IEnumerator FlashWhite(float seconds)
     {
         Shader whiteGUI = Shader.Find("GUI/Text Shader");
@@ -325,6 +299,39 @@ public class Fighter : Being
     private FighterShadow GetShadow()
     {
         return this.transform.GetComponentInChildren<FighterShadow>();
+    }
+    public virtual void InitializeBattle()
+    {
+        this.isBattle = true;
+        this.battlePosition = this.transform.position;
+        return; // this is for any enemy script to disable their movement script once the battle starts
+    }
+    private void OnGUI()
+    {
+        if (isBattle && currentAction != null && this.isHovering)
+        {
+            Vector3 mouse = Input.mousePosition;
+            Rect rect;
+            if (mouse.x > (Screen.width / 2))
+            {
+                rect = new Rect(mouse.x - 200, (Screen.height - mouse.y + 10), 200, 100);
+            }
+            else
+            {
+                rect = new Rect(mouse.x + 10, (Screen.height - mouse.y + 10), 200, 100);
+            }
+
+            string names = null;
+            if (currentAction.targets != null)
+            {
+                for (int i = 0; i < currentAction.targetCount; i++)
+                {
+                    names += $"{currentAction.targets[i].name} ";
+                }
+                StartCoroutine(GetShadow().PlayAnimations());
+            }
+            GUI.Box(rect, $"Character Name: {name}\n HP: {health}\n Action name: {currentAction.name}\n Targets name: {names}\n Value: {currentAction.GetValue()}");
+        }
     }
     public virtual void RecalculateActions()
     {

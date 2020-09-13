@@ -7,6 +7,7 @@ public class FighterShadow : Fighter
 {
     public SpriteRenderer spriteRenderer;
     public Animator animator;
+    private Fighter parent;
 
     public override float AddToHealth(float change, Fighter causer)
     {
@@ -35,12 +36,14 @@ public class FighterShadow : Fighter
     {
         if (health < 0)
         {
+            parent.DeathTrigger(true);
             spriteRenderer.color += new Color(1, 0, 0, 0);
             Debug.LogWarning("Change redness to indicate death to skull sprite");
         }
     }
     public void InjectShadowData(Fighter source)
     {
+        this.parent = source;
         battlePosition = this.transform.position;
         damage = source.damage;
         damageMultiplier = source.damageMultiplier;

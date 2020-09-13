@@ -167,7 +167,7 @@ public class BattleMaster : Kami
         partyMembers = ronnyParty;
         enemyMembers = enemyParty;
     }
-    private GameObject GetAllyObject()
+    public GameObject GetAllyObject()
     {
         GameObject ally = null;
         for (int i = 0; i < allFighters.BeingDatas.Count; i++)
@@ -188,7 +188,11 @@ public class BattleMaster : Kami
             if (allFighters.BeingDatas[i].gameObject.tag != "Player")
             {
                 Fighter fighter = allFighters.BeingDatas[i].gameObject.GetComponent<Fighter>();
-                actions.Add(fighter.GetIntention(allFighters));
+                FighterAction action = fighter.GetIntention(allFighters);
+                if (action != null)
+                {
+                    actions.Add(action);
+                }
             }
         }
         actions.Sort(CompareActionsByOriginatorTag);
@@ -345,7 +349,7 @@ public class BattleMaster : Kami
         turn = false;
         StartCoroutine("ProcessAIActions");
     }
-    private IEnumerator ProcessAction(FighterAction action)
+    public IEnumerator ProcessAction(FighterAction action)
     {
         if (action.targets != null)
         {
@@ -369,14 +373,14 @@ public class BattleMaster : Kami
                 fighter.TickEffects();
                 if (fighter != null)
                 {
-                    fighter.RecalculateActions();
                     FighterAction action = fighter.currentAction; //gets current action instead of playing intention in case ronny influences it
                     this.PlayAnimation(action.animation);
                     Debug.Log($"{action.originator.name}'s turn!");
                     //fighter.ToggleCanvas();
                     fighter.StartCoroutine("BattleActionMove", action);
                     yield return new WaitForSeconds(action.duration);
-
+                    fighter.RecalculateActions();
+                    action = fighter.currentAction;
                     StartCoroutine("ProcessAction", action);
                 }
             }
