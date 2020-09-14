@@ -42,7 +42,7 @@ public class Ronny : Human
         {
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             RaycastHit hit;
-            if (Physics.Raycast(ray, out hit, 25))
+            if (Physics.Raycast(ray, out hit, 35))
             {
                 this.target = hit.collider.gameObject;
             }
@@ -140,9 +140,12 @@ public class Ronny : Human
     }
     private void SetNewAction(FighterAction action)
     {
-        if (this.currentAction != null)
+        if (this.currentAction != null && !action.IsActionAOE())
         {
-            action.targets = this.currentAction.targets;
+            if (action.IsValidAction(TargetRelationToSelf(this.currentAction.targets[0])))
+            {
+                action.targets = this.currentAction.targets;
+            }
         }
         action.originator = this.gameObject;
         this.currentAction = action;

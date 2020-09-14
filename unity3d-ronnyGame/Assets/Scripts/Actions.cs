@@ -544,7 +544,10 @@ public class Heal : FighterAction
         {
             Mathf.RoundToInt(targets[i].GetComponent<Fighter>().AddToHealth(this.healValue, this.originator.GetComponent<Fighter>()));
             Vector3 pos = new Vector3(targets[i].transform.position.x, targets[i].transform.position.y - .05f, targets[i].transform.position.z);
-            GetVisualEffectMaster().InstantiateVisualSprite(Resources.Load(prefabPath), pos, targets[i].transform.rotation, targets[i].transform, this.duration);
+            if (!this.originator.name.Contains("Shadow"))
+            {
+                GetVisualEffectMaster().InstantiateVisualSprite(Resources.Load(prefabPath), pos, targets[i].transform.rotation, targets[i].transform, this.duration);
+            }
         }
         yield return true;
     }

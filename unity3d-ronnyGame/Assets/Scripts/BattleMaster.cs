@@ -172,7 +172,7 @@ public class BattleMaster : Kami
         GameObject ally = null;
         for (int i = 0; i < allFighters.BeingDatas.Count; i++)
         {
-            if (allFighters.BeingDatas[i].gameObject.tag == "Party")
+            if (allFighters.BeingDatas[i].gameObject.name == "Joey" || allFighters.BeingDatas[i].gameObject.name == "Ritter")
             {
                 ally = allFighters.BeingDatas[i].gameObject;
             }
@@ -346,6 +346,7 @@ public class BattleMaster : Kami
         }
         ronny.AddToHealth(action.GetCost() * -1, ronny);
         ronny.StartCoroutine("MoveToBattlePosition");
+        costDamage = 0;
         turn = false;
         StartCoroutine("ProcessAIActions");
     }
@@ -382,10 +383,11 @@ public class BattleMaster : Kami
                     fighter.RecalculateActions();
                     action = fighter.currentAction;
                     StartCoroutine("ProcessAction", action);
+                    yield return new WaitForSeconds(1);
                 }
             }
         }
-        yield return new WaitForSeconds(1); // wait 1 second for new turn to start!;
+        yield return new WaitForSeconds(3); // wait 1 second for new turn to start!;
         this.NewTurn();
         yield return null;
     }
@@ -463,7 +465,7 @@ public class BattleMaster : Kami
         int virtueGain = virtue - this.virtueMax;
         for (int i = 0; i < allFighters.BeingDatas.Count; i++)
         {
-            if (allFighters.BeingDatas[i].gameObject.tag == "Party")
+            if (allFighters.BeingDatas[i].gameObject.name == "Joey" || allFighters.BeingDatas[i].gameObject.name == "Ritter")
             {
                 allFighters.BeingDatas[i].gameObject.GetComponent<Human>().AddToVirtue(virtueGain);
             }

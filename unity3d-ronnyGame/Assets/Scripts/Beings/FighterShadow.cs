@@ -8,6 +8,7 @@ public class FighterShadow : Fighter
     public SpriteRenderer spriteRenderer;
     public Animator animator;
     private Fighter parent;
+    public bool dead = false, playing = false;
 
     public override float AddToHealth(float change, Fighter causer)
     {
@@ -18,7 +19,7 @@ public class FighterShadow : Fighter
         //Debug.Log($"{this.name} has {onHitEffects.Count} onhit functions");
         change = change / this.defenseMultiplier;
         Debug.Log($"{this.name}'s health just got changed by {change} by {causer.name}");
-        if (causer.gameObject.tag == "Party") // ugly but sensical solution, every fighther on health change should check if the causer was a party member (this accounts for all buff values etc)
+        if (causer.gameObject.name.Contains("Joey") || causer.gameObject.name.Contains("Ritter")) // ugly but sensical solution, every fighther on health change should check if the causer was a party member (this accounts for all buff values etc)
         {
             BattleMaster battleMasterScript = this.GetComponentInParent<BattleMaster>();
             battleMasterScript.virtueExpectation.text = $"Expected Gain: {Mathf.RoundToInt(Mathf.Abs(change / 2))}";
@@ -34,8 +35,9 @@ public class FighterShadow : Fighter
     }
     public override void DeathCheck()
     {
-        if (health < 0)
+        if (health < 0 && !dead)
         {
+            dead = true;
             parent.DeathTrigger(true);
             spriteRenderer.color += new Color(1, 0, 0, 0);
             Debug.LogWarning("Change redness to indicate death to skull sprite");
@@ -67,14 +69,20 @@ public class FighterShadow : Fighter
     }
     public IEnumerator PlayAnimations()
     {
+        playing = true;
         this.transform.position = battlePosition;
         StartCoroutine(BattleActionMove(this.currentAction));
         if (this.currentAction.animation != null)
         {
             this.currentAction.animation.Play();
         }
-        yield return new WaitForSeconds(this.currentAction.duration);
+        yield return new WaitForSeconds(this.currentAction.duration * 1.5f);
+        playing = false;
         yield return true;
+    }
+    public void ResetPosition()
+    {
+        this.transform.position = battlePosition;
     }
     public void SimulateAction()
     {

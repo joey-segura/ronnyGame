@@ -8,8 +8,6 @@ public class SavageBabyJson
 }
 public class SavageBaby : Enemy
 {
-    public float speed;
-
     public override void InjectData(string jsonData)
     {
         if (JsonUtility.FromJson<BeingData>(jsonData) != null)

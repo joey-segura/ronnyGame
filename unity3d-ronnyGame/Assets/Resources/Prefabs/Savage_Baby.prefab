@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: -6524770121364069922}
   m_Layer: 0
   m_Name: Savage_Baby
-  m_TagString: Enemy
+  m_TagString: Party
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -132,7 +132,6 @@ MonoBehaviour:
   direction: []
   battlePosition: {x: 0, y: 0, z: 0}
   virtueValue: 0
-  speed: 0
 --- !u!65 &-6524770121364069922
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -144,5 +143,5 @@ BoxCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 0.3, y: 0.2, z: 0.3}
+  m_Size: {x: 0.6, y: 0.5, z: 0.6}
   m_Center: {x: 0, y: 0, z: 0}

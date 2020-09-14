@@ -38,7 +38,7 @@ public class Fighter : Being
         Debug.Log($"{this.name} has {onHitEffects.Count} onhit functions");
         change = change / this.defenseMultiplier;
         Debug.Log($"{this.name}'s health just got changed by {change}");
-        if (causer.gameObject.tag == "Party") // ugly but sensical solution, every fighther on health change should check if the causer was a party member (this accounts for all buff values etc)
+        if (causer.gameObject.name == "Joey" || causer.gameObject.name == "Ritter") // ugly but sensical solution, every fighther on health change should check if the causer was a party member (this accounts for all buff values etc)
         {
             battleMasterScript.AddToVirtue(change);
         }
@@ -92,7 +92,6 @@ public class Fighter : Being
             newPos = new Vector3(this.transform.position.x + distance, this.transform.position.y, this.transform.position.z);
         } else
         {
-
             newPos = Vector3.Lerp(this.transform.position, action.targets[0].transform.position, .75f);
         }
         
@@ -190,7 +189,7 @@ public class Fighter : Being
     }
     public virtual void DeathTrigger(bool shadow)
     {
-
+        //this is here so that it can be instantiated through general terms
     }
     public IEnumerator DrawIntentions(FighterAction action)
     {
@@ -328,7 +327,11 @@ public class Fighter : Being
                 {
                     names += $"{currentAction.targets[i].name} ";
                 }
-                StartCoroutine(GetShadow().PlayAnimations());
+                FighterShadow shadow = GetShadow();
+                if (!shadow.playing)
+                {
+                    StartCoroutine(shadow.PlayAnimations());
+                }
             }
             GUI.Box(rect, $"Character Name: {name}\n HP: {health}\n Action name: {currentAction.name}\n Targets name: {names}\n Value: {currentAction.GetValue()}");
         }
