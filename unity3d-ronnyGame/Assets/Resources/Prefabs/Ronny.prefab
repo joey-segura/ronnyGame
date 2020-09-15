@@ -290,6 +290,7 @@ MonoBehaviour:
   speed: 4
   angle: 0
   anim: {fileID: 1875209978368580810}
+  controller: {fileID: -2109286981784842993}
 --- !u!114 &1875209978368580809
 MonoBehaviour:
   m_ObjectHideFlags: 0

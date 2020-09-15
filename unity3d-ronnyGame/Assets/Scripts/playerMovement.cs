@@ -8,6 +8,7 @@ public class playerMovement : MonoBehaviour
     public float speed = 0f;
     public float angle = 0f;
     public Animator anim;
+    public CharacterController controller;
 
     void FixedUpdate()
     {
@@ -58,17 +59,44 @@ public class playerMovement : MonoBehaviour
         }
 
         Vector3 newPos = this.transform.position + new Vector3(z * speed * Time.deltaTime, 0, x * speed * Time.deltaTime);
+        //Vector3 newEnd = new Vector3(newPos.x, newPos.y - 4, newPos.z); //where we want to go
+        //Vector3 direction = (newEnd - this.transform.position).normalized;
         RaycastHit hit;
+
+        /*if (Physics.Raycast(this.transform.position, direction, out hit, 4)) // tried to go out from player pos but going up parallel to the wall didn't work
+        {
+            if (hit.distance > 2f)
+            {
+                this.transform.position = newPos;
+            } else
+            {
+                Debug.Log(hit.transform.gameObject.name);
+            }
+        }
+        else
+        {
+            anim.SetBool("Moving", false);
+        }*/
         if (Physics.Raycast(newPos, Vector3.down, out hit, 4))
         {
-            this.transform.position = newPos;
-        } else
+            RaycastHit hit2;
+            LayerMask wall = LayerMask.GetMask("Wall");
+            if (Physics.Raycast(this.transform.position, (newPos - this.transform.position).normalized, out hit2, 2, wall))
+            {
+                Debug.Log("Uh oh wall!");
+            } else
+            {
+                this.transform.position = newPos;
+            }
+            
+            Debug.Log(hit.transform.gameObject.name);
+        }
+        else
         {
             anim.SetBool("Moving", false);
         }
-        //this.transform.position += new Vector3(z * speed * Time.deltaTime, 0, x * speed * Time.deltaTime);
 
-        
+
     }
     public void Idle()
     {
