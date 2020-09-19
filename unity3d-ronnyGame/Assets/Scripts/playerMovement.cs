@@ -88,8 +88,6 @@ public class playerMovement : MonoBehaviour
             {
                 this.transform.position = newPos;
             }
-            
-            Debug.Log(hit.transform.gameObject.name);
         }
         else
         {

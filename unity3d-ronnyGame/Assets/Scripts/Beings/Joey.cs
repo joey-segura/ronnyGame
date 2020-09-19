@@ -7,11 +7,13 @@ public class JoeyJson
     public GameObject ronny;
     public int virtue;
     public float speed, health, damage;
+    public bool member;
 }
 public class Joey : Human
 {
     public GameObject ronny;
     public float speed;
+    public bool member = true;
     private bool follow = true;
     private new void Update()
     {
@@ -24,6 +26,16 @@ public class Joey : Human
             ronny = this.GetRonny();
         }
         base.Update();
+    }
+    private new void Start()
+    {
+        base.Start();
+        if (!member)
+        {
+            follow = false;
+            Debug.LogWarning("Start Joey wait sleep animation");
+            //this.sleep.play() or this.animator.SetBool("sleep", true) or whatever
+        }
     }
     public override FighterAction TurnAction(ListBeingData allFighters)
     {
@@ -81,6 +93,7 @@ public class Joey : Human
                 this.ronny = joey.ronny;
                 this.speed = joey.speed;
                 this.virtue = joey.virtue;
+                this.member = joey.member;
             }
             this.ID = being.objectID;
             this.beingData = jsonData;
@@ -90,6 +103,11 @@ public class Joey : Human
     public override void Interact()
     {
         //say something!
+    }
+    public void JoinParty() 
+    {
+        this.member = true;
+        this.follow = true;
     }
     public override void RecalculateActions()
     {
@@ -113,7 +131,6 @@ public class Joey : Human
                 break;
         }
         
-        
         //this.actionList.Add(new Cleave(3, this.damage * this.damageMultiplier, null));
         //this.actionList.Add(new ApplyThorns(3, 3, .5f, null));
         /*
@@ -132,6 +149,7 @@ public class Joey : Human
         joey.ronny = this.ronny;
         joey.speed = this.speed;
         joey.virtue = this.virtue;
+        joey.member = this.member;
 
         return JsonUtility.ToJson(joey);
     }

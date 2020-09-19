@@ -101,6 +101,8 @@
     <Compile Include="Assets\Scripts\SceneMaster.cs" />
     <Compile Include="Assets\Scripts\SkyboxRoatation.cs" />
     <Compile Include="Assets\Scripts\SunCycle.cs" />
+    <Compile Include="Assets\Scripts\Trigger.cs" />
+    <Compile Include="Assets\Scripts\Triggers\JoeyJoinParty.cs" />
     <Compile Include="Assets\Scripts\VisualEffectMaster.cs" />
     <Compile Include="Assets\Scripts\cameraRotation.cs" />
     <Compile Include="Assets\Scripts\playerMovement.cs" />

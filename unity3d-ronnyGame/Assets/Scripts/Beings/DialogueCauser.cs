@@ -6,12 +6,12 @@ using UnityEngine.UI;
 public class DialogueCauserJson
 {
     public string[] messages;
-    public string targetName;
+    public string targetName, triggerName;
 }
 public class DialogueCauser : Being
 {
     public string[] messages;
-    public string targetName;
+    public string targetName, triggerName;
     public float chatSpeed = 1f;
     public GameObject target;
     public BoxCollider triggerBox;
@@ -19,6 +19,7 @@ public class DialogueCauser : Being
     public Text text;
     public Sprite ronnyHead, joeyHead;
     private Ronny ronny;
+    private Trigger trigger;
 
     public IEnumerator BeginDialogue()
     {
@@ -51,14 +52,24 @@ public class DialogueCauser : Being
                 yield return new WaitForEndOfFrame();
             }
         }
-        DeinitializeDialogue();
+        StartCoroutine(DeinitializeDialogue());
         yield return null;
     }
-    public void DeinitializeDialogue ()
+    public IEnumerator DeinitializeDialogue ()
     {
+        if (trigger && target)
+        {
+            trigger.EndTrigger(target);
+            CoroutineWithData cd = new CoroutineWithData(this, MoveCameraBack(ronny.transform.position));
+            while (!cd.finished)
+            {
+                yield return new WaitForEndOfFrame();
+            }
+        }
         ronny.ToggleMovementAndCamera();
         gameMasterScript.RemoveBeingFromList(ID);
         DestroyBeing();
+        yield return null;
     }
     private GameObject FindTarget()
     {
@@ -92,6 +103,10 @@ public class DialogueCauser : Being
             //how to play target animations? (have this class have index number for animations?)
             //stop target from moving (being.initializeDialogue?)
         }
+        if (trigger && target)
+        {
+            trigger.StartTrigger(target);
+        }
         ronny = player.GetComponent<Ronny>();
         ronny.ToggleMovementAndCamera();
         this.ToggleCanvas();
@@ -109,6 +124,7 @@ public class DialogueCauser : Being
 
                 this.messages = causer.messages;
                 this.targetName = causer.targetName;
+                this.triggerName = causer.triggerName;
             }
             this.ID = being.objectID;
             this.beingData = jsonData;
@@ -119,12 +135,25 @@ public class DialogueCauser : Being
     {
         Camera cam = Camera.main;
         Vector3 midPoint = (y - x);
-        while (midPoint != cam.transform.position)
+        Vector3 destination = cam.transform.position + new Vector3(midPoint.x / 2, 0, midPoint.z / 2);
+        while (cam.transform.position != destination)
         {
-            cam.transform.position += Vector3.MoveTowards(cam.transform.position, midPoint, Time.deltaTime * .1f);
+            cam.transform.position = Vector3.MoveTowards(cam.transform.position, destination, .1f);
             yield return new WaitForEndOfFrame();
         }
+        //yield return new WaitForSeconds(2);
         yield return null;
+    }
+    public IEnumerator MoveCameraBack(Vector3 ronnyPos)
+    {
+        Camera cam = Camera.main;
+        Vector3 destination = new Vector3(0, 7, -12.38f);
+        while (cam.transform.localPosition != destination)
+        {
+            cam.transform.localPosition = Vector3.MoveTowards(cam.transform.localPosition, destination, .0125f);
+            yield return new WaitForEndOfFrame();
+        }
+        yield return true;
     }
     new public void OnTriggerEnter(Collider other)
     {
@@ -143,6 +172,11 @@ public class DialogueCauser : Being
             headImage.sprite = joeyHead;
         }
     }
+    private new void Start()
+    {
+        base.Start();
+        AttachTrigger();
+    }
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.Mouse0))
@@ -155,7 +189,22 @@ public class DialogueCauser : Being
         DialogueCauserJson causer = new DialogueCauserJson();
         causer.messages = this.messages;
         causer.targetName = this.targetName;
+        causer.triggerName = this.triggerName;
 
         return JsonUtility.ToJson(causer);
+    }
+    private void AttachTrigger()
+    {
+        if (triggerName != null)
+        {
+            switch (triggerName)
+            {
+                case "JoeyJoinParty":
+                    trigger = this.gameObject.AddComponent<JoeyJoinParty>();
+                    break;
+                default:
+                    break;
+            }
+        }
     }
 }
