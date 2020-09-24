@@ -13,8 +13,7 @@ public class Joey : Human
 {
     public GameObject ronny;
     public float speed;
-    public bool member = true;
-    private bool follow = true;
+    public bool member = true, follow = true;
     private new void Update()
     {
         if (ronny != null && follow)

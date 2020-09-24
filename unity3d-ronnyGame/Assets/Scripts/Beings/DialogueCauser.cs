@@ -59,7 +59,7 @@ public class DialogueCauser : Being
     {
         if (trigger && target)
         {
-            trigger.EndTrigger(target);
+            StartCoroutine(trigger.EndTrigger(target));
             CoroutineWithData cd = new CoroutineWithData(this, MoveCameraBack(ronny.transform.position));
             while (!cd.finished)
             {
@@ -105,7 +105,7 @@ public class DialogueCauser : Being
         }
         if (trigger && target)
         {
-            trigger.StartTrigger(target);
+            StartCoroutine(trigger.StartTrigger(target));
         }
         ronny = player.GetComponent<Ronny>();
         ronny.ToggleMovementAndCamera();

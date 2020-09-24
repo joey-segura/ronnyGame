@@ -71,6 +71,7 @@
     <Compile Include="Assets\Scripts\AnimateTextures.cs" />
     <Compile Include="Assets\Scripts\BattleMaster.cs" />
     <Compile Include="Assets\Scripts\Being.cs" />
+    <Compile Include="Assets\Scripts\Beings\BurnableFence.cs" />
     <Compile Include="Assets\Scripts\Beings\DialogueCauser.cs" />
     <Compile Include="Assets\Scripts\Beings\FighterShadow.cs" />
     <Compile Include="Assets\Scripts\Beings\Joey.cs" />
@@ -80,6 +81,7 @@
     <Compile Include="Assets\Scripts\Beings\Savage.cs" />
     <Compile Include="Assets\Scripts\Beings\SavageBaby.cs" />
     <Compile Include="Assets\Scripts\Beings\Sign.cs" />
+    <Compile Include="Assets\Scripts\Beings\TriggerCauser.cs" />
     <Compile Include="Assets\Scripts\CinematicPlayer.cs" />
     <Compile Include="Assets\Scripts\ConsoleMaster.cs" />
     <Compile Include="Assets\Scripts\Console_Commands\CommandBeingDebug.cs" />
@@ -102,6 +104,7 @@
     <Compile Include="Assets\Scripts\SkyboxRoatation.cs" />
     <Compile Include="Assets\Scripts\SunCycle.cs" />
     <Compile Include="Assets\Scripts\Trigger.cs" />
+    <Compile Include="Assets\Scripts\Triggers\JoeyBurnFence.cs" />
     <Compile Include="Assets\Scripts\Triggers\JoeyJoinParty.cs" />
     <Compile Include="Assets\Scripts\VisualEffectMaster.cs" />
     <Compile Include="Assets\Scripts\cameraRotation.cs" />

@@ -4,12 +4,12 @@ using UnityEngine;
 
 public class Trigger : MonoBehaviour
 {
-    public virtual void EndTrigger(GameObject target)
+    public virtual IEnumerator EndTrigger(GameObject target)
     {
-
+        yield return null;
     }
-    public virtual void StartTrigger(GameObject target)
+    public virtual IEnumerator StartTrigger(GameObject target)
     {
-
+        yield return null;
     }
 }

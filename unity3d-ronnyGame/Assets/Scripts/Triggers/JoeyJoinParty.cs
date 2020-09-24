@@ -5,8 +5,9 @@ using UnityEngine;
 public class JoeyJoinParty : Trigger
 {
     // Start is called before the first frame update
-    public override void EndTrigger(GameObject target)
+    public override IEnumerator EndTrigger(GameObject target)
     {
         target.GetComponent<Joey>().JoinParty();
+        yield return true;
     }
 }

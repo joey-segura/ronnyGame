@@ -164,6 +164,26 @@ public class GameMaster : Kami
             GameMasterBeingDataList.BeingDatas.Remove(GetBeingDataByID(ID));
         }
     }
+    public GameObject GetAllyGameObject()
+    {
+        int multipleChecker = 0;
+        GameObject ally = null;
+        foreach (BeingData data in GameMasterBeingDataList.BeingDatas)
+        {
+            if (data.prefabName == "Joey" || data.prefabName == "Ritter")
+            {
+                multipleChecker++;
+                ally = data.gameObject;
+            }
+        }
+        if (multipleChecker <= 1)
+        {
+            return ally;
+        } else
+        {
+            return null;
+        }
+    }
     public BeingData GetBeingDataByID(int ID)
     {
         foreach (BeingData beingData in GameMasterBeingDataList.BeingDatas)
@@ -174,6 +194,26 @@ public class GameMaster : Kami
             }
         }
         return null;
+    }
+    public GameObject GetBeingObjectByName(string name)
+    {
+        int dupeCounter = 0;
+        GameObject candidate = null;
+        foreach (BeingData beingData in GameMasterBeingDataList.BeingDatas)
+        {
+            if (beingData.prefabName == name)
+            {
+                dupeCounter++;
+                candidate = beingData.gameObject;
+            }
+        }
+        if (dupeCounter <= 1)
+        {
+            return candidate;
+        } else
+        {
+            return null;
+        }
     }
     public GameObject GetPlayerGameObject()
     {
