@@ -52,8 +52,8 @@ public class FighterShadow : Fighter
         defenseMultiplier = source.defenseMultiplier;
         health = source.health;
         isStunned = source.isStunned;
-        currentEffects = source.currentEffects;
-        onHitEffects = source.onHitEffects;
+        currentEffects = new Dictionary<int, Effect>(source.currentEffects);
+        onHitEffects = new Dictionary<int, Func<float, Fighter, float>>(source.onHitEffects);
         this.spriteRenderer.sprite = source.GetComponent<SpriteRenderer>().sprite;
         this.spriteRenderer.color += new Color(0, 0, 0, -.5f);
         this.animator = source.GetComponent<Animator>();

@@ -19,7 +19,6 @@ public class Fighter : Being
     //private List<Effect> currentEffects = new List<Effect>();
     protected List<FighterAction> actionList = new List<FighterAction>();
 
-    public GameObject[] direction;
     public Vector3 battlePosition;
     public Dictionary<int, Func<float, Fighter, float>> onHitEffects = new Dictionary<int, Func<float, Fighter, float>>();
 
@@ -61,20 +60,7 @@ public class Fighter : Being
             return true;
         }
     }
-    public void TickEffects() // happens every fighters turn
-    {
-        for (int i = 0; i < currentEffects.Count; i++)
-        {
-            var effect = currentEffects.ElementAt(i);
-            effect.Value.OnTick(this);
-            effect.Value.duration -= 1;
-            if (effect.Value.duration <= 0)
-            {
-                effect.Value.Cleanse(this);
-                RemoveEffect(effect.Key);
-            }
-        }
-    }
+    
     public IEnumerator BattleActionMove(FighterAction action)
     {
         float distance = 0;
@@ -107,6 +93,33 @@ public class Fighter : Being
             this.transform.position = Vector3.MoveTowards(this.transform.position, this.battlePosition, .1f);
             yield return new WaitForEndOfFrame();
         } //not moving back slow enough
+    }
+    public FighterAction GetActionByName(string name)
+    {
+        FighterAction action = null;
+        foreach (FighterAction act in actionList)
+        {
+            if (act.name == name)
+            {
+                action = act;
+            }
+        }
+        return action;
+    }
+    public void TickEffects() // happens every fighters turn
+    {
+        for (int i = 0; i < currentEffects.Count; i++)
+        {
+
+            KeyValuePair<int, Effect> effect = currentEffects.ElementAt(i);
+            effect.Value.OnTick(this);
+            effect.Value.duration -= 1;
+            if (effect.Value.duration <= 0)
+            {
+                effect.Value.Cleanse(this);
+                RemoveEffect(effect.Key);
+            }
+        }
     }
     public virtual FighterAction TurnAction(ListBeingData allFighters)
     {
@@ -191,63 +204,6 @@ public class Fighter : Being
     {
         //this is here so that it can be instantiated through general terms
     }
-    public IEnumerator DrawIntentions(FighterAction action)
-    {
-        yield return new WaitForEndOfFrame(); //waiting a frame to make sure data is settled before we do this call (Not a fan)
-        if (action.targets == null)
-        {
-            yield break;
-        }
-        string relation = TargetRelationToSelf(action.targets[0].gameObject);
-        if (!action.IsValidAction(relation) && action.targetCount == 1 && this.canvas.gameObject.activeInHierarchy)
-        {
-            this.ToggleCanvas();
-        }
-        else if (!this.canvas.gameObject.activeInHierarchy && action.IsValidAction(relation))
-        {
-            this.ToggleCanvas();
-        }
-        GameObject panel = canvas.transform.GetChild(0).gameObject;
-        Image intention = panel.transform.GetComponentInChildren<Image>();
-        Texture2D image = Resources.Load(action.GetImagePath()) as Texture2D;
-        Sprite sprite = Sprite.Create(image, new Rect(0, 0, image.width, image.height), new Vector2(0, 0));
-        sprite.name = action.GetImagePath();
-        intention.sprite = sprite;
-        
-        for (int i = 0; i < direction.Length; i++)
-        {
-            Destroy(direction[i]);
-        }
-        direction = new GameObject[action.targets.Length];
-        for (int i = 0; i < action.targets.Length; i++)
-        {
-            string directionPath = "Prefabs/UI/Direction";
-            VisualEffectMaster visual = action.GetVisualEffectMaster();
-            direction[i] = visual.InstantiateVisualSprite(Resources.Load(directionPath), action.targets[i].transform.position, action.targets[i].transform.rotation, panel.transform);
-
-            direction[i].transform.position = action.originator.transform.position;
-            direction[i].transform.rotation = Quaternion.Euler(90, 0, 0);
-            RectTransform rect = direction[i].GetComponent<RectTransform>();
-            Vector3 self = rect.position;
-            Vector3 target = new Vector3(action.targets[i].transform.position.x, self.y, action.targets[i].transform.position.z);
-            
-
-            float angle = Vector3.SignedAngle(target - self, transform.forward, Vector3.up);
-
-            direction[i].transform.rotation = Quaternion.Euler(new Vector3(direction[i].transform.rotation.eulerAngles.x, direction[i].transform.rotation.eulerAngles.y, angle));
-            direction[i].transform.position = Vector3.MoveTowards(self, target, Vector3.Distance(self, target) / 2);
-            direction[i].transform.position += new Vector3(0, -1.75f, 0);
-            //rect.sizeDelta = new Vector2(rect.sizeDelta.x, Vector3.Distance(self, action.targets[i].transform.position));
-            rect.sizeDelta = new Vector2(rect.sizeDelta.x, (Vector3.Distance(target, self) / action.originator.transform.localScale.x));
-            /*Color tempColor = direction.color; //Might be necessary?
-            tempColor.a = .1f;
-            direction.color = tempColor;*/
-        }
-        Debug.Log($"{action.originator.name} is doing the action {action.name} to {action.targets[0].name}");
-
-        yield return null;
-    }
-    
     public IEnumerator FlashWhite(float seconds)
     {
         Shader whiteGUI = Shader.Find("GUI/Text Shader");

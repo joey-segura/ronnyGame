@@ -61,7 +61,6 @@ public class Ronny : Human
         if (this.index > (actionList.Count - 1)) this.index = 0;
         this.SetNewAction(this.actionList[this.index]);
     }
-  
     public override void InitializeBattle()
     {
         this.health = 60; //default value
@@ -119,10 +118,12 @@ public class Ronny : Human
         //this.actionList.Add(new CommandToBlock(3, null));
         //this.actionList.Add(new Attack(3, this.damage * this.damageMultiplier, null));
         this.actionList.Add(new Heal(3, 5, null));
+        this.actionList.Add(new WeakAttack(3, 3, 2, null));
         this.actionList.Add(new BolsterDefense(3, 3, 2, null));
+        this.actionList.Add(new Taunt(3, null));
         //this.actionList.Add(new BuffAttack(3, 3, 5f, null));
         //this.actionList.Add(new Cleave(3, this.damage * this.damageMultiplier, null));
-        this.actionList.Add(new CommandToAttack(3, null));
+        //this.actionList.Add(new CommandToAttack(3, null));
         //this.actionList.Add(new TauntAll(3, null));
         base.RecalculateActions();
     }
@@ -143,7 +144,7 @@ public class Ronny : Human
     {
         if (this.currentAction != null && !action.IsActionAOE())
         {
-            if (action.IsValidAction(TargetRelationToSelf(this.currentAction.targets[0])))
+            if (this.currentAction.targets != null && action.IsValidAction(TargetRelationToSelf(this.currentAction.targets[0])))
             {
                 action.targets = this.currentAction.targets;
             }
@@ -158,17 +159,25 @@ public class Ronny : Human
     }
     public FighterAction Turn(ListBeingData allFighters, List<FighterAction> actionList)
     {
-        if (Input.GetKeyDown(KeyCode.RightArrow))
+        if (Input.GetKeyDown(KeyCode.UpArrow))
         {
-            CurrentActionIncrement();
+            SetNewAction(GetActionByName("Heal"));
+        }
+        else if (Input.GetKeyDown(KeyCode.RightArrow))
+        {
+            SetNewAction(GetActionByName("Weak Attack"));
+        }
+        else if (Input.GetKeyDown(KeyCode.DownArrow))
+        {
+            SetNewAction(GetActionByName("Taunt"));
         }
         else if (Input.GetKeyDown(KeyCode.LeftArrow))
         {
-            CurrentActionDecrement();
+            SetNewAction(GetActionByName("Bolster Defense"));
         }
         else if (this.currentAction == null)
         {
-            this.SetNewAction(this.actionList[this.index]);
+            this.SetNewAction(this.actionList[0]);
         }
         
         if (this.currentAction.IsActionAOE())

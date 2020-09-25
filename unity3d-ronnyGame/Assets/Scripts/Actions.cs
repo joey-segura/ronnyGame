@@ -310,6 +310,10 @@ public class BolsterDefense : FighterAction
         }
         yield return true;
     }
+    public override float GetCost()
+    {
+        return 10;
+    }
     public override float GetEffectValue()
     {
         return this.buffValue;
@@ -594,12 +598,50 @@ public class PoisonAttack : FighterAction
         return this.poisonDamage;
     }
 }
+public class Taunt : FighterAction
+{
+    public GameObject attackTarget;
+    public Taunt(int _duration, Animation _animation)
+    {
+        this.name = "Taunt";
+        this.duration = _duration;
+        this.animation = _animation;
+        this.targetCount = 1;
+        this.validTargets = new string[] { "Foe" };
+        this.IMAGEPATH = "UI/UI_Attack";
+    }
+    public override FighterAction Clone()
+    {
+        return new Taunt(this.duration, this.animation);
+    }
+    public override IEnumerator Execute()
+    {
+        for (int i = 0; i < targets.Length; i++)
+        {
+            Fighter fighter = targets[i].GetComponent<Fighter>();
+            Attack attack = new Attack(3, fighter.damage * fighter.damageMultiplier, null);
+            attack.originator = targets[i];
+            attack.targets = new GameObject[] { originator };
+            fighter.SetAction(attack);
+        }
+
+        yield return true;
+    }
+    public override float GetCost()
+    {
+        return 10;
+    }
+    public override float GetValue()
+    {
+        return 0;
+    }
+}
 public class TauntAll :FighterAction
 {
     public GameObject attackTarget;
     public TauntAll(int _duration, Animation _animation)
     {
-        this.name = "Taunt";
+        this.name = "Taunt_All";
         this.duration = _duration;
         this.animation = _animation;
         this.targetCount = 0;
@@ -696,6 +738,10 @@ public class WeakAttack : FighterAction
             fighter.AddEffect(fighter, weak);
         }
         yield return true;
+    }
+    public override float GetCost()
+    {
+        return 7;
     }
     public override float GetEffectValue()
     {

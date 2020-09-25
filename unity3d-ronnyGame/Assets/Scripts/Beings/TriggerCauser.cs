@@ -9,6 +9,7 @@ public class TriggerCauserJson
 public class TriggerCauser : Being
 {
     public string causerName, targetName, triggerName;
+    private GameObject causer;
     public GameObject target;
     public BoxCollider triggerBox;
     private Trigger trigger;
@@ -55,7 +56,7 @@ public class TriggerCauser : Being
     }
     public IEnumerator InitializeTrigger()
     {
-        CoroutineWithData move = new CoroutineWithData(this, MoveCameraBetweenPoints(target.transform.position, target.transform.position));
+        CoroutineWithData move = new CoroutineWithData(this, MoveCameraBetweenPoints(causer.transform.position, target.transform.position));
         while (!move.finished)
         {
             yield return new WaitForEndOfFrame();
@@ -116,6 +117,7 @@ public class TriggerCauser : Being
     {
         if (other.gameObject.name == causerName)
         {
+            causer = other.gameObject;
             target = FindTarget();
             if (target && trigger)
             {

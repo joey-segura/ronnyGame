@@ -120,7 +120,7 @@ public class Poison : Effect
     public override void Affliction(Fighter fighter)
     {
         this.self = fighter;
-        if (key == -1) // don't add another onHitEffect if we already have a key assigned
+        if (key == -1) // don't add another Effect if we already have a key assigned
         {
             this.key = this.GenerateValidKeyForEffects(fighter);
             fighter.isPoisoned = true;
@@ -147,7 +147,7 @@ public class Strengthen : Effect
     public override void Affliction(Fighter fighter)
     {
         this.self = fighter;
-        if (key == -1) // don't add another onHitEffect if we already have a key assigned
+        if (key == -1) // don't add another Effect if we already have a key assigned
         {
             this.key = this.GenerateValidKeyForEffects(fighter);
             fighter.damageMultiplier = fighter.damageMultiplier * this.multiplier;

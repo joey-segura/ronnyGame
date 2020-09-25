@@ -32,7 +32,7 @@ public class Savage : Enemy
                 this.health = 4;
                 this.damage = 3;
                 this.party = null;
-                this.virtueValue = 2;
+                this.virtueValue = 3;
             }
             this.ID = being.objectID;
             this.beingData = jsonData;
@@ -62,7 +62,7 @@ public class Savage : Enemy
         GameObject baby = null;
         for (int i = 0; i < allFighters.BeingDatas.Count; i++)
         {
-            if (allFighters.BeingDatas[i].gameObject.name.Contains("Baby"))
+            if (allFighters.BeingDatas[i].gameObject != null && allFighters.BeingDatas[i].gameObject.name.Contains("Baby"))
             {
                 baby = allFighters.BeingDatas[i].gameObject;
             }

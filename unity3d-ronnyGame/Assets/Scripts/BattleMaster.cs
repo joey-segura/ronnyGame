@@ -185,7 +185,7 @@ public class BattleMaster : Kami
 
         for (int i = 0; i < allFighters.BeingDatas.Count; i++)
         {
-            if (allFighters.BeingDatas[i].gameObject.tag != "Player")
+            if (allFighters.BeingDatas[i].gameObject != null && allFighters.BeingDatas[i].gameObject.tag != "Player")
             {
                 Fighter fighter = allFighters.BeingDatas[i].gameObject.GetComponent<Fighter>();
                 FighterAction action = fighter.GetIntention(allFighters);
@@ -201,11 +201,11 @@ public class BattleMaster : Kami
     private GameObject GetPlayerObject()
     {
         GameObject player = null;
-        for (int i = 0; i < allFighters.BeingDatas.Count; i++)
+        foreach (BeingData data in allFighters.BeingDatas)
         {
-            if (allFighters.BeingDatas[i].gameObject.tag == "Player")
+            if (data.gameObject != null && data.gameObject.tag == "Player")
             {
-                player = allFighters.BeingDatas[i].gameObject;
+                player = data.gameObject;
             }
         }
         return player;
@@ -292,8 +292,8 @@ public class BattleMaster : Kami
             float costWidth = 0;
             Rect holderRect = new Rect(guiX, guiY, Screen.width / 2, Screen.height / 25);
             Rect healthRect = new Rect(guiX, guiY, healthWidth, Screen.height / 25);
-            GUI.DrawTexture(holderRect, holder);
             GUI.DrawTexture(healthRect, healthBar);
+            GUI.DrawTexture(holderRect, holder);
 
             if (costDamage > 0 && isFlashing)
             {
@@ -404,7 +404,6 @@ public class BattleMaster : Kami
             if (partyMembers.BeingDatas[i].objectID == ID)
             {
                 partyMembers.BeingDatas.Remove(partyMembers.BeingDatas[i]);
-                return;
             }
         }
         for (int i = 0; i < enemyMembers.BeingDatas.Count; i++)
@@ -439,6 +438,7 @@ public class BattleMaster : Kami
         this.virtueExpectation.text = "Expected Gain: 0";
 
         DestroyAllShadows();
+        expectedDamageTaken = 0;
         shadows = new GameObject[allFighters.BeingDatas.Count];
         FighterShadow[] shadowScripts = new FighterShadow[allFighters.BeingDatas.Count];
         for (int i = 0; i < allFighters.BeingDatas.Count; i++)
