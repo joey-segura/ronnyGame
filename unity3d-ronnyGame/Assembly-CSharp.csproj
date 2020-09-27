@@ -90,6 +90,7 @@
     <Compile Include="Assets\Scripts\GameMenuMaster.cs" />
     <Compile Include="Assets\Scripts\Human.cs" />
     <Compile Include="Assets\Scripts\Kami.cs" />
+    <Compile Include="Assets\Scripts\LightSwitch.cs" />
     <Compile Include="Assets\Scripts\MainMenuMaster.cs" />
     <Compile Include="Assets\Scripts\Relater.cs" />
     <Compile Include="Assets\Scripts\SceneMaster.cs" />

@@ -14,6 +14,7 @@
   <component name="HighlightingSettingsPerFile">
     <setting file="file://$PROJECT_DIR$/Assets/Scripts/SkyboxRoatation.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Scripts/SunCycle.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/Scripts/LightSwitch.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Scripts/playerMovement.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Scripts/cameraRotation.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Scripts/AnimateTextures.cs" root0="FORCE_HIGHLIGHTING" />
@@ -33,6 +34,7 @@
         <option value="$PROJECT_DIR$/Assets/Scripts/AnimateTextures.cs" />
         <option value="$PROJECT_DIR$/Assets/FixedBGRotation.cs" />
         <option value="$PROJECT_DIR$/Assets/Scripts/ScrollingBackground.cs" />
+        <option value="$PROJECT_DIR$/Assets/Scripts/LightSwitch.cs" />
       </list>
     </option>
   </component>
@@ -90,6 +92,7 @@
       <workItem from="1598630269151" duration="4187000" />
       <workItem from="1599334850449" duration="2249000" />
       <workItem from="1599413589005" duration="4260000" />
+      <workItem from="1601153612197" duration="899000" />
     </task>
     <servers />
   </component>
