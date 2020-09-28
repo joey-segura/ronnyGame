@@ -1,14 +1,19 @@
 fileFormatVersion: 2
-guid: ac6e05e9a79002b42a99e5f8432b46d3
+guid: 6ec6aea0b45b3204785c6f928774a76b
 ModelImporter:
   serializedVersion: 19300
   internalIDToNameTable: []
   externalObjects:
   - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: burn2
+    second: {fileID: 2100000, guid: 94709472778295e4e8e3ee29def91a45, type: 2}
+  - first:
       type: UnityEngine:Texture2D
       assembly: UnityEngine.CoreModule
       name: water_run1
-    second: {fileID: 2800000, guid: 9bc8a18589d39cd41a7641b7b2e773a2, type: 3}
+    second: {fileID: 2800000, guid: ca550ea82c5db56468fdaf468b90d26c, type: 3}
   materials:
     materialImportMode: 1
     materialName: 0
