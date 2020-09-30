@@ -51,7 +51,7 @@ public class TriggerCauser : Being
         {
             yield return new WaitForEndOfFrame();
         }
-        
+        DestroyBeing();
         yield return null;
     }
     public IEnumerator InitializeTrigger()

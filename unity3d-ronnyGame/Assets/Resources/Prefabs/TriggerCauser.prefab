@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 4117484725893156386}
   - component: {fileID: 7704700155659807678}
   - component: {fileID: 9094836400849652799}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: TriggerCauser
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -64,6 +64,7 @@ MonoBehaviour:
   isStaticToCamera: 0
   beingData: 
   canvas: {fileID: 0}
+  causerName: 
   targetName: 
   triggerName: 
   target: {fileID: 0}

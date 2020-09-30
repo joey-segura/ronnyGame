@@ -142,7 +142,7 @@ public class DialogueCauser : Being
             yield return new WaitForEndOfFrame();
         }
         //yield return new WaitForSeconds(2);
-        yield return null;
+        yield return true;
     }
     public IEnumerator MoveCameraBack(Vector3 ronnyPos)
     {
