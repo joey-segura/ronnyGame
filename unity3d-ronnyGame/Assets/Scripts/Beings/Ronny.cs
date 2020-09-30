@@ -17,6 +17,8 @@ public class Ronny : Human
     private int index = 0;
     //end turn data
 
+    public Material Outline;
+
     public IEnumerator BattleMove()
     {
         float distance = .25f;
@@ -140,14 +142,48 @@ public class Ronny : Human
         }
         return null;
     }
+    private void SetActionTargets(GameObject[] targets)
+    {
+        if (this.currentAction.targets != null)
+        {
+            for (int i = 0; i < this.currentAction.targets.Length; i++)
+            {
+                this.currentAction.targets[i].GetComponent<SpriteOutline>().enabled = false;
+            }
+        }
+        this.currentAction.targets = targets;
+        for (int i = 0; i < this.currentAction.targets.Length; i++)
+        {
+            GameObject targ = this.currentAction.targets[i];
+            SpriteRenderer targRend = targ.GetComponent<SpriteRenderer>();
+            if (targRend.material.name.Contains("Outline"))
+            {
+                targ.GetComponent<SpriteOutline>().enabled = true;
+            } else
+            {
+                targRend.material = Outline;
+                targ.AddComponent<SpriteOutline>();
+                targ.GetComponent<SpriteOutline>().enabled = true;
+            }
+        }
+    }
     private void SetNewAction(FighterAction action)
     {
         if (this.currentAction != null && !action.IsActionAOE())
         {
-            if (this.currentAction.targets != null && action.IsValidAction(TargetRelationToSelf(this.currentAction.targets[0])))
+            if (this.currentAction.targets != null)
             {
-                action.targets = this.currentAction.targets;
-            }
+                if (!action.IsValidAction(TargetRelationToSelf(this.currentAction.targets[0])))
+                {
+                    for (int i = 0; i < this.currentAction.targets.Length; i++)
+                    {
+                        this.currentAction.targets[i].GetComponent<SpriteOutline>().enabled = false;
+                    }
+                } else
+                {
+                    action.targets = this.currentAction.targets;
+                }
+            } 
         }
         action.originator = this.gameObject;
         this.currentAction = action;
@@ -182,7 +218,7 @@ public class Ronny : Human
         
         if (this.currentAction.IsActionAOE())
         {
-            this.currentAction.targets = this.currentAction.GetAOETargets(allFighters);
+            SetActionTargets(this.currentAction.GetAOETargets(allFighters));
         } else
         {
             GameObject newTarget = this.ChooseTarget(allFighters);
@@ -191,7 +227,7 @@ public class Ronny : Human
                 string relation = this.TargetRelationToSelf(newTarget);
                 if (this.currentAction.IsValidAction(relation) && (this.currentAction.targets == null || this.currentAction.targets[0] != newTarget)) //we can access the first area because we know it only has 1 member (if/else proves this)
                 {
-                    this.currentAction.targets = new GameObject[] { newTarget };
+                    SetActionTargets(new GameObject[] { newTarget });
                     battleMasterScript.SimulateBattle();
                 }
             }

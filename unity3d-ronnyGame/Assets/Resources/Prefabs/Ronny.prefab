@@ -381,6 +381,7 @@ MonoBehaviour:
   virtue: 0
   speed: 0
   turnTarget: {fileID: 0}
+  Outline: {fileID: 2100000, guid: 9f45c9fe28648ea4ba8f7eda6d0c87b4, type: 2}
 --- !u!1 &3408231567989719375
 GameObject:
   m_ObjectHideFlags: 0
