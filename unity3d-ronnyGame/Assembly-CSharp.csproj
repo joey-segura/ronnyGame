@@ -103,6 +103,8 @@
     <Compile Include="Assets\Scripts\MainMenuMaster.cs" />
     <Compile Include="Assets\Scripts\Relater.cs" />
     <Compile Include="Assets\Scripts\SceneMaster.cs" />
+    <Compile Include="Assets\Scripts\Scene_Scripts\Cloud.cs" />
+    <Compile Include="Assets\Scripts\Scene_Scripts\CloudGenerator.cs" />
     <Compile Include="Assets\Scripts\SkyboxRoatation.cs" />
     <Compile Include="Assets\Scripts\SunCycle.cs" />
     <Compile Include="Assets\Scripts\Trigger.cs" />
