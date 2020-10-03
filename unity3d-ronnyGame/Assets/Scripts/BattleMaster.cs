@@ -10,7 +10,7 @@ public class BattleMaster : Kami
     private bool turn;
     public bool isBattle = false;
     private int enemyID { get; set; }
-    private int turnCounter;
+    public int turnCounter;
     public List<FighterAction> intentions = new List<FighterAction>();
     public ListBeingData allFighters = new ListBeingData();
     public ListBeingData partyMembers = new ListBeingData();
@@ -372,7 +372,7 @@ public class BattleMaster : Kami
             {
                 Fighter fighter = intentions[i].originator.GetComponent<Fighter>();
                 fighter.TickEffects();
-                if (fighter != null)
+                if (fighter != null && fighter.currentAction != null)
                 {
                     FighterAction action = fighter.currentAction; //gets current action instead of playing intention in case ronny influences it
                     this.PlayAnimation(action.animation);

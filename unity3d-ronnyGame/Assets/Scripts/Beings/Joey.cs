@@ -26,9 +26,8 @@ public class Joey : Human
         }
         base.Update();
     }
-    private new void Start()
+    private void Start()
     {
-        base.Start();
         if (!member)
         {
             follow = false;

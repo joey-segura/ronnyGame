@@ -125,9 +125,8 @@ public class TriggerCauser : Being
             }
         }
     }
-    private new void Start()
+    private void Start()
     {
-        base.Start();
         AttachTrigger();
     }
     public override string UpdateBeingJsonData()

@@ -15,7 +15,7 @@ public class SceneMaster : Kami
 
     public bool newGame = false;
 
-    private void Awake()
+    private new void Awake()
     {
         if (Instance == null)
         {
@@ -26,6 +26,7 @@ public class SceneMaster : Kami
         {
             Destroy(this.gameObject);
         }
+        base.Awake();
     }
     public void ChangeScene(string sceneName)
     {

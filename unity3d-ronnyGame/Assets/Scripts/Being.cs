@@ -94,7 +94,7 @@ public class Being : MonoBehaviour
             this.transform.rotation = gameMasterScript.GetPlayerGameObject().transform.rotation;
         }
     }
-    protected void Start()
+    protected void Awake()
     {
         cam = Camera.main;
         Kami = this.gameObject.transform.parent.gameObject;

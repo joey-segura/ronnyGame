@@ -82,6 +82,7 @@
     <Compile Include="Assets\Scripts\Beings\Savage.cs" />
     <Compile Include="Assets\Scripts\Beings\SavageBaby.cs" />
     <Compile Include="Assets\Scripts\Beings\Sign.cs" />
+    <Compile Include="Assets\Scripts\Beings\TikiMan.cs" />
     <Compile Include="Assets\Scripts\Beings\TriggerCauser.cs" />
     <Compile Include="Assets\Scripts\CinematicPlayer.cs" />
     <Compile Include="Assets\Scripts\ConsoleMaster.cs" />

@@ -172,12 +172,11 @@ public class DialogueCauser : Being
             headImage.sprite = joeyHead;
         }
     }
-    private new void Start()
+    private void Start()
     {
-        base.Start();
         AttachTrigger();
     }
-    private void Update()
+    private new void Update()
     {
         if (Input.GetKeyDown(KeyCode.Mouse0))
         {

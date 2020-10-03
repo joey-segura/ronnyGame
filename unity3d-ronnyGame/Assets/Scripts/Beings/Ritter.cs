@@ -13,7 +13,7 @@ public class Ritter : Human
     public GameObject ronny;
     public float speed;
     private bool follow = true;
-    private void Update()
+    private new void Update()
     {
         if (ronny != null && follow)
         {

@@ -78,6 +78,7 @@ public class Ronny : Human
         this.currentAction = null;
         this.turnTarget = null;
         this.index = 0;
+        this.UnhighlightAll();
     }
     public override void InjectData(string jsonData)
     {
@@ -112,7 +113,6 @@ public class Ronny : Human
             yield return new WaitForEndOfFrame();
         }
     }
-
     public override void RecalculateActions()
     {
         this.actionList = new List<FighterAction>();
@@ -195,19 +195,19 @@ public class Ronny : Human
     }
     public FighterAction Turn(ListBeingData allFighters, List<FighterAction> actionList)
     {
-        if (Input.GetKeyDown(KeyCode.UpArrow))
+        if (Input.GetKeyDown(KeyCode.W))
         {
             SetNewAction(GetActionByName("Heal"));
         }
-        else if (Input.GetKeyDown(KeyCode.RightArrow))
+        else if (Input.GetKeyDown(KeyCode.D))
         {
             SetNewAction(GetActionByName("Weak Attack"));
         }
-        else if (Input.GetKeyDown(KeyCode.DownArrow))
+        else if (Input.GetKeyDown(KeyCode.S))
         {
             SetNewAction(GetActionByName("Taunt"));
         }
-        else if (Input.GetKeyDown(KeyCode.LeftArrow))
+        else if (Input.GetKeyDown(KeyCode.A))
         {
             SetNewAction(GetActionByName("Bolster Defense"));
         }
@@ -248,6 +248,17 @@ public class Ronny : Human
         pm.Idle();
         pm.enabled = pm.isActiveAndEnabled ? false : true;
         cr.enabled = cr.isActiveAndEnabled ? false : true;
+    }
+    public void UnhighlightAll()
+    {
+        for (int i = 0; i < battleMasterScript.allFighters.BeingDatas.Count; i++)
+        {
+            SpriteOutline outline = battleMasterScript.allFighters.BeingDatas[i].gameObject.GetComponent<SpriteOutline>();
+            if (outline)
+            {
+                outline.enabled = false;
+            }
+        }
     }
     public override string UpdateBeingJsonData()
     {
