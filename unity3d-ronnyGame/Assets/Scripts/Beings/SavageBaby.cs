@@ -44,7 +44,7 @@ public class SavageBaby : Enemy
         {
             battleMasterScript = this.GetComponentInParent<BattleMaster>();
         }
-        FighterAction sacrifice = new BuffAttack(3, 3, 3, null);
+        FighterAction sacrifice = new BuffAttack(3, 3, 4, null);
         GameObject joey = null;
         if (joey = battleMasterScript.GetAllyObject())
         {

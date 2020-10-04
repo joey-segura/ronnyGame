@@ -105,14 +105,6 @@ public class Ronny : Human
     {
         
     }
-    public IEnumerator MoveToBattlePosition()
-    {
-        while (this.transform.position != this.battlePosition)
-        {
-            this.transform.position = Vector3.MoveTowards(this.transform.position, this.battlePosition, .01f);
-            yield return new WaitForEndOfFrame();
-        }
-    }
     public override void RecalculateActions()
     {
         this.actionList = new List<FighterAction>();
@@ -127,7 +119,7 @@ public class Ronny : Human
         //this.actionList.Add(new Cleave(3, this.damage * this.damageMultiplier, null));
         //this.actionList.Add(new CommandToAttack(3, null));
         //this.actionList.Add(new TauntAll(3, null));
-        base.RecalculateActions();
+        //base.RecalculateActions();
     }
     public GameObject ReturnChoosenGameObject()
     {

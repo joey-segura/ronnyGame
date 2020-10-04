@@ -333,6 +333,7 @@ public class BattleMaster : Kami
         List<FighterAction> actionList = ronny.GetActions().ToList<FighterAction>();
         FighterAction action = null;
         yield return new WaitUntil(() => (action = ronny.Turn(allFighters, actionList)) != null);
+        ronny.UnhighlightAll();
         this.turnCounter++;
         DestroyAllShadows();
         //ronny.ToggleCanvas();
@@ -375,14 +376,22 @@ public class BattleMaster : Kami
                 if (fighter != null && fighter.currentAction != null)
                 {
                     FighterAction action = fighter.currentAction; //gets current action instead of playing intention in case ronny influences it
-                    this.PlayAnimation(action.animation);
                     Debug.Log($"{action.originator.name}'s turn!");
-                    //fighter.ToggleCanvas();
-                    fighter.StartCoroutine("BattleActionMove", action);
+                    CoroutineWithData move = new CoroutineWithData(this, fighter.MoveToBattleTarget(action));
+                    while (!move.finished)
+                    {
+                        yield return new WaitForEndOfFrame();
+                    }
+                    this.PlayAnimation(action.animation);
                     yield return new WaitForSeconds(action.duration);
                     fighter.RecalculateActions();
                     action = fighter.currentAction;
                     StartCoroutine("ProcessAction", action);
+                    CoroutineWithData moveBack = new CoroutineWithData(this, fighter.MoveToBattlePosition());
+                    while (!moveBack.finished)
+                    {
+                        yield return new WaitForEndOfFrame();
+                    }
                     yield return new WaitForSeconds(1);
                 }
             }

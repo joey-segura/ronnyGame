@@ -60,9 +60,19 @@ public class Fighter : Being
             return true;
         }
     }
-    
-    public IEnumerator BattleActionMove(FighterAction action)
+    public virtual void DeathCheck()
     {
+        if (this.health <= 0)
+        {
+            this.DeathTrigger(false);
+            BattleMaster battleMaster = this.transform.parent.GetComponentInParent<BattleMaster>();
+            battleMaster.RemoveMemberByID(this.ID);
+            battleMaster.BattleEndCheck();
+            this.DestroyBeing();
+            return;
+        }
+    }
+    public IEnumerator MoveToBattleTarget(FighterAction action) {
         float distance = 0;
         Vector3 newPos;
         if (this.transform.position.x > 0)
@@ -76,23 +86,26 @@ public class Fighter : Being
         if (action.IsActionAOE())
         {
             newPos = new Vector3(this.transform.position.x + distance, this.transform.position.y, this.transform.position.z);
-        } else
+        }
+        else
         {
             newPos = Vector3.Lerp(this.transform.position, action.targets[0].transform.position, .75f);
         }
-        
-
         while (this.transform.position != newPos)
         {
             this.transform.position = Vector3.MoveTowards(this.transform.position, newPos, .1f);
             yield return new WaitForEndOfFrame();
         }
-        yield return new WaitForSeconds(action.duration);
+        yield return true;
+    }
+    public IEnumerator MoveToBattlePosition()
+    {
         while (this.transform.position != battlePosition)
         {
             this.transform.position = Vector3.MoveTowards(this.transform.position, this.battlePosition, .1f);
             yield return new WaitForEndOfFrame();
-        } //not moving back slow enough
+        }
+        yield return true;
     }
     public FighterAction GetActionByName(string name)
     {
@@ -184,22 +197,7 @@ public class Fighter : Being
             return 0;
         }
     }
-    public virtual void DeathCheck()
-    {
-        if (this.health <= 0)
-        {
-            this.DeathTrigger(false);
-            BattleMaster battleMaster = this.transform.parent.GetComponentInParent<BattleMaster>();
-            battleMaster.RemoveMemberByID(this.ID);
-            battleMaster.BattleEndCheck();
-            this.DestroyBeing();
-            return;
-        }
-        else
-        {
-            return;
-        }
-    }
+   
     public virtual void DeathTrigger(bool shadow)
     {
         //this is here so that it can be instantiated through general terms

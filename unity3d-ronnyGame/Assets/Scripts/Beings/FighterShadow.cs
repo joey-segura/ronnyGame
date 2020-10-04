@@ -71,12 +71,21 @@ public class FighterShadow : Fighter
     {
         playing = true;
         this.transform.position = battlePosition;
-        StartCoroutine(BattleActionMove(this.currentAction));
+        CoroutineWithData move = new CoroutineWithData(this, MoveToBattleTarget(this.currentAction));
+        while (!move.finished)
+        {
+            yield return new WaitForEndOfFrame();
+        }
         if (this.currentAction.animation != null)
         {
             this.currentAction.animation.Play();
         }
-        yield return new WaitForSeconds(this.currentAction.duration * 1.5f);
+        yield return new WaitForSeconds(this.currentAction.duration);
+        CoroutineWithData moveBack = new CoroutineWithData(this, MoveToBattlePosition());
+        while (!moveBack.finished)
+        {
+            yield return new WaitForEndOfFrame();
+        }
         playing = false;
         yield return true;
     }
