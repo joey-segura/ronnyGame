@@ -94,7 +94,7 @@ Animator:
   m_GameObject: {fileID: 1804938830478495495}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 5e4d414afe4293447b1bb5e2ac2adaab, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -129,7 +129,6 @@ MonoBehaviour:
   isStunned: 0
   isPoisoned: 0
   party: []
-  direction: []
   battlePosition: {x: 0, y: 0, z: 0}
   virtueValue: 0
 --- !u!65 &-6524770121364069922
