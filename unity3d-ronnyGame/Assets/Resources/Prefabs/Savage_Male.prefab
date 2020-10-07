@@ -119,7 +119,7 @@ MonoBehaviour:
   gameMasterScript: {fileID: 0}
   battleMasterScript: {fileID: 0}
   interactable: 0
-  isStaticToCamera: 0
+  isStaticToCamera: 1
   beingData: 
   canvas: {fileID: 0}
   health: 0
@@ -129,7 +129,6 @@ MonoBehaviour:
   isStunned: 0
   isPoisoned: 0
   party: []
-  direction: []
   battlePosition: {x: 0, y: 0, z: 0}
   virtueValue: 0
   speed: 0

@@ -28,10 +28,6 @@ public class playerMovement : MonoBehaviour
             anim.SetFloat("Facing", -1);
             x += Mathf.Cos(Mathf.Deg2Rad * (angle + 180));
             z += Mathf.Sin(Mathf.Deg2Rad * (angle + 180));
-        } else
-        {
-            x += 0;
-            z += 0;
         }
         if (Input.GetKey(KeyCode.D))
         {
@@ -45,10 +41,10 @@ public class playerMovement : MonoBehaviour
             x += Mathf.Cos(Mathf.Deg2Rad * (angle - 90));
             z += Mathf.Sin(Mathf.Deg2Rad * (angle - 90));
         }
-        else
+        if (Mathf.Abs(z) > 0.01f && Mathf.Abs(x) > 0.01f)
         {
-            x += 0;
-            z += 0;
+            x = (Mathf.Sqrt(Mathf.Abs(x) + Mathf.Abs(z)) * Mathf.Sign(x)) / 1.95f;
+            z = (Mathf.Sqrt(Mathf.Abs(x) + Mathf.Abs(z)) * Mathf.Sign(z)) / 1.95f;
         }
         Vector3 newPos = this.transform.position + new Vector3(z * speed * Time.deltaTime, 0, x * speed * Time.deltaTime);
 
@@ -58,16 +54,7 @@ public class playerMovement : MonoBehaviour
             anim.SetBool("Moving", true);
             if (Physics.Raycast(newPos, Vector3.down, out hit, 4))
             {
-                RaycastHit hit2;
-                LayerMask wall = LayerMask.GetMask("Wall");
-                if (Physics.Raycast(this.transform.position, (newPos - this.transform.position).normalized, out hit2, 2, wall))
-                {
-                    Debug.Log("Uh oh wall!");
-                }
-                else
-                {
-                    this.transform.position = newPos;
-                }
+                //newpos is an actual place to hit! hurray! now check if wall is in the way!
             }
             else
             {
@@ -124,30 +111,37 @@ public class playerMovement : MonoBehaviour
                 }
                 //Debug.Log($"Dist1:{dist1} Dist2:{dist2}");
                 //Debug.Log(calc);
-                Vector3 finalPos = this.transform.position;
+                newPos = this.transform.position;
 
                 if (calc && (dist2 - dist1) > 0)
                 {
-                    finalPos -= lineVector.normalized * speed * Time.deltaTime;
+                    newPos -= lineVector.normalized * speed * Time.deltaTime;
                 } else if (calc)
                 {
-                    finalPos += lineVector.normalized * speed * Time.deltaTime;
+                    newPos += lineVector.normalized * speed * Time.deltaTime;
                 } else
                 {
                     anim.SetBool("Moving", false);
                 }
-                if (finalPos != this.transform.position)
-                {
-                    RaycastHit final;
-                    if (Physics.Raycast(finalPos, Vector3.down, out final, 4))
-                    {
-                        this.transform.position = finalPos;
-                    }
-                }
+                
             }
         } else
         {
             anim.SetBool("Moving", false);
+        }
+        if (newPos != this.transform.position)
+        {
+            RaycastHit final;
+            LayerMask wall = LayerMask.GetMask("Wall");
+            Debug.DrawRay(this.transform.position, (newPos - this.transform.position).normalized);
+            if (Physics.Raycast(this.transform.position, (newPos - this.transform.position).normalized, out final, 2, wall))
+            {
+                Debug.Log("Uh oh wall!");
+            }
+            else
+            {
+                this.transform.position = newPos;
+            }
         }
     }
     public void Idle()
