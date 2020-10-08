@@ -95,6 +95,7 @@
     <Compile Include="Assets\Scripts\DataMaster.cs" />
     <Compile Include="Assets\Scripts\Effects.cs" />
     <Compile Include="Assets\Scripts\Enemy.cs" />
+    <Compile Include="Assets\Scripts\FadeSprite.cs" />
     <Compile Include="Assets\Scripts\Fighter.cs" />
     <Compile Include="Assets\Scripts\GameMaster.cs" />
     <Compile Include="Assets\Scripts\GameMenuMaster.cs" />
@@ -106,6 +107,7 @@
     <Compile Include="Assets\Scripts\SceneMaster.cs" />
     <Compile Include="Assets\Scripts\Scene_Scripts\Cloud.cs" />
     <Compile Include="Assets\Scripts\Scene_Scripts\CloudGenerator.cs" />
+    <Compile Include="Assets\Scripts\Scene_Scripts\SceneChange.cs" />
     <Compile Include="Assets\Scripts\SkyboxRoatation.cs" />
     <Compile Include="Assets\Scripts\SunCycle.cs" />
     <Compile Include="Assets\Scripts\Trigger.cs" />
