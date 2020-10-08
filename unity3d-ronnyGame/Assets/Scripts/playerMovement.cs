@@ -16,38 +16,56 @@ public class playerMovement : MonoBehaviour
         float x = 0f;
         float z = 0f;
 
-        angle = this.gameObject.transform.rotation.eulerAngles.y;
+        angle = this.gameObject.transform.rotation.eulerAngles.y * -1;
 
         if (Input.GetKey(KeyCode.W))
         {
             anim.SetFloat("Facing", 1);
-            x += Mathf.Cos(Mathf.Deg2Rad * angle);
-            z += Mathf.Sin(Mathf.Deg2Rad * angle);
+            x = Mathf.Cos(Mathf.Deg2Rad * (angle + 90));
+            z = Mathf.Sin(Mathf.Deg2Rad * (angle + 90));
         } else if (Input.GetKey(KeyCode.S))
         {
             anim.SetFloat("Facing", -1);
-            x += Mathf.Cos(Mathf.Deg2Rad * (angle + 180));
-            z += Mathf.Sin(Mathf.Deg2Rad * (angle + 180));
+            x = Mathf.Cos(Mathf.Deg2Rad * (angle + 270));
+            z = Mathf.Sin(Mathf.Deg2Rad * (angle + 270));
         }
         if (Input.GetKey(KeyCode.D))
         {
             anim.SetFloat("Facing", 1);
-            x += Mathf.Cos(Mathf.Deg2Rad * (angle + 90));
-            z += Mathf.Sin(Mathf.Deg2Rad * (angle + 90));
+            x = Mathf.Cos(Mathf.Deg2Rad * angle);
+            z = Mathf.Sin(Mathf.Deg2Rad * angle);
         }
         else if (Input.GetKey(KeyCode.A))
         {
             anim.SetFloat("Facing", -1);
-            x += Mathf.Cos(Mathf.Deg2Rad * (angle - 90));
-            z += Mathf.Sin(Mathf.Deg2Rad * (angle - 90));
+            x = Mathf.Cos(Mathf.Deg2Rad * (angle + 180));
+            z = Mathf.Sin(Mathf.Deg2Rad * (angle + 180));
         }
-        if (Mathf.Abs(z) > 0.01f && Mathf.Abs(x) > 0.01f)
+        if (Input.GetKey(KeyCode.W) && Input.GetKey(KeyCode.D))
         {
-            x = (Mathf.Sqrt(Mathf.Abs(x) + Mathf.Abs(z)) * Mathf.Sign(x)) / 1.95f;
-            z = (Mathf.Sqrt(Mathf.Abs(x) + Mathf.Abs(z)) * Mathf.Sign(z)) / 1.95f;
+            anim.SetFloat("Facing", 1);
+            x = Mathf.Cos(Mathf.Deg2Rad * (angle + 45));
+            z = Mathf.Sin(Mathf.Deg2Rad * (angle + 45));
         }
-        Vector3 newPos = this.transform.position + new Vector3(z * speed * Time.deltaTime, 0, x * speed * Time.deltaTime);
-
+        else if (Input.GetKey(KeyCode.W) && Input.GetKey(KeyCode.A))
+        {
+            anim.SetFloat("Facing", -1);
+            x = Mathf.Cos(Mathf.Deg2Rad * (angle + 135));
+            z = Mathf.Sin(Mathf.Deg2Rad * (angle + 135));
+        }
+        if (Input.GetKey(KeyCode.S) && Input.GetKey(KeyCode.D))
+        {
+            anim.SetFloat("Facing", 1);
+            x = Mathf.Cos(Mathf.Deg2Rad * (angle + 315));
+            z = Mathf.Sin(Mathf.Deg2Rad * (angle + 315));
+        }
+        else if (Input.GetKey(KeyCode.S) && Input.GetKey(KeyCode.A))
+        {
+            anim.SetFloat("Facing", -1);
+            x = Mathf.Cos(Mathf.Deg2Rad * (angle + 225));
+            z = Mathf.Sin(Mathf.Deg2Rad * (angle + 225));
+        }
+        Vector3 newPos = this.transform.position + new Vector3(x * speed * Time.deltaTime, 0, z * speed * Time.deltaTime);
         RaycastHit hit;
         if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.D))
         {
