@@ -93,6 +93,7 @@ public class TriggerCauser : Being
                 this.causerName = causer.causerName;
                 this.targetName = causer.targetName;
                 this.triggerName = causer.triggerName;
+                this.togglePlayerMovement = causer.togglePlayerMovement;
             }
             this.ID = being.objectID;
             this.beingData = jsonData;
@@ -145,6 +146,7 @@ public class TriggerCauser : Being
         causer.causerName = this.causerName;
         causer.targetName = this.targetName;
         causer.triggerName = this.triggerName;
+        causer.togglePlayerMovement = this.togglePlayerMovement;
 
         return JsonUtility.ToJson(causer);
     }
