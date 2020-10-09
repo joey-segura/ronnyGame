@@ -5,6 +5,7 @@ using UnityEngine;
 public class TriggerCauserJson
 {
     public string causerName, targetName, triggerName;
+    public bool togglePlayerMovement;
 }
 public class TriggerCauser : Being
 {
@@ -13,6 +14,7 @@ public class TriggerCauser : Being
     public GameObject target;
     public BoxCollider triggerBox;
     private Trigger trigger;
+    public bool togglePlayerMovement = false;
 
     private GameObject FindTarget()
     {
@@ -51,11 +53,19 @@ public class TriggerCauser : Being
         {
             yield return new WaitForEndOfFrame();
         }
+        if (togglePlayerMovement)
+        {
+            gameMasterScript.GetPlayerGameObject().GetComponent<Ronny>().ToggleMovementAndCamera();
+        }
         DestroyBeing();
         yield return null;
     }
     public IEnumerator InitializeTrigger()
     {
+        if (togglePlayerMovement)
+        {
+            gameMasterScript.GetPlayerGameObject().GetComponent<Ronny>().ToggleMovementAndCamera();
+        }
         CoroutineWithData move = new CoroutineWithData(this, MoveCameraBetweenPoints(causer.transform.position, target.transform.position));
         while (!move.finished)
         {

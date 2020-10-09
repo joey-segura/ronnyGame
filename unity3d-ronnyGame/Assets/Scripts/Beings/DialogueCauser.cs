@@ -95,7 +95,7 @@ public class DialogueCauser : Being
             return target;
         }
     }
-    public void InitializeDialogue(GameObject player)
+    public IEnumerator InitializeDialogue(GameObject player)
     {
         if ((target = FindTarget()) != null)
         {
@@ -105,12 +105,25 @@ public class DialogueCauser : Being
         }
         if (trigger && target)
         {
-            StartCoroutine(trigger.StartTrigger(target));
+            CoroutineWithData cd = new CoroutineWithData(this, trigger.StartTrigger(target));
+            ronny = player.GetComponent<Ronny>();
+            ronny.ToggleMovementAndCamera();
+            while (!cd.finished)
+            {
+                yield return new WaitForEndOfFrame();
+            }
+            this.ToggleCanvas();
+            StartCoroutine(BeginDialogue());
+            yield return true;
+        } else
+        {
+            ronny = player.GetComponent<Ronny>();
+            ronny.ToggleMovementAndCamera();
+            this.ToggleCanvas();
+            StartCoroutine(BeginDialogue());
+            yield return true;
         }
-        ronny = player.GetComponent<Ronny>();
-        ronny.ToggleMovementAndCamera();
-        this.ToggleCanvas();
-        StartCoroutine(BeginDialogue());
+        
     }
     public override void InjectData(string jsonData)
     {
@@ -159,7 +172,7 @@ public class DialogueCauser : Being
     {
         if (other.gameObject.tag == "Player")
         {
-            InitializeDialogue(other.gameObject);
+            StartCoroutine(InitializeDialogue(other.gameObject));
         }
     }
     public void SetHeadImage(string message)
@@ -200,6 +213,9 @@ public class DialogueCauser : Being
             {
                 case "JoeyJoinParty":
                     trigger = this.gameObject.AddComponent<JoeyJoinParty>();
+                    break;
+                case "EndDemo":
+                    trigger = this.gameObject.AddComponent<EndDemo>();
                     break;
                 default:
                     break;

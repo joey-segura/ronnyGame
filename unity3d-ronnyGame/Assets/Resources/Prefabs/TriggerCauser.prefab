@@ -69,3 +69,4 @@ MonoBehaviour:
   triggerName: 
   target: {fileID: 0}
   triggerBox: {fileID: 7704700155659807678}
+  togglePlayerMovement: 1

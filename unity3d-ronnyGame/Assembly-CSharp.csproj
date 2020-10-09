@@ -111,6 +111,7 @@
     <Compile Include="Assets\Scripts\SkyboxRoatation.cs" />
     <Compile Include="Assets\Scripts\SunCycle.cs" />
     <Compile Include="Assets\Scripts\Trigger.cs" />
+    <Compile Include="Assets\Scripts\Triggers\EndDemo.cs" />
     <Compile Include="Assets\Scripts\Triggers\JoeyBurnFence.cs" />
     <Compile Include="Assets\Scripts\Triggers\JoeyJoinParty.cs" />
     <Compile Include="Assets\Scripts\VisualEffectMaster.cs" />

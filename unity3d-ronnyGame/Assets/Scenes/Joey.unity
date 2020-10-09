@@ -6759,8 +6759,8 @@ GameObject:
   - component: {fileID: 350680531}
   - component: {fileID: 350680530}
   - component: {fileID: 350680529}
-  m_Layer: 0
-  m_Name: Cube
+  m_Layer: 10
+  m_Name: Ruin_Gate
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6834,7 +6834,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 350680528}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 192.25, y: 3, z: -23}
+  m_LocalPosition: {x: 192.25, y: -3, z: -23}
   m_LocalScale: {x: 5, y: 6.5, z: 0.5}
   m_Children: []
   m_Father: {fileID: 0}
