@@ -5,8 +5,8 @@ using UnityEngine;
 public class JoeyJson
 {
     public GameObject ronny;
-    public int virtue;
-    public float speed, health, damage;
+    public int virtue, damage;
+    public float speed, health;
     public bool member;
 }
 public class Joey : Human
@@ -113,11 +113,11 @@ public class Joey : Human
         switch (GetLevel())
         {
             case 0:
-                this.actionList.Add(new Attack(3, this.damage * this.damageMultiplier, null));
+                this.actionList.Add(new Attack(3, Mathf.FloorToInt(this.damage * this.damageMultiplier), null));
                 break;
             case 1:
-                this.actionList.Add(new Attack(3, this.damage * this.damageMultiplier, null));
-                this.actionList.Add(new Cleave(3, this.damage * this.damageMultiplier, null));
+                this.actionList.Add(new Attack(3, Mathf.FloorToInt(this.damage * this.damageMultiplier), null));
+                this.actionList.Add(new Cleave(3, Mathf.FloorToInt(this.damage * this.damageMultiplier), null));
                 break;
             case 2:
                 break;

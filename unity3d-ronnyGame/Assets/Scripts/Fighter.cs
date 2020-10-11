@@ -9,7 +9,8 @@ using UnityEngine.UI;
 
 public class Fighter : Being
 {
-    public float health, damage, damageMultiplier = 1, defenseMultiplier = 1;
+    public float health, damageMultiplier = 1, defenseMultiplier = 1;
+    public int damage;
     public bool isStunned = false, isPoisoned = false;
     protected bool isBattle = false;
 
@@ -20,7 +21,7 @@ public class Fighter : Being
     protected List<FighterAction> actionList = new List<FighterAction>();
 
     public Vector3 battlePosition;
-    public Dictionary<int, Func<float, Fighter, float>> onHitEffects = new Dictionary<int, Func<float, Fighter, float>>();
+    public Dictionary<int, Func<int, Fighter, int>> onHitEffects = new Dictionary<int, Func<int, Fighter, int>>();
 
     public void AddEffect(Fighter fighter, Effect effect)
     {
@@ -28,28 +29,23 @@ public class Fighter : Being
         currentEffects.Add(effect.GetKey(), effect);
         currentEffects.OrderByDescending(x => effect.duration);
     }
-    public virtual float AddToHealth(float change, Fighter causer)
+    public virtual void AddToHealth(int change, Fighter causer)
     {
-        foreach(Func<float, Fighter, float> a in onHitEffects.Values)
+        foreach(Func<int, Fighter, int> a in onHitEffects.Values)
         {
             change = a.Invoke(change, causer);
         }
         Debug.Log($"{this.name} has {onHitEffects.Count} onhit functions");
-        change = change / this.defenseMultiplier;
+        change = Mathf.FloorToInt(change / this.defenseMultiplier);
         Debug.Log($"{this.name}'s health just got changed by {change}");
-        if (causer.gameObject.name == "Joey" || causer.gameObject.name == "Ritter") // ugly but sensical solution, every fighther on health change should check if the causer was a party member (this accounts for all buff values etc)
-        {
-            battleMasterScript.AddToVirtue(change);
-        }
         if (change < 0)
         {
             StartCoroutine(GetHitJiggle());
         }
         this.health += change;
-        this.DeathCheck();
-        return change;
+        this.DeathCheck(causer.gameObject);
     }
-    public bool AddToOnHitEffects(int key, Func<float, Fighter, float> method)
+    public bool AddToOnHitEffects(int key, Func<int, Fighter, int> method)
     {
         if (onHitEffects.ContainsKey(key))
         {
@@ -60,12 +56,17 @@ public class Fighter : Being
             return true;
         }
     }
-    public virtual void DeathCheck()
+    public virtual void DeathCheck(GameObject causer)
     {
         if (this.health <= 0)
         {
+            
             this.DeathTrigger(false);
             BattleMaster battleMaster = this.transform.parent.GetComponentInParent<BattleMaster>();
+            if (causer.tag == "Party")
+            {
+                battleMaster.AddToVirtue(Mathf.FloorToInt(Mathf.Abs(this.health)));
+            }
             battleMaster.RemoveMemberByID(this.ID);
             battleMaster.BattleEndCheck();
             this.DestroyBeing();
@@ -89,7 +90,7 @@ public class Fighter : Being
         }
         else
         {
-            newPos = Vector3.Lerp(this.transform.position, action.targets[0].transform.position, .75f);
+            newPos = Vector3.Lerp(this.transform.position, action.targets[0].GetComponent<Fighter>().battlePosition, .75f);
         }
         while (this.transform.position != newPos)
         {
@@ -261,7 +262,7 @@ public class Fighter : Being
     }
     private void OnGUI()
     {
-        if (isBattle && currentAction != null && this.isHovering)
+        if (isBattle && this.isHovering)
         {
             Vector3 mouse = Input.mousePosition;
             Rect rect;
@@ -275,19 +276,32 @@ public class Fighter : Being
             }
 
             string names = null;
-            if (currentAction.targets != null)
+            FighterShadow shadow = null;
+            if (currentAction != null && currentAction.targets != null)
             {
                 for (int i = 0; i < currentAction.targetCount; i++)
                 {
                     names += $"{currentAction.targets[i].name} ";
                 }
-                FighterShadow shadow = GetShadow();
-                if (!shadow.playing)
+                shadow = GetShadow();
+                if (shadow && !shadow.playing)
                 {
                     StartCoroutine(shadow.PlayAnimations());
                 }
+                if (shadow)
+                {
+                    string targName = shadow.currentAction.targets[0].name;
+                    targName = targName.Remove(targName.IndexOf("("));
+                    GUI.Box(rect, $"Character Name: {name}\n HP: {health}\n Action name: {shadow.currentAction.name}\n Targets name: {targName}\n Value: {shadow.currentAction.GetValue()}");
+                }
+                else
+                {
+                    GUI.Box(rect, $"Character Name: {name}\n HP: {health}\n Action name: {currentAction.name}\n Targets name: {names}\n Value: {currentAction.GetValue()}");
+                }
+            } else
+            {
+                GUI.Box(rect, $"Character Name: {name}\n HP: {health}");
             }
-            GUI.Box(rect, $"Character Name: {name}\n HP: {health}\n Action name: {currentAction.name}\n Targets name: {names}\n Value: {currentAction.GetValue()}");
         }
     }
     public virtual void RecalculateActions()

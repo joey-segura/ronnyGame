@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class RonnyJson
 {
-    public int virtue;
-    public float speed, health, damage;
+    public int virtue, damage;
+    public float speed, health;
 }
 public class Ronny : Human
 {
@@ -181,7 +181,7 @@ public class Ronny : Human
         this.currentAction = action;
 
         BattleMaster battleMaster = this.transform.GetComponentInParent<BattleMaster>();
-        battleMaster.SetActionText(action.name);
+        battleMaster.SetActionText(action);
         battleMaster.costDamage = action.GetCost();
         battleMaster.SimulateBattle();
     }

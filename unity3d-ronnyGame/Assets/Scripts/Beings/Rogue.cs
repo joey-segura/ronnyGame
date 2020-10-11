@@ -4,7 +4,8 @@ using UnityEngine;
 
 public class RogueJson
 {
-    public float speed, health, damage, virtueValue;
+    public int damage;
+    public float speed, health, virtueValue;
     public string[] party;
 }
 public class Rogue : Enemy
@@ -46,7 +47,7 @@ public class Rogue : Enemy
     public override void RecalculateActions()
     {
         this.actionList = new List<FighterAction>();
-        this.actionList.Add(new AttackAndBuff(3, this.damage * this.damageMultiplier, 2, 2, null));
+        this.actionList.Add(new AttackAndBuff(3, Mathf.FloorToInt(this.damage * this.damageMultiplier), 2, 2, null));
         //this.actionList.Add(new Attack(3, this.damage * this.damageMultiplier, null));
         /*
         this.actionList.Add(new WeakAttack(3, 3, 2, null));
