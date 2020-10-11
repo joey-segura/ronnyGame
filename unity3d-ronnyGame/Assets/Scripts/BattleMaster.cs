@@ -39,15 +39,10 @@ public class BattleMaster : Kami
         worldSceneName = sceneMaster.GetCurrentSceneName();
         battleSceneName = sceneMaster.GetBattleSceneName(worldSceneName);
     }
-    public void AddToVirtue(float initValue)
+    public void AddToVirtue(int virt)
     {
-        int value = Mathf.RoundToInt(Mathf.Abs(initValue) / 2);
-        if (value < 1)
-        {
-            value = 1;
-        }
-        Debug.Log($"Local virtue changed by {value}");
-        this.virtueValue += value;
+        Debug.Log($"Local virtue changed by {virt}");
+        this.virtueValue += virt;
         UpdateVirtueText(this.virtueValue);
     }
     public void BattleEndCheck()
@@ -324,6 +319,10 @@ public class BattleMaster : Kami
     }
     private IEnumerator PlayerAction()
     {
+        if (this.turnCounter == 0)
+        {
+            yield return new WaitForEndOfFrame(); // make sure all data is initialized like all entity sprites (yes this was a problem)
+        }
         this.turn = true;
         GameObject player = this.GetPlayerObject();
         Ronny ronny = player.GetComponent<Ronny>();
@@ -434,9 +433,9 @@ public class BattleMaster : Kami
     {
         gameMaster.RemoveBeingFromList(ID);
     }
-    public void SetActionText(string text)
+    public void SetActionText(FighterAction a)
     {
-        action.text = $"Action: {text}";
+        action.text = $"{a.name} \n{a.description}";
     }
     public void SetEnemyID(int ID)
     {

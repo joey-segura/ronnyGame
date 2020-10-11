@@ -10,33 +10,32 @@ public class FighterShadow : Fighter
     private Fighter parent;
     public bool dead = false, playing = false;
 
-    public override float AddToHealth(float change, Fighter causer)
+    public override void AddToHealth(int change, Fighter causer)
     {
-        foreach (Func<float, Fighter, float> a in onHitEffects.Values)
+        foreach (Func<int, Fighter, int> a in onHitEffects.Values)
         {
             change = a.Invoke(change, causer);
         }
         //Debug.Log($"{this.name} has {onHitEffects.Count} onhit functions");
-        change = change / this.defenseMultiplier;
+        change = Mathf.FloorToInt(change / this.defenseMultiplier);
         Debug.Log($"{this.name}'s health just got changed by {change} by {causer.name}");
-        if (causer.gameObject.name.Contains("Joey") || causer.gameObject.name.Contains("Ritter")) // ugly but sensical solution, every fighther on health change should check if the causer was a party member (this accounts for all buff values etc)
-        {
-            BattleMaster battleMasterScript = this.GetComponentInParent<BattleMaster>();
-            battleMasterScript.virtueExpectation.text = $"Expected Gain: {Mathf.RoundToInt(Mathf.Abs(change / 2))}";
-        }
         if (this.gameObject.tag == "Player")
         {
             this.GetComponentInParent<BattleMaster>().expectedDamageTaken += change;
         }
         
         this.health += change;
-        this.DeathCheck();
-        return change;
+        this.DeathCheck(causer.gameObject);
     }
-    public override void DeathCheck()
+    public override void DeathCheck(GameObject causer)
     {
         if (health < 0 && !dead)
         {
+            if (causer.gameObject.name.Contains("Joey") || causer.gameObject.name.Contains("Ritter")) // ugly but sensical solution
+            {
+                BattleMaster battleMasterScript = this.GetComponentInParent<BattleMaster>();
+                battleMasterScript.virtueExpectation.text = $"Expected Gain: {Mathf.FloorToInt(Mathf.Abs(health))}";
+            }
             dead = true;
             parent.DeathTrigger(true);
             spriteRenderer.color += new Color(1, 0, 0, 0);
@@ -53,7 +52,7 @@ public class FighterShadow : Fighter
         health = source.health;
         isStunned = source.isStunned;
         currentEffects = new Dictionary<int, Effect>(source.currentEffects);
-        onHitEffects = new Dictionary<int, Func<float, Fighter, float>>(source.onHitEffects);
+        onHitEffects = new Dictionary<int, Func<int, Fighter, int>>(source.onHitEffects);
         this.spriteRenderer.sprite = source.GetComponent<SpriteRenderer>().sprite;
         this.spriteRenderer.color += new Color(0, 0, 0, -.5f);
         this.animator = source.GetComponent<Animator>();

@@ -7,21 +7,28 @@ public class SpriteOutline : MonoBehaviour
 
     private SpriteRenderer spriteRenderer;
 
+    private float timeElapsed = 0, timeLimit = .75f;
+    private bool changeOutline;
+
     void OnEnable()
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
-
-        UpdateOutline(true);
+        UpdateOutline(changeOutline = true);
     }
 
     void OnDisable()
     {
-        UpdateOutline(false);
+        UpdateOutline(changeOutline = false);
     }
 
     void Update()
     {
-        UpdateOutline(true);
+        timeElapsed += Time.deltaTime;
+        if (timeElapsed > timeLimit)
+        {
+            UpdateOutline(changeOutline = !changeOutline);
+            timeElapsed = 0;
+        }
     }
 
     void UpdateOutline(bool outline)

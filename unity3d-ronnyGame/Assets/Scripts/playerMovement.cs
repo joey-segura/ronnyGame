@@ -158,7 +158,11 @@ public class playerMovement : MonoBehaviour
             }
             else
             {
-                this.transform.position = newPos;
+                if (Physics.Raycast(newPos, Vector3.down, out hit, 4))
+                {
+                    this.transform.position = newPos;
+                    //final test to see if we are running off the board, lame solution will need to fix this later
+                }
             }
         }
     }

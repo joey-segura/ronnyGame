@@ -5,8 +5,8 @@ using UnityEngine;
 public class RitterJson
 {
     public GameObject ronny;
-    public int virtue;
-    public float speed, health, damage;
+    public int virtue, damage;
+    public float speed, health;
 }
 public class Ritter : Human
 {
@@ -92,7 +92,7 @@ public class Ritter : Human
     public override void RecalculateActions()
     {
         this.actionList = new List<FighterAction>();
-        this.actionList.Add(new Attack(3, this.damage * this.damageMultiplier, null));
+        this.actionList.Add(new Attack(3, Mathf.FloorToInt(this.damage * this.damageMultiplier), null));
         //this.actionList.Add(new ApplyThorns(3, 3, .5f, null));
         /*
         this.actionList.Add(new WeakAttack(3, 3, 2, null));

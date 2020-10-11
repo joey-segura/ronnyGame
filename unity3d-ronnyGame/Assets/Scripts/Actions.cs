@@ -9,9 +9,9 @@ public abstract class FighterAction
     public GameObject[] targets { get; set; }
     public int duration, effectDuration;
     public int targetCount;
-    public float result = 0;
     public Animation animation;
     public string name { get; set; }
+    public string description;
     public string[] validTargets;
     protected string IMAGEPATH;
 
@@ -53,7 +53,7 @@ public abstract class FighterAction
         return targets.ToArray();
     }
     public abstract IEnumerator Execute();
-    public virtual float GetCost()
+    public virtual int GetCost()
     {
         return 0;
     }
@@ -141,10 +141,11 @@ public class CoroutineWithData
 }
 public class Attack : FighterAction
 {
-    public float damage;
-    public Attack (int _duration, float _damage, Animation _animation)
+    public int damage;
+    public Attack (int _duration, int _damage, Animation _animation)
     {
         this.name = "Attack";
+        this.description = $"Attack for {_damage}";
         this.duration = _duration;
         this.damage = _damage;
         this.animation = _animation;
@@ -161,7 +162,7 @@ public class Attack : FighterAction
 
         for (int i = 0; i < targets.Length; i++)
         {
-            result += Mathf.RoundToInt(targets[i].GetComponent<Fighter>().AddToHealth(this.damage * -1, this.originator.GetComponent<Fighter>()));
+            targets[i].GetComponent<Fighter>().AddToHealth(this.damage * -1, this.originator.GetComponent<Fighter>());
         }
         yield return true;
     }
@@ -171,16 +172,17 @@ public class Attack : FighterAction
     }
     public override void ReEvaluateActionValues(Fighter self)
     {
-        this.damage = self.damage * self.damageMultiplier;
+        this.damage = Mathf.FloorToInt(self.damage * self.damageMultiplier);
     }
 }
 public class AttackAndBuff : FighterAction
 {
     public float buffValue;
-    public float damage;
-    public AttackAndBuff(int _duration, float _damage, int _effectDuration, float _buffValue, Animation _animation)
+    public int damage;
+    public AttackAndBuff(int _duration, int _damage, int _effectDuration, float _buffValue, Animation _animation)
     {
         this.name = "Attack and Buff";
+        this.description = $"Attack for {_damage} and buff target for {_buffValue}";
         this.duration = _duration;
         this.damage = _damage;
         this.effectDuration = _effectDuration;
@@ -200,7 +202,7 @@ public class AttackAndBuff : FighterAction
         for (int i = 0; i < targets.Length; i++)
         {
             Fighter fighter = targets[i].GetComponent<Fighter>();
-            result += Mathf.RoundToInt(fighter.AddToHealth(this.damage * -1, this.originator.GetComponent<Fighter>()));
+            fighter.AddToHealth(this.damage * -1, this.originator.GetComponent<Fighter>());
             fighter.AddEffect(fighter, strengthen);
         }
         yield return true;
@@ -215,7 +217,7 @@ public class AttackAndBuff : FighterAction
     }
     public override void ReEvaluateActionValues(Fighter self)
     {
-        this.damage = self.damage * self.damageMultiplier;
+        this.damage = Mathf.FloorToInt(self.damage * self.damageMultiplier);
     }
 }
 public class ApplyThorns : FighterAction
@@ -224,6 +226,7 @@ public class ApplyThorns : FighterAction
     public ApplyThorns(int _duration, int _effectDuration, float _percentValue, Animation _animation)
     {
         this.name = "Thorns";
+        this.description = $"Reflect incoming damage by {_percentValue}";
         this.duration = _duration;
         this.effectDuration = _effectDuration;
         this.percentValue = _percentValue;
@@ -256,6 +259,7 @@ public class BlockAll : FighterAction
     public BlockAll(int _duration, Animation _animation)
     {
         this.name = "Block";
+        this.description = $"Cause target to become invulnerable!";
         this.duration = _duration;
         this.effectDuration = 1;
         this.animation = _animation;
@@ -288,6 +292,7 @@ public class BolsterDefense : FighterAction
     public BolsterDefense(int _duration, int _effectDuration , float _buffValue, Animation _animation)
     {
         this.name = "Bolster Defense";
+        this.description = $"Increase defence by {_buffValue} for {_effectDuration} turns";
         this.duration = _duration;
         this.effectDuration = _effectDuration;
         this.buffValue = _buffValue;
@@ -310,7 +315,7 @@ public class BolsterDefense : FighterAction
         }
         yield return true;
     }
-    public override float GetCost()
+    public override int GetCost()
     {
         return 10;
     }
@@ -329,6 +334,7 @@ public class BuffAttack : FighterAction
     public BuffAttack(int _duration, int _effectDuration , float _buffValue, Animation _animation)
     {
         this.name = "Buff Attack";
+        this.description = $"Buff Attack for {_buffValue} for {_effectDuration} turns";
         this.duration = _duration;
         this.effectDuration = _effectDuration;
         this.buffValue = _buffValue;
@@ -355,7 +361,7 @@ public class BuffAttack : FighterAction
     {
         return this.buffValue;
     }
-    public override float GetCost()
+    public override int GetCost()
     {
         return 10;
     }
@@ -366,10 +372,11 @@ public class BuffAttack : FighterAction
 }
 public class Cleave : FighterAction
 {
-    public float damage;
-    public Cleave(int _duration, float _damage, Animation _animation)
+    public int damage;
+    public Cleave(int _duration, int _damage, Animation _animation)
     {
         this.name = "Cleave";
+        this.description = $"Attack all targets for {_damage}";
         this.duration = _duration;
         this.damage = _damage;
         this.animation = _animation;
@@ -385,7 +392,7 @@ public class Cleave : FighterAction
     {
         for (int i = 0; i < targets.Length; i++)
         {
-            result += Mathf.RoundToInt(targets[i].GetComponent<Fighter>().AddToHealth(this.damage * -1, this.originator.GetComponent<Fighter>()));
+            targets[i].GetComponent<Fighter>().AddToHealth(this.damage * -1, this.originator.GetComponent<Fighter>());
         }
         yield return true;
     }
@@ -395,7 +402,7 @@ public class Cleave : FighterAction
     }
     public override void ReEvaluateActionValues(Fighter self)
     {
-        this.damage = self.damage * self.damageMultiplier;
+        this.damage = Mathf.FloorToInt(self.damage * self.damageMultiplier);
     }
 }
 public class CommandToAttack : FighterAction
@@ -404,6 +411,7 @@ public class CommandToAttack : FighterAction
     public CommandToAttack(int _duration, Animation _animation)
     {
         this.name = "Command to Attack";
+        this.description = $"Command a target to attack following selected unit";
         this.duration = _duration;
         this.animation = _animation;
         this.targetCount = 1;
@@ -426,7 +434,7 @@ public class CommandToAttack : FighterAction
                 fighter = targets[i].GetComponent<Fighter>();
                 targ = targets[i];
             }
-            Attack attack = new Attack(3, fighter.damage * fighter.damageMultiplier, null);
+            Attack attack = new Attack(3, Mathf.FloorToInt(fighter.damage * fighter.damageMultiplier), null);
             GameObject selectedTarget = null;
             Debug.Log("Please select a fighter!");
             while (selectedTarget == null)
@@ -443,7 +451,7 @@ public class CommandToAttack : FighterAction
             yield return true;
         }
     }
-    public override float GetCost()
+    public override int GetCost()
     {
         return 10;
     }
@@ -457,6 +465,7 @@ public class CommandToBlock : FighterAction
     public CommandToBlock(int _duration, Animation _animation)
     {
         this.name = "Command to Block";
+        this.description = $"Command target to block on their turn";
         this.duration = _duration;
         this.animation = _animation;
         this.targetCount = 1;
@@ -480,7 +489,7 @@ public class CommandToBlock : FighterAction
         fighter.SetAction(block);
         yield return true;
     }
-    public override float GetCost()
+    public override int GetCost()
     {
         return 10;
     }
@@ -491,12 +500,13 @@ public class CommandToBlock : FighterAction
 }
 public class DoubleAttack : FighterAction
 {
-    public float damage;
-    public DoubleAttack(int _duration, float _damage, Animation _animation)
+    public int damage;
+    public DoubleAttack(int _duration, int _damage, Animation _animation)
     {
         this.name = "Attack";
+        this.description = $"Attack twice for {_damage}";
         this.duration = _duration;
-        this.damage = _damage / 2;
+        this.damage = _damage;
         this.animation = _animation;
         this.targetCount = 1;
         this.validTargets = new string[] { "Foe" };
@@ -511,7 +521,8 @@ public class DoubleAttack : FighterAction
 
         for (int i = 0; i < targets.Length; i++)
         {
-            Mathf.RoundToInt(targets[i].GetComponent<Fighter>().AddToHealth(this.damage * -1, this.originator.GetComponent<Fighter>()));
+            targets[i].GetComponent<Fighter>().AddToHealth(this.damage * -1, this.originator.GetComponent<Fighter>());
+            targets[i].GetComponent<Fighter>().AddToHealth(this.damage * -1, this.originator.GetComponent<Fighter>());
         }
         yield return true;
     }
@@ -521,7 +532,7 @@ public class DoubleAttack : FighterAction
     }
     public override void ReEvaluateActionValues(Fighter self)
     {
-        this.damage = self.damage * self.damageMultiplier;
+        this.damage = Mathf.FloorToInt(self.damage * self.damageMultiplier);
     }
 }
 public class Heal : FighterAction
@@ -531,11 +542,12 @@ public class Heal : FighterAction
     public Heal(int _duration, int _healValue, Animation _animation)
     {
         this.name = "Heal";
+        this.description = $"Heal target for {_healValue}";
         this.duration = _duration;
         this.healValue = _healValue;
         this.animation = _animation;
         this.targetCount = 1;
-        this.validTargets = new string[] { "Friend", "Self"};
+        this.validTargets = new string[] { "Friend", "Self", "Foe"};
         this.IMAGEPATH = "UI/UI_buff";
     }
     public override FighterAction Clone()
@@ -546,7 +558,7 @@ public class Heal : FighterAction
     {
         for (int i = 0; i < targets.Length; i++)
         {
-            Mathf.RoundToInt(targets[i].GetComponent<Fighter>().AddToHealth(this.healValue, this.originator.GetComponent<Fighter>()));
+            targets[i].GetComponent<Fighter>().AddToHealth(this.healValue, this.originator.GetComponent<Fighter>());
             Vector3 pos = new Vector3(targets[i].transform.position.x, targets[i].transform.position.y - .05f, targets[i].transform.position.z);
             if (!this.originator.name.Contains("Shadow"))
             {
@@ -555,9 +567,9 @@ public class Heal : FighterAction
         }
         yield return true;
     }
-    public override float GetCost()
+    public override int GetCost()
     {
-        return 7.5f;
+        return 7;
     }
     public override float GetValue()
     {
@@ -570,6 +582,7 @@ public class PoisonAttack : FighterAction
     public PoisonAttack (int _duration, int _effectDuration ,int _poisonDamage, Animation _animation)
     {
         this.name = "Poison Attack";
+        this.description = $"Deal {_poisonDamage} each turn for {_effectDuration} turns";
         this.duration = _duration;
         this.effectDuration = _effectDuration;
         this.poisonDamage = _poisonDamage;
@@ -604,6 +617,7 @@ public class Taunt : FighterAction
     public Taunt(int _duration, Animation _animation)
     {
         this.name = "Taunt";
+        this.description = $"Causes target to attack you";
         this.duration = _duration;
         this.animation = _animation;
         this.targetCount = 1;
@@ -619,7 +633,7 @@ public class Taunt : FighterAction
         for (int i = 0; i < targets.Length; i++)
         {
             Fighter fighter = targets[i].GetComponent<Fighter>();
-            Attack attack = new Attack(3, fighter.damage * fighter.damageMultiplier, null);
+            Attack attack = new Attack(3, Mathf.FloorToInt(fighter.damage * fighter.damageMultiplier), null);
             attack.originator = targets[i];
             attack.targets = new GameObject[] { originator };
             fighter.SetAction(attack);
@@ -627,7 +641,7 @@ public class Taunt : FighterAction
 
         yield return true;
     }
-    public override float GetCost()
+    public override int GetCost()
     {
         return 10;
     }
@@ -642,6 +656,7 @@ public class TauntAll :FighterAction
     public TauntAll(int _duration, Animation _animation)
     {
         this.name = "Taunt_All";
+        this.description = $"Causes all enemies to attack you";
         this.duration = _duration;
         this.animation = _animation;
         this.targetCount = 0;
@@ -657,7 +672,7 @@ public class TauntAll :FighterAction
         for (int i = 0; i < targets.Length; i++)
         {
             Fighter fighter = targets[i].GetComponent<Fighter>();
-            Attack attack = new Attack(3, fighter.damage * fighter.damageMultiplier, null);
+            Attack attack = new Attack(3, Mathf.FloorToInt(fighter.damage * fighter.damageMultiplier), null);
             attack.originator = targets[i];
             attack.targets = new GameObject[] { originator };
             fighter.SetAction(attack);
@@ -665,7 +680,7 @@ public class TauntAll :FighterAction
         
         yield return true;
     }
-    public override float GetCost()
+    public override int GetCost()
     {
         return 10;
     }
@@ -680,6 +695,7 @@ public class VulnerableAttack : FighterAction
     public VulnerableAttack(int _duration, int _effectDuration , int _vulnerableValue, Animation _animation)
     {
         this.name = "Vulnerable Attack";
+        this.description = $"Lowers targets defense by {_vulnerableValue} for {_effectDuration} turns";
         this.duration = _duration;
         this.effectDuration = _effectDuration;
         this.vulnerableValue = _vulnerableValue;
@@ -717,6 +733,7 @@ public class WeakAttack : FighterAction
     public WeakAttack (int _duration, int _effectDuration , int _weakValue, Animation _animation)
     {
         this.name = "Weak Attack";
+        this.description = $"Weaken targets attack by {_weakValue} for {_effectDuration} turns";
         this.duration = _duration;
         this.effectDuration = _effectDuration;
         this.weakValue = _weakValue;
@@ -739,7 +756,7 @@ public class WeakAttack : FighterAction
         }
         yield return true;
     }
-    public override float GetCost()
+    public override int GetCost()
     {
         return 7;
     }

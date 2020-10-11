@@ -71,7 +71,7 @@ public class Block : Effect
             fighter.AddToOnHitEffects(this.key, this.BlockDamage);
         }
     }
-    private float BlockDamage(float change, Fighter causer)
+    private int BlockDamage(int change, Fighter causer)
     {
         return 0;
     }
@@ -197,20 +197,20 @@ public class Thorns : Effect
             fighter.AddToOnHitEffects(this.key, this.Thorn);
         }
     }
-    private float Thorn(float change, Fighter causer)
+    private int Thorn(int change, Fighter causer)
     {
-        if (change > -.5f) //don't want an endless cycle and to return positive values in case someone got healed
+        if (change > 1) //don't want an endless cycle and to return positive values in case someone got healed
         {
             return change;
         } else
         {
-            causer.AddToHealth(change - (percentValue * change), self);
+            causer.AddToHealth(Mathf.FloorToInt(change - (percentValue * change)), self);
             if (percentValue > 1)
             {
                 return 0;
             } else
             {
-                return change - (percentValue * change);
+                return Mathf.FloorToInt(change - (percentValue * change));
             }
         }
     }
