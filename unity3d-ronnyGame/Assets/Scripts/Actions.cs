@@ -98,7 +98,7 @@ public abstract class FighterAction
             return false;
         }
     }
-    public virtual void ReEvaluateActionValues(Fighter self)
+    public virtual void ReevaluateActionValues(Fighter self)
     {
 
     }
@@ -170,7 +170,7 @@ public class Attack : FighterAction
     {
         return this.damage;
     }
-    public override void ReEvaluateActionValues(Fighter self)
+    public override void ReevaluateActionValues(Fighter self)
     {
         this.damage = Mathf.FloorToInt(self.damage * self.damageMultiplier);
     }
@@ -215,7 +215,7 @@ public class AttackAndBuff : FighterAction
     {
         return this.damage;
     }
-    public override void ReEvaluateActionValues(Fighter self)
+    public override void ReevaluateActionValues(Fighter self)
     {
         this.damage = Mathf.FloorToInt(self.damage * self.damageMultiplier);
     }
@@ -400,7 +400,7 @@ public class Cleave : FighterAction
     {
         return this.damage;
     }
-    public override void ReEvaluateActionValues(Fighter self)
+    public override void ReevaluateActionValues(Fighter self)
     {
         this.damage = Mathf.FloorToInt(self.damage * self.damageMultiplier);
     }
@@ -530,7 +530,7 @@ public class DoubleAttack : FighterAction
     {
         return this.damage * 2;
     }
-    public override void ReEvaluateActionValues(Fighter self)
+    public override void ReevaluateActionValues(Fighter self)
     {
         this.damage = Mathf.FloorToInt(self.damage * self.damageMultiplier);
     }

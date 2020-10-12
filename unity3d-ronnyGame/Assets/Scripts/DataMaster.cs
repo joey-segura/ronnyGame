@@ -18,7 +18,7 @@ public class GameMasterJson
 {
     private GameObject PLAYER;
     public ListBeingData GameMasterBeingDataList;
-    public bool isSceneChanging;
+    public bool isSceneChanging, firstBattle;
     public int objectIDCounter;
     private string sceneJsonData;
     private string LEVELDATAPATH;

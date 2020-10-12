@@ -33,7 +33,7 @@ public class Savage : Enemy
                 this.health = 4;
                 this.damage = 3;
                 this.party = null;
-                this.virtueValue = 3;
+                this.virtueValue = 2;
             }
             this.ID = being.objectID;
             this.beingData = jsonData;

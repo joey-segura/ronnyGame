@@ -31,7 +31,7 @@ public class GameMaster : Kami
 
     public ListBeingData GameMasterBeingDataList = new ListBeingData();
 
-    public bool isSceneChanging = true;
+    public bool isSceneChanging = true, firstBattle = true;
 
     public int objectIDCounter;
 
@@ -255,6 +255,7 @@ public class GameMaster : Kami
         this.GameMasterBeingDataList = new ListBeingData();
         this.GameMasterBeingDataList = data.GameMasterBeingDataList;
         this.isSceneChanging = data.isSceneChanging;
+        this.firstBattle = data.firstBattle;
         this.objectIDCounter = data.objectIDCounter;
         this.LoadGameMasterSceneData();
     }

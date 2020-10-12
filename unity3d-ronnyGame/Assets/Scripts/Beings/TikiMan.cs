@@ -30,10 +30,10 @@ public class TikiMan : Enemy
             else
             {
                 this.speed = 0;
-                this.health = 4;
+                this.health = 5;
                 this.damage = 3;
                 this.party = null;
-                this.virtueValue = 3;
+                this.virtueValue = 2;
             }
             this.ID = being.objectID;
             this.beingData = jsonData;
@@ -63,8 +63,8 @@ public class TikiMan : Enemy
         FighterAction action;
         switch (battleMasterScript.turnCounter)
         {
-            case 0:
-                action = new VulnerableAttack(3, 6, 2, null);
+            case 2:
+                action = new VulnerableAttack(3, 3, 2, null);
                 action.targets = new GameObject[] { this.gameObject };
                 action.originator = this.gameObject;
                 this.currentAction = action;

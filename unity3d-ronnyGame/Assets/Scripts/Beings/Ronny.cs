@@ -51,18 +51,6 @@ public class Ronny : Human
         }
         return this.target;
     }
-    public void CurrentActionDecrement()
-    {
-        this.index--;
-        if (this.index < 0) this.index = actionList.Count - 1;
-        this.SetNewAction(this.actionList[this.index]);
-    }
-    public void CurrentActionIncrement()
-    {
-        this.index++;
-        if (this.index > (actionList.Count - 1)) this.index = 0;
-        this.SetNewAction(this.actionList[this.index]);
-    }
     public override void InitializeBattle()
     {
         this.health = 60; //default value

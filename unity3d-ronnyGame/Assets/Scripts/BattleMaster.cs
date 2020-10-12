@@ -22,12 +22,12 @@ public class BattleMaster : Kami
 
     [SerializeField]
     private Canvas canvas;
-    public Button leftArrow, rightArrow;
     public Text virtue, virtueExpectation, action;
-    public Texture holder, healthBar, damageBar, costBar;
+    public Image abilityKeys;
+    public Texture holder, healthBar, damageBar, costBar, virtueBar;
     public float expectedDamageTaken, costDamage;
     private bool isFlashing = false;
-    private float ronnyMaxHP = 0, guiX = (Screen.width / 2) - (Screen.width / 2) / 2, guiY = Screen.height / 10;
+    private float ronnyMaxHP = 0, guiX, guiY;
     private int virtueValue = 0, virtueMax = 0;
 
     public void AddFighter(BeingData being)
@@ -78,10 +78,10 @@ public class BattleMaster : Kami
     }
     private static int CompareActionsByOriginatorTag(FighterAction x, FighterAction y)
     {
-        if (x.originator.tag == "Party")
+        if (x.originator.CompareTag("Party"))
         {
             return 1;
-        } else if (x.originator.tag == y.originator.tag)
+        } else if (y.originator.CompareTag(x.originator.tag))
         {
             return 0;
         } else
@@ -91,15 +91,17 @@ public class BattleMaster : Kami
     }
     private static int CompareShadowsByTag(FighterShadow x, FighterShadow y)
     {
-        if (y.gameObject.tag == "Party")
-        {
-            return -1;
-        } else if (y.gameObject.tag == "Player")
+        if (x.CompareTag("Party"))
         {
             return 1;
-        } else
+        }
+        else if (y.CompareTag(x.tag))
         {
             return 0;
+        }
+        else
+        {
+            return -1;
         }
     }
     private void DestroyAllFighters()
@@ -221,7 +223,6 @@ public class BattleMaster : Kami
         this.turnCounter = 0;
         this.virtueValue = 0;
         this.InitializeFighters();
-        this.InitializeButtons();
         this.ronnyMaxHP = GetPlayerObject().GetComponent<Ronny>().health;
         this.MoveCameraTo(-0.05f, 7.23f, -13.4f, 30.066f, 0, 0);
         this.CalculateVirtueMax();
@@ -229,13 +230,12 @@ public class BattleMaster : Kami
         this.UpdateVirtueText(0);
         this.canvas.gameObject.SetActive(true);
         this.isBattle = true;
+        if (gameMaster.firstBattle)
+        {
+            StartCoroutine(ShowKeys());
+            gameMaster.firstBattle = false;
+        }
         this.NewTurn();
-    }
-    public void InitializeButtons()
-    {
-        Ronny ronny = this.GetPlayerObject().GetComponent<Ronny>();
-        leftArrow.onClick.AddListener(ronny.CurrentActionDecrement);
-        rightArrow.onClick.AddListener(ronny.CurrentActionIncrement);
     }
     public void InitializeFighters()
     {
@@ -282,27 +282,32 @@ public class BattleMaster : Kami
     {
         if (isBattle)
         {
+            guiX = (Screen.width / 2) - (Screen.width / 2) / 2;
+            guiY = Screen.height / 10;
+            Debug.Log("test");
             Ronny ronny = GetPlayerObject().GetComponent<Ronny>();
-            float healthWidth = (Screen.width / 2) / (ronnyMaxHP / ronny.health);
+            float healthWidth = (Screen.width / 2) * (ronny.health / ronnyMaxHP);
             float costWidth = 0;
-            Rect holderRect = new Rect(guiX, guiY, Screen.width / 2, Screen.height / 25);
-            Rect healthRect = new Rect(guiX, guiY, healthWidth, Screen.height / 25);
+            Rect holderRect = new Rect(guiX, guiY/2, Screen.width / 2, Screen.height / 25);
+            Rect virtueHolderRect = new Rect(guiX, guiY/2, Screen.width / 2, Screen.height / 10);
+            Rect healthRect = new Rect(guiX * 1.1f, guiY/1.13f, healthWidth / 1.0875f, Screen.height / 30);
+            GUI.DrawTexture(virtueHolderRect, virtueBar, ScaleMode.ScaleToFit);
+            //GUI.DrawTexture(virtueHolderRect, virtueBar);
             GUI.DrawTexture(healthRect, healthBar);
             GUI.DrawTexture(holderRect, holder);
 
             if (costDamage > 0 && isFlashing)
             {
-                costWidth = healthWidth / (ronny.health / costDamage);
-                Rect costRect = new Rect(guiX + (healthWidth - costWidth), guiY, costWidth, Screen.height / 25);
+                costWidth = healthWidth * (costDamage / ronny.health);
+                Rect costRect = new Rect(guiX + (healthWidth - costWidth), guiY / 1.13f, costWidth / 1.0875f, Screen.height / 30);
                 GUI.DrawTexture(costRect, costBar);
             }
             if (expectedDamageTaken < 0 && isFlashing)
             {
                 float damageWidth = healthWidth / (ronny.health / Mathf.Abs(expectedDamageTaken));
-                Rect damageRect = new Rect(guiX + (healthWidth - damageWidth - costWidth), guiY, damageWidth, Screen.height / 25);
+                Rect damageRect = new Rect(guiX + (healthWidth - damageWidth - costWidth), guiY / 1.13f, damageWidth / 1.0875f, Screen.height / 30);
                 GUI.DrawTexture(damageRect, damageBar);
             }
-            
         }
     }
     private void PlayAnimation(Animation anim)
@@ -440,6 +445,22 @@ public class BattleMaster : Kami
     public void SetEnemyID(int ID)
     {
         this.enemyID = ID;
+    }
+    public IEnumerator ShowKeys()
+    {
+        float timeElapsed = 0;
+        bool active = false;
+        while (timeElapsed < 5)
+        {
+            abilityKeys.gameObject.SetActive(active = !active);
+            yield return new WaitForSeconds(.5f);
+            timeElapsed += .5f;
+            yield return new WaitForEndOfFrame();
+        }
+        
+        //yield return new WaitForSeconds(5);
+        abilityKeys.gameObject.SetActive(false);
+        yield return null;
     }
     public void SimulateBattle()
     {

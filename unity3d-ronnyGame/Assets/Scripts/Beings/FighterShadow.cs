@@ -106,7 +106,7 @@ public class FighterShadow : Fighter
                     }
                 }
             }
-            this.currentAction.ReEvaluateActionValues(this);
+            this.currentAction.ReevaluateActionValues(this);
             StartCoroutine(this.currentAction.Execute());
             //currentAction.Execute();
         }
