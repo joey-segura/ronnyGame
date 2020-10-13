@@ -251,6 +251,7 @@ public class BattleMaster : Kami
         for (int i = 0; i < allFigthers.BeingDatas.Count; i++)
         {
             BeingData being = allFigthers.BeingDatas[i];
+            being.angle = new Quaternion(0, 0, 0, 0);
             gameMaster.InstantiateObject(JsonUtility.ToJson(being));
         }
         for (int i = 0; i < allFighters.BeingDatas.Count; i++)
@@ -284,28 +285,27 @@ public class BattleMaster : Kami
         {
             guiX = (Screen.width / 2) - (Screen.width / 2) / 2;
             guiY = Screen.height / 10;
-            Debug.Log("test");
             Ronny ronny = GetPlayerObject().GetComponent<Ronny>();
-            float healthWidth = (Screen.width / 2) * (ronny.health / ronnyMaxHP);
+            float healthWidth = (Screen.width / 2) * (ronny.health / ronnyMaxHP) / 1.0875f;
             float costWidth = 0;
             Rect holderRect = new Rect(guiX, guiY/2, Screen.width / 2, Screen.height / 25);
             Rect virtueHolderRect = new Rect(guiX, guiY/2, Screen.width / 2, Screen.height / 10);
-            Rect healthRect = new Rect(guiX * 1.1f, guiY/1.13f, healthWidth / 1.0875f, Screen.height / 30);
+            Rect healthRect = new Rect(guiX * 1.1f, guiY/1.13f, healthWidth, Screen.height / 30);
             GUI.DrawTexture(virtueHolderRect, virtueBar, ScaleMode.ScaleToFit);
             //GUI.DrawTexture(virtueHolderRect, virtueBar);
             GUI.DrawTexture(healthRect, healthBar);
-            GUI.DrawTexture(holderRect, holder);
+            //GUI.DrawTexture(holderRect, holder);
 
             if (costDamage > 0 && isFlashing)
             {
                 costWidth = healthWidth * (costDamage / ronny.health);
-                Rect costRect = new Rect(guiX + (healthWidth - costWidth), guiY / 1.13f, costWidth / 1.0875f, Screen.height / 30);
+                Rect costRect = new Rect((guiX * 1.1f) + (healthWidth - costWidth), guiY / 1.13f, costWidth, Screen.height / 30);
                 GUI.DrawTexture(costRect, costBar);
             }
             if (expectedDamageTaken < 0 && isFlashing)
             {
                 float damageWidth = healthWidth / (ronny.health / Mathf.Abs(expectedDamageTaken));
-                Rect damageRect = new Rect(guiX + (healthWidth - damageWidth - costWidth), guiY / 1.13f, damageWidth / 1.0875f, Screen.height / 30);
+                Rect damageRect = new Rect((guiX * 1.1f) + (healthWidth - damageWidth - costWidth), guiY / 1.13f, damageWidth, Screen.height / 30);
                 GUI.DrawTexture(damageRect, damageBar);
             }
         }

@@ -25,7 +25,7 @@ public class FadeSprite : MonoBehaviour
         {
             timeElapsed += Time.deltaTime;
             float valueT = timeElapsed / totalTime;
-            spr.color = new Color(spr.color.r, spr.color.g, spr.color.b, Mathf.Lerp(startingAlphaValue, endingAlphaValue, Mathf.Sqrt(valueT)));
+            spr.color = new Color(spr.color.r, spr.color.g, spr.color.b, Mathf.Lerp(startingAlphaValue, endingAlphaValue, valueT));
             yield return new WaitForEndOfFrame();
         }
         yield return null;

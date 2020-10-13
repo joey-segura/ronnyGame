@@ -158,6 +158,7 @@ public class SceneMaster : Kami
     }
     void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
+        gameMaster.isSceneChanging = true;
         this.LoadClasses();
         if (Instance != this)
         {
@@ -186,7 +187,6 @@ public class SceneMaster : Kami
         {
             if (!scene.name.Contains("Battle"))
             {
-                gameMaster.isSceneChanging = false;
                 if (!LevelLoaded(scene.name))
                 {
                     Debug.Log("Level not loaded before");

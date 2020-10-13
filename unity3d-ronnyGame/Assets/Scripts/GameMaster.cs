@@ -93,6 +93,7 @@ public class GameMaster : Kami
         {
             InstantiateObject(JsonUtility.ToJson(list.BeingDatas[i]));
         }
+        this.isSceneChanging = false;
     }
     public void LoadInitialSceneData(string sceneName)
     {
@@ -106,6 +107,7 @@ public class GameMaster : Kami
             InstantiateObject(line);
         }
         reader.Close();
+        this.isSceneChanging = false;
     }
     private void AddBeingToList(BeingData being)
     {
@@ -265,6 +267,5 @@ public class GameMaster : Kami
         this.isSceneChanging = true;
         this.objectIDCounter = 0;
         this.LoadInitialSceneData("Joey");
-        Debug.LogWarning("Loaded New game but Ritter isn't the first scene that should be loaded! Change this!");
     }
 }
