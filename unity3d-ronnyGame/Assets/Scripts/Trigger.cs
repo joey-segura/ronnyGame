@@ -6,10 +6,10 @@ public class Trigger : MonoBehaviour
 {
     public virtual IEnumerator EndTrigger(GameObject target)
     {
-        yield return null;
+        yield return true;
     }
     public virtual IEnumerator StartTrigger(GameObject target)
     {
-        yield return null;
+        yield return true;
     }
 }

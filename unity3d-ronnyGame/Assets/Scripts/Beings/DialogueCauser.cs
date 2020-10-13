@@ -117,6 +117,7 @@ public class DialogueCauser : Being
             yield return true;
         } else
         {
+            Debug.Log("test");
             ronny = player.GetComponent<Ronny>();
             ronny.ToggleMovementAndCamera();
             this.ToggleCanvas();
