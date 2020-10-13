@@ -73,7 +73,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: 09582b56ef5381847bb9b7997481de76, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 0ae80abdd35cda14ca4ad6c474ebc4e1, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -94,7 +94,7 @@ Animator:
   m_GameObject: {fileID: 1925195081837711785}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: a5c5aabfed3b13248b620d01960b7629, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -123,9 +123,9 @@ MonoBehaviour:
   beingData: 
   canvas: {fileID: 0}
   health: 0
-  damage: 0
   damageMultiplier: 1
   defenseMultiplier: 1
+  damage: 0
   isStunned: 0
   isPoisoned: 0
   party: []
