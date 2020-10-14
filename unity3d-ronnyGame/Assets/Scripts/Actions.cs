@@ -733,7 +733,7 @@ public class WeakAttack : FighterAction
     public WeakAttack (int _duration, int _effectDuration , int _weakValue, Animation _animation)
     {
         this.name = "Weak Attack";
-        this.description = $"Weaken targets attack by {_weakValue} for {_effectDuration} turns";
+        this.description = $"Minus targets attack by {_weakValue} for {_effectDuration} turns";
         this.duration = _duration;
         this.effectDuration = _effectDuration;
         this.weakValue = _weakValue;

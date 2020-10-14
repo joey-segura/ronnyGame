@@ -26,7 +26,9 @@ public class DialogueCauser : Being
         foreach (string message in messages)
         {
             SetHeadImage(message);
-            char[] chars = message.ToCharArray();
+            int index = message.IndexOf(":") + 2; //accounting for the space where : occurs and the space following it
+            string txt = message.Substring(index, message.Length - index); 
+            char[] chars = txt.ToCharArray();
             text.text = string.Empty;
             chatSpeed = 1f; //default value
             for (int i = 0; i < chars.Length; i++)

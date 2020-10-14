@@ -247,12 +247,12 @@ public class Vulnerable : Effect
 }
 public class Weak : Effect
 {
-    public float multiplier;
-    public Weak(int _duration, float _multiplier)
+    public int value;
+    public Weak(int _duration, int _value)
     {
         this.name = "Weak";
         this.duration = _duration;
-        this.multiplier = _multiplier;
+        this.value = _value;
     }
     public override void Affliction(Fighter fighter)
     {
@@ -260,12 +260,12 @@ public class Weak : Effect
         if (key == -1) // don't add another onHitEffect if we already have a key assigned
         {
             this.key = this.GenerateValidKeyForEffects(fighter);
-            fighter.damageMultiplier = fighter.damageMultiplier / this.multiplier;
+            fighter.damage -= this.value;
         }
     }
     public override void Cleanse(Fighter fighter)
     {
-        fighter.damageMultiplier = fighter.damageMultiplier * this.multiplier;
+        fighter.damage += this.value;
     }
 }
 

@@ -288,12 +288,17 @@ public class BattleMaster : Kami
             Ronny ronny = GetPlayerObject().GetComponent<Ronny>();
             float healthWidth = (Screen.width / 2) * (ronny.health / ronnyMaxHP) / 1.0875f;
             float costWidth = 0;
-            Rect holderRect = new Rect(guiX, guiY/2, Screen.width / 2, Screen.height / 25);
+            //Rect holderRect = new Rect(guiX, guiY/2, Screen.width / 2, Screen.height / 25);
             Rect virtueHolderRect = new Rect(guiX, guiY/2, Screen.width / 2, Screen.height / 10);
             Rect healthRect = new Rect(guiX * 1.1f, guiY/1.13f, healthWidth, Screen.height / 30);
+            float increment = virtueHolderRect.width / 20;
+            int index = 0;
+            float offset = increment * .40f;
+            Rect testRect = new Rect(guiX + (increment * index) + offset, (healthRect.y / 2 + offset) / 1.25f, increment, Screen.height / 20);
             GUI.DrawTexture(virtueHolderRect, virtueBar, ScaleMode.ScaleToFit);
             //GUI.DrawTexture(virtueHolderRect, virtueBar);
             GUI.DrawTexture(healthRect, healthBar);
+            GUI.DrawTexture(testRect, healthBar);
             //GUI.DrawTexture(holderRect, holder);
 
             if (costDamage > 0 && isFlashing)
