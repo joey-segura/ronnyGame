@@ -76,14 +76,33 @@ public class CloudGenerator : MonoBehaviour
     }
     public GameObject SpawnCloud(bool initial, int ID)
     {
-        Vector3 pos;
+        Vector3 pos = new Vector3(0,0,0);
         if (initial)
         {
-            float xVariance = xDif * Random.value;
-            float zVariance = zDif * Random.value;
-            float yVariance = yDif * Random.value;
-
-            pos = new Vector3(xMin + xVariance, yMin + yVariance, zMin + zVariance);
+            
+            bool valid = false;
+            int failcheck = 0;
+            while (!valid)
+            {
+                float xVariance = xDif * Random.value;
+                float zVariance = zDif * Random.value;
+                float yVariance = yDif * Random.value;
+                pos = new Vector3(xMin + xVariance, yMin + yVariance, zMin + zVariance);
+                valid = true;
+                for (int i = 0; i < clouds.Length; i++)
+                {
+                    if (clouds[i] != null && Vector3.Distance(clouds[i].transform.position, pos) < 15) {
+                        valid = false;
+                        break;
+                    }
+                }
+                failcheck++;
+                if (failcheck > 100)
+                {
+                    Debug.Log("fuck");
+                    valid = true;
+                }
+            }
         } else
         {
             if (startingBound.magnitude != Mathf.Sqrt(1))
@@ -112,7 +131,8 @@ public class CloudGenerator : MonoBehaviour
             if (startingBound.x == 1)
             {
                 pos.x = xMax;
-            } else
+            }
+            else
             {
                 float variance = xDif * Random.value;
                 pos.x = xMin + variance;
@@ -135,6 +155,7 @@ public class CloudGenerator : MonoBehaviour
                 float variance = zDif * Random.value;
                 pos.z = zMin + variance;
             }
+            
         }
         GameObject cloud = null;
         
