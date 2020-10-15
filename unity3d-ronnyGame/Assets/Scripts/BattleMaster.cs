@@ -25,7 +25,7 @@ public class BattleMaster : Kami
     public Text virtue, virtueExpectation, action;
     public Image abilityKeys;
     public Texture holder, healthBar, damageBar, costBar, virtueBar;
-    public float expectedDamageTaken, costDamage;
+    public float expectedDamageTaken, costDamage, expectedVirtueGain;
     private bool isFlashing = false;
     private float ronnyMaxHP = 0, guiX, guiY;
     private int virtueValue = 0, virtueMax = 0;
@@ -273,6 +273,7 @@ public class BattleMaster : Kami
         {
             intentions = new List<FighterAction>();
             intentions = this.GetIntentions();
+            expectedVirtueGain = 0;
             virtueExpectation.text = "0";
             expectedDamageTaken = 0;
             costDamage = 0;
@@ -286,31 +287,56 @@ public class BattleMaster : Kami
             guiX = (Screen.width / 2) - (Screen.width / 2) / 2;
             guiY = Screen.height / 10;
             Ronny ronny = GetPlayerObject().GetComponent<Ronny>();
-            float healthWidth = (Screen.width / 2) * (ronny.health / ronnyMaxHP) / 1.0875f;
+            float healthWidth = (Screen.width / 2) * (ronny.health / ronnyMaxHP) / 1.085f;
             float costWidth = 0;
             //Rect holderRect = new Rect(guiX, guiY/2, Screen.width / 2, Screen.height / 25);
             Rect virtueHolderRect = new Rect(guiX, guiY/2, Screen.width / 2, Screen.height / 10);
-            Rect healthRect = new Rect(guiX * 1.1f, guiY/1.13f, healthWidth, Screen.height / 30);
+            Rect healthRect = new Rect(guiX * 1.0965f, guiY / .965f, healthWidth, Screen.height / 90);
             float increment = virtueHolderRect.width / 20;
-            int index = 0;
-            float offset = increment * .40f;
-            Rect testRect = new Rect(guiX + (increment * index) + offset, (healthRect.y / 2 + offset) / 1.25f, increment, Screen.height / 20);
+            int index = this.virtueValue;
+            float offset = increment * .4f;
+            int maxVirt = this.virtueMax;
+            Rect maxVirtueRect = new Rect(guiX * 1.035f + (maxVirt * (Screen.width / 41.45f)), guiY / 1.365f, Screen.width / 42f, Screen.height / 42);
+            //Rect testRect = new Rect(guiX + (increment * index) + offset, (healthRect.y / 1.8f + offset), increment / 1.17f, Screen.height / 40);
+            /*for (int i = 0; i < 20; i++)
+            {
+                if (i % 2 == 0)
+                {
+                    Rect rect = new Rect(guiX * 1.035f + (i * (Screen.width / 41.45f)), guiY / 1.365f, Screen.width / 42f, Screen.height / 42);
+                    GUI.DrawTexture(rect, healthBar);
+                }
+            }*/
+            
+            GUI.DrawTexture(maxVirtueRect, damageBar);
+            for (int i = 0; i < index; i++)
+            {
+                Rect rect = new Rect(guiX * 1.035f + (i * (Screen.width / 41.45f)), guiY / 1.365f, Screen.width / 42f, Screen.height / 42);
+                GUI.DrawTexture(rect, healthBar);
+            }
+            if (isFlashing && expectedVirtueGain != 0)
+            {
+                for (int i = virtueValue; i < (virtueValue + expectedVirtueGain); i++)
+                {
+                    Rect rect = new Rect(guiX * 1.035f + (i * (Screen.width / 41.45f)), guiY / 1.365f, Screen.width / 42f, Screen.height / 42);
+                    GUI.DrawTexture(rect, costBar);
+                }
+            }
             GUI.DrawTexture(virtueHolderRect, virtueBar, ScaleMode.ScaleToFit);
             //GUI.DrawTexture(virtueHolderRect, virtueBar);
             GUI.DrawTexture(healthRect, healthBar);
-            GUI.DrawTexture(testRect, healthBar);
+            
             //GUI.DrawTexture(holderRect, holder);
 
             if (costDamage > 0 && isFlashing)
             {
                 costWidth = healthWidth * (costDamage / ronny.health);
-                Rect costRect = new Rect((guiX * 1.1f) + (healthWidth - costWidth), guiY / 1.13f, costWidth, Screen.height / 30);
+                Rect costRect = new Rect((guiX * 1.1f) + (healthWidth - costWidth), healthRect.y, costWidth, healthRect.height);
                 GUI.DrawTexture(costRect, costBar);
             }
             if (expectedDamageTaken < 0 && isFlashing)
             {
                 float damageWidth = healthWidth / (ronny.health / Mathf.Abs(expectedDamageTaken));
-                Rect damageRect = new Rect((guiX * 1.1f) + (healthWidth - damageWidth - costWidth), guiY / 1.13f, damageWidth, Screen.height / 30);
+                Rect damageRect = new Rect((guiX * 1.1f) + (healthWidth - damageWidth - costWidth), healthRect.y, damageWidth, healthRect.height);
                 GUI.DrawTexture(damageRect, damageBar);
             }
         }
@@ -346,7 +372,7 @@ public class BattleMaster : Kami
         this.turnCounter++;
         DestroyAllShadows();
         //ronny.ToggleCanvas();
-        ronny.StartCoroutine("BattleMove");
+        ronny.StartCoroutine(ronny.BattleMove());
         this.PlayAnimation(action.animation);
         yield return new WaitForSeconds(action.duration);
         CoroutineWithData cd = new CoroutineWithData(this, this.ProcessAction(action));
@@ -355,10 +381,10 @@ public class BattleMaster : Kami
             yield return new WaitForEndOfFrame();
         }
         ronny.AddToHealth(action.GetCost() * -1, ronny);
-        ronny.StartCoroutine("MoveToBattlePosition");
+        ronny.StartCoroutine(ronny.MoveToBattlePosition()); ;
         costDamage = 0;
         turn = false;
-        StartCoroutine("ProcessAIActions");
+        StartCoroutine(ProcessAIActions());
     }
     public IEnumerator ProcessAction(FighterAction action)
     {

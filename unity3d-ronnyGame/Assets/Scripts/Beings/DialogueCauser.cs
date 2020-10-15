@@ -36,10 +36,10 @@ public class DialogueCauser : Being
                 text.text += chars[i];
                 if (!char.IsWhiteSpace(chars[i]))
                 {
-                    yield return new WaitForSeconds(.1f / chatSpeed);
+                    yield return new WaitForSeconds(.05f / chatSpeed);
                 } else
                 {
-                    yield return new WaitForSeconds(.5f / chatSpeed);
+                    yield return new WaitForSeconds(.125f / chatSpeed);
                 }
             }
             bool wait = false;
@@ -164,9 +164,17 @@ public class DialogueCauser : Being
     {
         Camera cam = Camera.main;
         Vector3 destination = new Vector3(0, 7, -12.38f);
+        float timeElapsed = 0;
         while (cam.transform.localPosition != destination)
         {
-            cam.transform.localPosition = Vector3.MoveTowards(cam.transform.localPosition, destination, .0125f);
+            cam.transform.localPosition = Vector3.MoveTowards(cam.transform.localPosition, destination, .05f);
+            timeElapsed += Time.deltaTime;
+            if (timeElapsed > 5)
+            {
+                Debug.LogError("took longer than 5 seconds to move the camera back");
+                cam.transform.localPosition = destination;
+                break;
+            }
             yield return new WaitForEndOfFrame();
         }
         yield return true;

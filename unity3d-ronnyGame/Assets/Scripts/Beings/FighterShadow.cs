@@ -29,11 +29,12 @@ public class FighterShadow : Fighter
     }
     public override void DeathCheck(GameObject causer)
     {
-        if (health < 0 && !dead)
+        if (health <= 0 && !dead)
         {
             if (causer.gameObject.name.Contains("Joey") || causer.gameObject.name.Contains("Ritter")) // ugly but sensical solution
             {
                 BattleMaster battleMasterScript = this.GetComponentInParent<BattleMaster>();
+                battleMasterScript.expectedVirtueGain = Mathf.FloorToInt(Mathf.Abs(health));
                 battleMasterScript.virtueExpectation.text = $"Expected Gain: {Mathf.FloorToInt(Mathf.Abs(health))}";
             }
             dead = true;

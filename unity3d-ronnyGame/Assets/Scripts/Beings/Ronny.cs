@@ -149,22 +149,25 @@ public class Ronny : Human
     }
     private void SetNewAction(FighterAction action)
     {
-        if (this.currentAction != null && !action.IsActionAOE())
+        if (this.currentAction != null)
         {
             if (this.currentAction.targets != null)
             {
-                if (!action.IsValidAction(TargetRelationToSelf(this.currentAction.targets[0])))
+                for (int i = 0; i < this.currentAction.targets.Length; i++)
                 {
-                    for (int i = 0; i < this.currentAction.targets.Length; i++)
+                    if (!action.IsValidAction(TargetRelationToSelf(this.currentAction.targets[i])))
                     {
                         this.currentAction.targets[i].GetComponent<SpriteOutline>().enabled = false;
                     }
-                } else
-                {
-                    action.targets = this.currentAction.targets;
+                    else
+                    {
+                        this.currentAction.targets[i].GetComponent<SpriteOutline>().enabled = true;
+                    }
                 }
-            } 
+                action.targets = this.currentAction.targets;
+            }
         }
+        
         action.originator = this.gameObject;
         this.currentAction = action;
 
