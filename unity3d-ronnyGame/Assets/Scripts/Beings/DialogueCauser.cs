@@ -61,7 +61,13 @@ public class DialogueCauser : Being
     {
         if (trigger && target)
         {
-            StartCoroutine(trigger.EndTrigger(target));
+            CoroutineWithData cd2 = new CoroutineWithData(this, trigger.EndTrigger(target));
+            while (!cd2.finished)
+            {
+                yield return new WaitForEndOfFrame();
+            }
+
+            //StartCoroutine(trigger.EndTrigger(target));
             CoroutineWithData cd = new CoroutineWithData(this, MoveCameraBack(ronny.transform.position));
             while (!cd.finished)
             {
@@ -163,19 +169,25 @@ public class DialogueCauser : Being
     public IEnumerator MoveCameraBack(Vector3 ronnyPos)
     {
         Camera cam = Camera.main;
-        Vector3 destination = new Vector3(0, 7, -12.38f);
-        float timeElapsed = 0;
-        while (cam.transform.localPosition != destination)
+        if (!cam.transform.IsChildOf(gameMasterScript.GetPlayerGameObject().transform))
         {
-            cam.transform.localPosition = Vector3.MoveTowards(cam.transform.localPosition, destination, .05f);
-            timeElapsed += Time.deltaTime;
-            if (timeElapsed > 5)
+            yield return true;
+        } else
+        {
+            Vector3 destination = new Vector3(0, 7, -12.38f);
+            float timeElapsed = 0;
+            while (cam.transform.localPosition != destination)
             {
-                Debug.LogError("took longer than 5 seconds to move the camera back");
-                cam.transform.localPosition = destination;
-                break;
+                cam.transform.localPosition = Vector3.MoveTowards(cam.transform.localPosition, destination, .05f);
+                timeElapsed += Time.deltaTime;
+                if (timeElapsed > 5)
+                {
+                    Debug.LogError("took longer than 5 seconds to move the camera back");
+                    cam.transform.localPosition = destination;
+                    break;
+                }
+                yield return new WaitForEndOfFrame();
             }
-            yield return new WaitForEndOfFrame();
         }
         yield return true;
     }

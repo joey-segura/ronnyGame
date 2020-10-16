@@ -739,7 +739,7 @@ public class WeakAttack : FighterAction
         this.weakValue = _weakValue;
         this.animation = _animation;
         this.targetCount = 1;
-        this.validTargets = new string[] { "Foe" };
+        this.validTargets = new string[] { "Foe", "Friend" };
         this.IMAGEPATH = "UI/UI_debuff";
     }
     public override FighterAction Clone()

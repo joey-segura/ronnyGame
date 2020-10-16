@@ -99,16 +99,19 @@ public class FighterShadow : Fighter
         {
             for (int i = 0; i < this.currentAction.targets.Length; i++)
             {
-                for (int j = 0; j < this.currentAction.targets[i].transform.childCount; j++)
-                {
-                    if (this.currentAction.targets[i].transform.GetChild(j).name.Contains("Shadow"))
+                //if (this.currentAction.targets[i] != null)
+                //{
+                    for (int j = 0; j < this.currentAction.targets[i].transform.childCount; j++)
                     {
-                        this.currentAction.targets[i] = this.currentAction.targets[i].transform.GetChild(j).gameObject;
+                        if (this.currentAction.targets[i].transform.GetChild(j).name.Contains("Shadow"))
+                        {
+                            this.currentAction.targets[i] = this.currentAction.targets[i].transform.GetChild(j).gameObject;
+                        }
                     }
-                }
+                //}
             }
             this.currentAction.ReevaluateActionValues(this);
-            StartCoroutine(this.currentAction.Execute());
+            this.StartCoroutine(this.currentAction.Execute());
             //currentAction.Execute();
         }
     }

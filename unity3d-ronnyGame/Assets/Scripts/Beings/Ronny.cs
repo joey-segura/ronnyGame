@@ -48,6 +48,9 @@ public class Ronny : Human
             {
                 this.target = hit.collider.gameObject;
             }
+        } else
+        {
+            this.target = null;
         }
         return this.target;
     }
@@ -100,7 +103,7 @@ public class Ronny : Human
         //this.actionList.Add(new CommandToBlock(3, null));
         //this.actionList.Add(new Attack(3, this.damage * this.damageMultiplier, null));
         this.actionList.Add(new Heal(3, 5, null));
-        this.actionList.Add(new WeakAttack(3, 3, 2, null));
+        this.actionList.Add(new WeakAttack(3, 3, 1, null));
         this.actionList.Add(new BolsterDefense(3, 3, 2, null));
         this.actionList.Add(new Taunt(3, null));
         //this.actionList.Add(new BuffAttack(3, 3, 5f, null));
@@ -149,27 +152,35 @@ public class Ronny : Human
     }
     private void SetNewAction(FighterAction action)
     {
-        if (this.currentAction != null)
+        if (this.currentAction != null && this.currentAction.targets != null)
         {
-            if (this.currentAction.targets != null)
+            for (int i = 0; i < this.currentAction.targets.Length; i++)
             {
-                for (int i = 0; i < this.currentAction.targets.Length; i++)
-                {
-                    if (!action.IsValidAction(TargetRelationToSelf(this.currentAction.targets[i])))
-                    {
-                        this.currentAction.targets[i].GetComponent<SpriteOutline>().enabled = false;
-                    }
-                    else
-                    {
-                        this.currentAction.targets[i].GetComponent<SpriteOutline>().enabled = true;
-                    }
-                }
-                action.targets = this.currentAction.targets;
+                this.currentAction.targets[i].GetComponent<SpriteOutline>().enabled = false;
             }
         }
-        
+
+        if (!action.IsActionAOE() && turnTarget != null)
+        {
+            if (action.IsValidAction(TargetRelationToSelf(turnTarget)))
+            {
+                action.targets = new GameObject[] { turnTarget };
+            } else
+            {
+                action.targets = null;
+            }
+        } else
+        {
+            //action.targets = action.GetAOETargets();
+        }
+        if (action.targets != null && action.targets[0] != null)
+        {
+            SetActionTargets(action.targets);
+        }
+
         action.originator = this.gameObject;
         this.currentAction = action;
+        
 
         BattleMaster battleMaster = this.transform.GetComponentInParent<BattleMaster>();
         battleMaster.SetActionText(action);
@@ -196,6 +207,8 @@ public class Ronny : Human
         }
         else if (this.currentAction == null)
         {
+            //FighterAction heal = this.actionList[0];
+            //heal.targets = new GameObject[] { this.gameObject };
             this.SetNewAction(this.actionList[0]);
         }
         
@@ -207,6 +220,7 @@ public class Ronny : Human
             GameObject newTarget = this.ChooseTarget(allFighters);
             if (newTarget != null)
             {
+                turnTarget = newTarget;
                 string relation = this.TargetRelationToSelf(newTarget);
                 if (this.currentAction.IsValidAction(relation) && (this.currentAction.targets == null || this.currentAction.targets[0] != newTarget)) //we can access the first area because we know it only has 1 member (if/else proves this)
                 {

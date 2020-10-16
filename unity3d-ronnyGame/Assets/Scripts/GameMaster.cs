@@ -36,8 +36,8 @@ public class GameMaster : Kami
     public int objectIDCounter;
 
     private string sceneJsonData;
-    private string LEVELDATAPATH = "Assets/Resources/Level_Data/";
-    private string PREFABPATH = "Assets/Resources/Prefabs/";
+    private string LEVELDATAPATH = "Level_Data/";
+    private string PREFABPATH = "Prefabs/";
 
     private void Start()
     {
@@ -97,16 +97,14 @@ public class GameMaster : Kami
     }
     public void LoadInitialSceneData(string sceneName)
     {
-        string path = $"{LEVELDATAPATH}{sceneName}.txt";
 
-        //Read the text directly from the test.txt file
-        StreamReader reader = new StreamReader(path);
-        string line;
-        while ((line = reader.ReadLine()) != null)
+        var file = Resources.Load<TextAsset>($"{LEVELDATAPATH}{sceneName}");
+
+        string[] lines = file.text.Split('\n');
+        foreach (string line in lines)
         {
             InstantiateObject(line);
         }
-        reader.Close();
         this.isSceneChanging = false;
     }
     private void AddBeingToList(BeingData being)

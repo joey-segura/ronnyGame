@@ -94,7 +94,7 @@ public class Fighter : Being
         }
         while (this.transform.position != newPos)
         {
-            this.transform.position = Vector3.MoveTowards(this.transform.position, newPos, .1f);
+            this.transform.position = Vector3.MoveTowards(this.transform.position, newPos, 15 * Time.deltaTime);
             yield return new WaitForEndOfFrame();
         }
         yield return true;
@@ -103,7 +103,7 @@ public class Fighter : Being
     {
         while (this.transform.position != battlePosition)
         {
-            this.transform.position = Vector3.MoveTowards(this.transform.position, this.battlePosition, .1f);
+            this.transform.position = Vector3.MoveTowards(this.transform.position, this.battlePosition, 15 * Time.deltaTime);
             yield return new WaitForEndOfFrame();
         }
         yield return true;
@@ -286,13 +286,13 @@ public class Fighter : Being
                 shadow = GetShadow();
                 if (shadow && !shadow.playing)
                 {
-                    StartCoroutine(shadow.PlayAnimations());
+                    shadow.StartCoroutine(shadow.PlayAnimations());
                 }
                 if (shadow)
                 {
                     string targName = shadow.currentAction.targets[0].name;
                     targName = targName.Remove(targName.IndexOf("("));
-                    GUI.Box(rect, $"Character Name: {name}\n HP: {health}\n Action name: {shadow.currentAction.name}\n Targets name: {targName}\n Value: {shadow.currentAction.GetValue()}");
+                    GUI.Box(rect, $"Character Name: {name}\n HP: {health}\n Action name: {shadow.currentAction.name}\n Targets name: {targName}\n Value: {shadow.currentAction.GetValue()}\n Defense Mult: {shadow.defenseMultiplier}");
                 }
                 else
                 {

@@ -9,7 +9,7 @@ public class MainMenuMaster : MonoBehaviour
     public Button newGame, loadGame, options, quit;
     public GameObject Kami;
     private SceneMaster sceneMaster;
-    protected static string KamiDataPath = "Assets/Resources/Kami/Kami_Data.txt";
+    protected static string KamiDataPath = "/Resources/Kami/Kami_Data.txt";
     void Awake()
     {
         Kami = GameObject.Find("Kami");
@@ -21,13 +21,21 @@ public class MainMenuMaster : MonoBehaviour
     }
     void NewGame()
     {
-        Debug.LogWarning("New Game currently set to Ritter scene when we plan on having Joeys dungeon first");
-        File.WriteAllText(KamiDataPath, string.Empty);
+        if (!Directory.Exists(Application.dataPath + KamiDataPath) && !File.Exists(Application.dataPath + KamiDataPath))
+        {
+            Directory.CreateDirectory(Application.dataPath + "/Resources/Kami");
+        }
+        File.Create(Application.dataPath + KamiDataPath).Close();
         sceneMaster.ChangeScene("Opening_Cinematic");
     }
     void LoadGame()
     {
-        StreamReader reader = new StreamReader(KamiDataPath);
+        if (!File.Exists(Application.dataPath + KamiDataPath))
+        {
+            Debug.LogWarning("No file found");
+            return;
+        }
+        StreamReader reader = new StreamReader(Application.dataPath + KamiDataPath);
         if (reader.Peek() != -1)
         {
             DataMasterJson data = JsonUtility.FromJson<DataMasterJson>(reader.ReadLine());

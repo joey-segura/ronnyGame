@@ -151,7 +151,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cam: {fileID: 0}
-  camera: {fileID: 0}
+  vidPlayer: {fileID: 0}
+  Kami: {fileID: 0}
 --- !u!4 &892006349
 Transform:
   m_ObjectHideFlags: 0
@@ -350,7 +351,7 @@ VideoPlayer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1592547328}
   m_Enabled: 1
-  m_VideoClip: {fileID: 32900000, guid: 9dc22449595a1174e94f7efc0c176ca5, type: 3}
+  m_VideoClip: {fileID: 32900000, guid: 05e104e253bf4554a9ec086ceb84a194, type: 3}
   m_TargetCameraAlpha: 1
   m_TargetCamera3DLayout: 0
   m_TargetCamera: {fileID: 1592547330}

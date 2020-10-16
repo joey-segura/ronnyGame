@@ -91,17 +91,17 @@ public class BattleMaster : Kami
     }
     private static int CompareShadowsByTag(FighterShadow x, FighterShadow y)
     {
-        if (x.CompareTag("Party"))
+        if (y.gameObject.tag == "Party")
+        {
+            return -1;
+        }
+        else if (y.gameObject.tag == "Player")
         {
             return 1;
         }
-        else if (y.CompareTag(x.tag))
-        {
-            return 0;
-        }
         else
         {
-            return -1;
+            return 0;
         }
     }
     private void DestroyAllFighters()
@@ -410,24 +410,30 @@ public class BattleMaster : Kami
                 fighter.TickEffects();
                 if (fighter != null && fighter.currentAction != null)
                 {
-                    FighterAction action = fighter.currentAction; //gets current action instead of playing intention in case ronny influences it
-                    Debug.Log($"{action.originator.name}'s turn!");
-                    CoroutineWithData move = new CoroutineWithData(this, fighter.MoveToBattleTarget(action));
-                    while (!move.finished)
+                    if (fighter.currentAction.targets[0] == null)
                     {
-                        yield return new WaitForEndOfFrame();
-                    }
-                    this.PlayAnimation(action.animation);
-                    yield return new WaitForSeconds(action.duration);
-                    fighter.RecalculateActions();
-                    action = fighter.currentAction;
-                    StartCoroutine("ProcessAction", action);
-                    CoroutineWithData moveBack = new CoroutineWithData(this, fighter.MoveToBattlePosition());
-                    while (!moveBack.finished)
+                        break;
+                    } else
                     {
-                        yield return new WaitForEndOfFrame();
+                        FighterAction action = fighter.currentAction; //gets current action instead of playing intention in case ronny influences it
+                        Debug.Log($"{action.originator.name}'s turn!");
+                        CoroutineWithData move = new CoroutineWithData(this, fighter.MoveToBattleTarget(action));
+                        while (!move.finished)
+                        {
+                            yield return new WaitForEndOfFrame();
+                        }
+                        this.PlayAnimation(action.animation);
+                        yield return new WaitForSeconds(action.duration);
+                        fighter.RecalculateActions();
+                        action = fighter.currentAction;
+                        StartCoroutine("ProcessAction", action);
+                        CoroutineWithData moveBack = new CoroutineWithData(this, fighter.MoveToBattlePosition());
+                        while (!moveBack.finished)
+                        {
+                            yield return new WaitForEndOfFrame();
+                        }
+                        yield return new WaitForSeconds(1);
                     }
-                    yield return new WaitForSeconds(1);
                 }
             }
         }
@@ -499,6 +505,7 @@ public class BattleMaster : Kami
 
         DestroyAllShadows();
         expectedDamageTaken = 0;
+        expectedVirtueGain = 0;
         shadows = new GameObject[allFighters.BeingDatas.Count];
         FighterShadow[] shadowScripts = new FighterShadow[allFighters.BeingDatas.Count];
         for (int i = 0; i < allFighters.BeingDatas.Count; i++)

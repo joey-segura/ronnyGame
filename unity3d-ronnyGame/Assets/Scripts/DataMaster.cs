@@ -36,7 +36,7 @@ public class DataMaster : Kami
 {
     private bool loadFromFile;
     public string levelName;
-    private static string KamiDataPath = "Assets/Resources/Kami/Kami_Data.txt";
+    private static string KamiDataPath = "/Resources/Kami/Kami_Data.txt";
     public void Save()
     {
         if (sceneMaster.GetCurrentSceneName() == "Main_Menu")
@@ -49,8 +49,11 @@ public class DataMaster : Kami
         gameMaster.UpdateAllBeingsInList();
         string gameMasterData = gameMaster.GetMasterData();
         string sceneMasterData = sceneMaster.GetMasterData();
-        File.WriteAllText(KamiDataPath, string.Empty);
-        StreamWriter streamWriter = new StreamWriter(KamiDataPath);
+        if (!Directory.Exists(Application.dataPath + KamiDataPath) && !File.Exists(Application.dataPath + KamiDataPath))
+        {
+            File.CreateText(Application.dataPath + KamiDataPath);
+        }
+        StreamWriter streamWriter = new StreamWriter(Application.dataPath + KamiDataPath);
         streamWriter.WriteLine(dataMasterData);
         streamWriter.WriteLine(gameMasterData);
         streamWriter.WriteLine(sceneMasterData);
@@ -59,7 +62,12 @@ public class DataMaster : Kami
     }
     public void LoadDataFromFile()
     {
-        StreamReader reader = new StreamReader(KamiDataPath);
+        if (!File.Exists(Application.dataPath + KamiDataPath))
+        {
+            Debug.LogError("No File Found");
+            return;
+        }
+        StreamReader reader = new StreamReader(Application.dataPath + KamiDataPath);
         DataMasterJson dataMasterJson = JsonUtility.FromJson<DataMasterJson>(reader.ReadLine());
         GameMasterJson gameMasterJson = JsonUtility.FromJson<GameMasterJson>(reader.ReadLine());
         SceneMasterJson sceneMasterJson = JsonUtility.FromJson<SceneMasterJson>(reader.ReadLine());
@@ -73,7 +81,12 @@ public class DataMaster : Kami
     }
     public string GetMasterJson(string name)
     {
-        StreamReader reader = new StreamReader(KamiDataPath);
+        if (!File.Exists(Application.dataPath + KamiDataPath))
+        {
+            Debug.LogError("No File Found");
+            return null;
+        }
+        StreamReader reader = new StreamReader(Application.dataPath + KamiDataPath);
         string dataMaster = reader.ReadLine();
         string gameMaster = reader.ReadLine();
         string sceneMaster = reader.ReadLine();

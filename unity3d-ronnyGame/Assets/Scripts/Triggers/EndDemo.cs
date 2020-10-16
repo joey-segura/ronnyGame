@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class EndDemo : Trigger
 {
@@ -13,8 +14,10 @@ public class EndDemo : Trigger
         ronnyScript.StartCoroutine(ronnyScript.MoveToBattlePosition());
         ronny.GetComponent<Animator>().SetBool("Moving", true);
         Camera.main.transform.SetParent(ronny.transform.parent);
-        self.gameMasterScript.RemoveBeingFromList(self.ID);
-        self.DestroyBeing();
+        yield return new WaitForSeconds(4);
+        SceneManager.LoadScene("Demo_End");
+        //self.gameMasterScript.RemoveBeingFromList(self.ID);
+        //self.DestroyBeing();
         yield return true;
     }
     public override IEnumerator StartTrigger(GameObject target)
