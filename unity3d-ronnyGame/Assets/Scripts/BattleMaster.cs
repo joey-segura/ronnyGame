@@ -76,6 +76,13 @@ public class BattleMaster : Kami
         }
         this.virtueMax = Mathf.RoundToInt(virt);
     }
+    public void CleanseAllFighters()
+    {
+        for (int i = 0; i < allFighters.BeingDatas.Count; i++)
+        {
+            allFighters.BeingDatas[i].gameObject.GetComponent<Fighter>().RemoveAllEffects();
+        }
+    }
     private static int CompareActionsByOriginatorTag(FighterAction x, FighterAction y)
     {
         if (x.originator.CompareTag("Party"))
@@ -130,6 +137,7 @@ public class BattleMaster : Kami
             //play victory animations and ui and stuff
             Debug.Log("Victory!");
             yield return new WaitForSeconds(1);
+            CleanseAllFighters();
             SubmitVirtueToAlly(this.virtueValue);
             //victory UI (rewards?) wait on click to load back to normal scene but till now we will just force our way back
             //yield return StartCoroutine(WaitForKeyDown());

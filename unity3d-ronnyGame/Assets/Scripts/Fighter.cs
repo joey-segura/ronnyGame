@@ -258,6 +258,7 @@ public class Fighter : Being
     {
         this.isBattle = true;
         this.battlePosition = this.transform.position;
+        this.RemoveAllEffects();
         return; // this is for any enemy script to disable their movement script once the battle starts
     }
     private void OnGUI()
@@ -325,6 +326,10 @@ public class Fighter : Being
     }
     public void RemoveAllEffects()//strong cleanse (used after a battle is concluded?)
     {
+        foreach (Effect effect in currentEffects.Values)
+        {
+            effect.Cleanse(this);
+        }
         this.currentEffects = new Dictionary<int, Effect>();
     }
     public void RemoveAllEffectsOfName(string name)//might be used by actions to cleanse debuffs etc
