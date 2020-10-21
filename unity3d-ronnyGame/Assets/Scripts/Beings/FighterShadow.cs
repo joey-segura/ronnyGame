@@ -12,12 +12,15 @@ public class FighterShadow : Fighter
 
     public override void AddToHealth(int change, Fighter causer)
     {
+        bool heal = Mathf.Sign(change) > 0 ? true : false;
         foreach (Func<int, Fighter, int> a in onHitEffects.Values)
         {
             change = a.Invoke(change, causer);
         }
-        //Debug.Log($"{this.name} has {onHitEffects.Count} onhit functions");
-        change = Mathf.FloorToInt(change / this.defenseMultiplier);
+        if (!heal)
+        {
+            change = change + this.defense;
+        }
         Debug.Log($"{this.name}'s health just got changed by {change} by {causer.name}");
         if (this.gameObject.tag == "Player")
         {
@@ -49,7 +52,7 @@ public class FighterShadow : Fighter
         battlePosition = this.transform.position;
         damage = source.damage;
         damageMultiplier = source.damageMultiplier;
-        defenseMultiplier = source.defenseMultiplier;
+        defense = source.defense;
         health = source.health;
         isStunned = source.isStunned;
         currentEffects = new Dictionary<int, Effect>(source.currentEffects);

@@ -50,13 +50,13 @@ public class BattleMaster : Kami
         if (partyMembers.BeingDatas.Count == 0)
         {
             isBattle = false;
-            StartCoroutine("EndBattle", false);
+            StartCoroutine(EndBattle(false));
             //load save data because you died
             return;
         } else if (enemyMembers.BeingDatas.Count == 0)
         {
             isBattle = false;
-            StartCoroutine("EndBattle", true);
+            StartCoroutine(EndBattle(true));
             //maybe track rewards? anyways load the initial scene
             return;
         } else

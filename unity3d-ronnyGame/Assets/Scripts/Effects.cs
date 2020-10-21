@@ -85,12 +85,12 @@ public class Block : Effect
 }
 public class Bolster : Effect
 {
-    public float multiplier;
-    public Bolster(int _duration, float _multiplier)
+    public int additive;
+    public Bolster(int _duration, int _additive)
     {
         this.name = "Bolster";
         this.duration = _duration;
-        this.multiplier = _multiplier;
+        this.additive = _additive;
     }
     public override void Affliction(Fighter fighter)
     {
@@ -98,12 +98,12 @@ public class Bolster : Effect
         if (key == -1) // don't add another onHitEffect if we already have a key assigned
         {
             this.key = this.GenerateValidKeyForEffects(fighter);
-            fighter.defenseMultiplier = fighter.defenseMultiplier * this.multiplier;
+            fighter.defense = fighter.defense + this.additive;
         }
     }
     public override void Cleanse(Fighter fighter)
     {
-        fighter.defenseMultiplier = fighter.defenseMultiplier / this.multiplier;
+        fighter.defense = fighter.defense - this.additive;
     }
 }
 public class Poison : Effect
@@ -224,12 +224,12 @@ public class Thorns : Effect
 }
 public class Vulnerable : Effect
 {
-    public float multiplier;
-    public Vulnerable(int _duration, float _multiplier)
+    public int additive;
+    public Vulnerable(int _duration, int _additive)
     {
         this.name = "Vulnerable";
         this.duration = _duration;
-        this.multiplier = _multiplier;
+        this.additive = _additive;
     }
     public override void Affliction(Fighter fighter)
     {
@@ -237,12 +237,12 @@ public class Vulnerable : Effect
         if (key == -1) // don't add another onHitEffect if we already have a key assigned
         {
             this.key = this.GenerateValidKeyForEffects(fighter);
-            fighter.defenseMultiplier = fighter.defenseMultiplier / this.multiplier;
+            fighter.defense = fighter.defense - this.additive;
         }
     }
     public override void Cleanse(Fighter fighter)
     {
-        fighter.defenseMultiplier = fighter.defenseMultiplier * this.multiplier;
+        fighter.defense = fighter.defense + this.additive;
     }
 }
 public class Weak : Effect

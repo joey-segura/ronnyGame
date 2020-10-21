@@ -288,8 +288,8 @@ public class BlockAll : FighterAction
 }
 public class BolsterDefense : FighterAction
 {
-    public float buffValue;
-    public BolsterDefense(int _duration, int _effectDuration , float _buffValue, Animation _animation)
+    public int buffValue;
+    public BolsterDefense(int _duration, int _effectDuration , int _buffValue, Animation _animation)
     {
         this.name = "Bolster Defense";
         this.description = $"Increase defence by {_buffValue} for {_effectDuration} turns";

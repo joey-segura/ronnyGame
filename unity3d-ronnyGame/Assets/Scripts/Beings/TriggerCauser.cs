@@ -105,22 +105,39 @@ public class TriggerCauser : Being
         Camera cam = Camera.main;
         Vector3 midPoint = (y - x);
         Vector3 destination = cam.transform.position + new Vector3(midPoint.x / 2, 0, midPoint.z / 2);
-        while (cam.transform.position != destination)
+        while (Vector3.Distance(cam.transform.position, destination) > .5f)
         {
             cam.transform.position = Vector3.MoveTowards(cam.transform.position, destination, .1f);
             yield return new WaitForEndOfFrame();
         }
+        cam.transform.position = destination;
         //yield return new WaitForSeconds(2);
         yield return true;
     }
     public IEnumerator MoveCameraBack()
     {
         Camera cam = Camera.main;
-        Vector3 destination = new Vector3(0, 7, -12.38f);
-        while (cam.transform.localPosition != destination)
+        if (!cam.transform.IsChildOf(gameMasterScript.GetPlayerGameObject().transform))
         {
-            cam.transform.localPosition = Vector3.MoveTowards(cam.transform.localPosition, destination, .0125f);
-            yield return new WaitForEndOfFrame();
+            yield return true;
+        }
+        else
+        {
+            Vector3 destination = new Vector3(0, 7, -12.38f);
+            float timeElapsed = 0;
+            while (Vector3.Distance(cam.transform.localPosition, destination) > .25f)
+            {
+                cam.transform.localPosition = Vector3.MoveTowards(cam.transform.localPosition, destination, .05f);
+                timeElapsed += Time.deltaTime;
+                if (timeElapsed > 5)
+                {
+                    Debug.LogError("took longer than 5 seconds to move the camera back");
+                    cam.transform.localPosition = destination;
+                    break;
+                }
+                yield return new WaitForEndOfFrame();
+            }
+            cam.transform.localPosition = destination;
         }
         yield return true;
     }

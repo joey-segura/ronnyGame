@@ -9,8 +9,8 @@ using UnityEngine.UI;
 
 public class Fighter : Being
 {
-    public float health, damageMultiplier = 1, defenseMultiplier = 1;
-    public int damage;
+    public float health, damageMultiplier = 1;
+    public int damage, defense = 0;
     public bool isStunned = false, isPoisoned = false;
     protected bool isBattle = false;
 
@@ -31,12 +31,16 @@ public class Fighter : Being
     }
     public virtual void AddToHealth(int change, Fighter causer)
     {
+        bool heal = Mathf.Sign(change) > 0 ? true : false;
         foreach(Func<int, Fighter, int> a in onHitEffects.Values)
         {
             change = a.Invoke(change, causer);
         }
         Debug.Log($"{this.name} has {onHitEffects.Count} onhit functions");
-        change = Mathf.FloorToInt(change / this.defenseMultiplier);
+        if (!heal)
+        {
+            change = change + this.defense;
+        }
         Debug.Log($"{this.name}'s health just got changed by {change}");
         if (change < 0)
         {
@@ -263,46 +267,32 @@ public class Fighter : Being
     }
     private void OnGUI()
     {
-        if (isBattle && this.isHovering)
+        if (isBattle)
         {
-            Vector3 mouse = Input.mousePosition;
             Rect rect;
-            if (mouse.x > (Screen.width / 2))
+            Vector3 fighterScreenPos = Camera.main.WorldToScreenPoint(battlePosition);
+            float width = 150, height = 100;
+            if (fighterScreenPos.x > (Screen.width / 2))
             {
-                rect = new Rect(mouse.x - 200, (Screen.height - mouse.y + 10), 200, 100);
+                
+                rect = new Rect(Screen.width - (Screen.width / 5), (Screen.height - fighterScreenPos.y) - height / 2, width, height);
             }
             else
             {
-                rect = new Rect(mouse.x + 10, (Screen.height - mouse.y + 10), 200, 100);
+                rect = new Rect((Screen.width / 5) - width, (Screen.height - fighterScreenPos.y) - height / 2, width, height);
             }
 
-            string names = null;
             FighterShadow shadow = null;
             if (currentAction != null && currentAction.targets != null)
             {
-                for (int i = 0; i < currentAction.targetCount; i++)
-                {
-                    names += $"{currentAction.targets[i].name} ";
-                }
                 shadow = GetShadow();
-                if (shadow && !shadow.playing)
+                if (shadow && !shadow.playing && isHovering)
                 {
                     shadow.StartCoroutine(shadow.PlayAnimations());
                 }
-                if (shadow)
-                {
-                    string targName = shadow.currentAction.targets[0].name;
-                    targName = targName.Remove(targName.IndexOf("("));
-                    GUI.Box(rect, $"Character Name: {name}\n HP: {health}\n Action name: {shadow.currentAction.name}\n Targets name: {targName}\n Value: {shadow.currentAction.GetValue()}\n Defense Mult: {shadow.defenseMultiplier}");
-                }
-                else
-                {
-                    GUI.Box(rect, $"Character Name: {name}\n HP: {health}\n Action name: {currentAction.name}\n Targets name: {names}\n Value: {currentAction.GetValue()}");
-                }
-            } else
-            {
-                GUI.Box(rect, $"Character Name: {name}\n HP: {health}");
             }
+            
+            GUI.Box(rect, $"Name: {name}\n HP: {health}\n Damage: {damage}\n Defense: {defense}\n Action: {(this.currentAction != null ? this.currentAction.name : string.Empty)}");
         }
     }
     public virtual void RecalculateActions()
