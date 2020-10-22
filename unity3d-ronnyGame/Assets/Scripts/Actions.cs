@@ -13,7 +13,6 @@ public abstract class FighterAction
     public string name { get; set; }
     public string description;
     public string[] validTargets;
-    protected string IMAGEPATH;
 
     public abstract FighterAction Clone();
     public GameObject[] GetAOETargets(ListBeingData list)
@@ -60,10 +59,6 @@ public abstract class FighterAction
     public virtual float GetEffectValue()
     {
         return 0;
-    }
-    public string GetImagePath()
-    {
-        return this.IMAGEPATH;
     }
     public abstract float GetValue();
     public VisualEffectMaster GetVisualEffectMaster()
@@ -151,7 +146,6 @@ public class Attack : FighterAction
         this.animation = _animation;
         this.targetCount = 1;
         this.validTargets = new string[] { "Foe" };
-        this.IMAGEPATH = "UI/UI_attack";
     }
     public override FighterAction Clone()
     {
@@ -190,7 +184,6 @@ public class AttackAndBuff : FighterAction
         this.animation = _animation;
         this.targetCount = 1;
         this.validTargets = new string[] { "Foe" };
-        this.IMAGEPATH = "UI/UI_Attack";
     }
     public override FighterAction Clone()
     {
@@ -233,7 +226,6 @@ public class ApplyThorns : FighterAction
         this.animation = _animation;
         this.targetCount = 1;
         this.validTargets = new string[] { "Friend", "Self" };
-        this.IMAGEPATH = "UI/UI_buff";
     }
     public override FighterAction Clone()
     {
@@ -265,7 +257,6 @@ public class BlockAll : FighterAction
         this.animation = _animation;
         this.targetCount = 1;
         this.validTargets = new string[] { "Friend", "Self" };
-        this.IMAGEPATH = "UI/UI_buff";
     }
     public override FighterAction Clone()
     {
@@ -299,7 +290,6 @@ public class BolsterDefense : FighterAction
         this.animation = _animation;
         this.targetCount = 1;
         this.validTargets = new string[] { "Friend" };
-        this.IMAGEPATH = "UI/UI_buff";
     }
     public override FighterAction Clone()
     {
@@ -341,7 +331,6 @@ public class BuffAttack : FighterAction
         this.animation = _animation;
         this.targetCount = 1;
         this.validTargets = new string[] { "Friend" };
-        this.IMAGEPATH = "UI/UI_buff";
     }
     public override FighterAction Clone()
     {
@@ -382,7 +371,6 @@ public class Cleave : FighterAction
         this.animation = _animation;
         this.targetCount = 0; // all enemies
         this.validTargets = new string[] { "Foe" };
-        this.IMAGEPATH = "UI/UI_Attack";
     }
     public override FighterAction Clone()
     {
@@ -416,7 +404,6 @@ public class CommandToAttack : FighterAction
         this.animation = _animation;
         this.targetCount = 1;
         this.validTargets = new string[] { "Friend", "Foe" };
-        this.IMAGEPATH = "UI/UI_Attack";
     }
     public override FighterAction Clone()
     {
@@ -470,7 +457,6 @@ public class CommandToBlock : FighterAction
         this.animation = _animation;
         this.targetCount = 1;
         this.validTargets = new string[] { "Friend", "Foe" };
-        this.IMAGEPATH = "UI/UI_Attack";
     }
     public override FighterAction Clone()
     {
@@ -510,7 +496,6 @@ public class DoubleAttack : FighterAction
         this.animation = _animation;
         this.targetCount = 1;
         this.validTargets = new string[] { "Foe" };
-        this.IMAGEPATH = "UI/UI_attack";
     }
     public override FighterAction Clone()
     {
@@ -548,7 +533,6 @@ public class Heal : FighterAction
         this.animation = _animation;
         this.targetCount = 1;
         this.validTargets = new string[] { "Friend", "Self", "Foe"};
-        this.IMAGEPATH = "UI/UI_buff";
     }
     public override FighterAction Clone()
     {
@@ -589,13 +573,11 @@ public class PoisonAttack : FighterAction
         this.animation = _animation;
         this.targetCount = 1;
         this.validTargets = new string[] { "Foe" };
-        this.IMAGEPATH = "UI/UI_attack";
     }
     public override FighterAction Clone()
     {
         return new PoisonAttack(this.duration, this.effectDuration, this.poisonDamage, this.animation);
     }
-
     public override IEnumerator Execute()
     {
         Effect poison = new Poison(this.effectDuration, this.poisonDamage, this.originator);
@@ -622,7 +604,6 @@ public class Taunt : FighterAction
         this.animation = _animation;
         this.targetCount = 1;
         this.validTargets = new string[] { "Foe" };
-        this.IMAGEPATH = "UI/UI_Attack";
     }
     public override FighterAction Clone()
     {
@@ -661,7 +642,6 @@ public class TauntAll :FighterAction
         this.animation = _animation;
         this.targetCount = 0;
         this.validTargets = new string[] { "Foe" };
-        this.IMAGEPATH = "UI/UI_Attack";
     }
     public override FighterAction Clone()
     {
@@ -702,7 +682,6 @@ public class VulnerableAttack : FighterAction
         this.animation = _animation;
         this.targetCount = 1;
         this.validTargets = new string[] { "Foe" };
-        this.IMAGEPATH = "UI/UI_debuff";
     }
     public override FighterAction Clone()
     {
@@ -740,7 +719,6 @@ public class WeakAttack : FighterAction
         this.animation = _animation;
         this.targetCount = 1;
         this.validTargets = new string[] { "Foe", "Friend" };
-        this.IMAGEPATH = "UI/UI_debuff";
     }
     public override FighterAction Clone()
     {

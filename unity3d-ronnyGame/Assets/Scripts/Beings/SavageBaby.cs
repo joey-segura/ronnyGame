@@ -22,7 +22,7 @@ public class SavageBaby : Enemy
             }
             else
             {
-                this.health = 4;
+                this.health = 8;
                 this.virtueValue = 2;
             }
             this.ID = being.objectID;

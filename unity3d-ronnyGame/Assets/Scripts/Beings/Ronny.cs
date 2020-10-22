@@ -56,7 +56,7 @@ public class Ronny : Human
     }
     public override void InitializeBattle()
     {
-        this.health = 60; //default value
+        this.health = 30; //default value
         playerMovement pm = this.GetComponent<playerMovement>();
         pm.anim.SetFloat("Facing", 1);
         pm.enabled = false;
@@ -102,13 +102,13 @@ public class Ronny : Human
         //this.actionList.Add(new BlockAll(3, null));
         //this.actionList.Add(new CommandToBlock(3, null));
         //this.actionList.Add(new Attack(3, this.damage * this.damageMultiplier, null));
-        this.actionList.Add(new Heal(3, 5, null));
+        //this.actionList.Add(new Heal(3, 5, null));
+        this.actionList.Add(new CommandToAttack(3, null));
         this.actionList.Add(new WeakAttack(3, 3, 1, null));
         this.actionList.Add(new BolsterDefense(3, 3, 2, null));
         this.actionList.Add(new Taunt(3, null));
         //this.actionList.Add(new BuffAttack(3, 3, 5f, null));
         //this.actionList.Add(new Cleave(3, this.damage * this.damageMultiplier, null));
-        //this.actionList.Add(new CommandToAttack(3, null));
         //this.actionList.Add(new TauntAll(3, null));
         //base.RecalculateActions();
     }
@@ -191,7 +191,7 @@ public class Ronny : Human
     {
         if (Input.GetKeyDown(KeyCode.W))
         {
-            SetNewAction(GetActionByName("Heal"));
+            SetNewAction(GetActionByName("Command to Attack"));
         }
         else if (Input.GetKeyDown(KeyCode.D))
         {
