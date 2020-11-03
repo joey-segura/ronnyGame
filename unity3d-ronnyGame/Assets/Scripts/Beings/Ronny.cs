@@ -19,6 +19,11 @@ public class Ronny : Human
 
     public Material Outline;
 
+    public override void AddToHealth(int change, Fighter causer)
+    {
+        if (causer != this) battleMasterScript.expectedDamageTaken -= change;
+        base.AddToHealth(change, causer);
+    }
     public IEnumerator BattleMove()
     {
         float distance = .25f;
@@ -103,7 +108,7 @@ public class Ronny : Human
         //this.actionList.Add(new CommandToBlock(3, null));
         //this.actionList.Add(new Attack(3, this.damage * this.damageMultiplier, null));
         //this.actionList.Add(new Heal(3, 5, null));
-        this.actionList.Add(new CommandToAttack(3, null));
+        this.actionList.Add(new CommandToAttack(0, null));
         this.actionList.Add(new WeakAttack(3, 3, 1, null));
         this.actionList.Add(new BolsterDefense(3, 3, 2, null));
         this.actionList.Add(new Taunt(3, null));

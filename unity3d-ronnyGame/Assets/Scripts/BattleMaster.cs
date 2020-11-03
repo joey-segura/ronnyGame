@@ -34,16 +34,32 @@ public class BattleMaster : Kami
     {
         allFighters.BeingDatas.Add(being);
     }
-    private void AssignScenes()
-    {
-        worldSceneName = sceneMaster.GetCurrentSceneName();
-        battleSceneName = sceneMaster.GetBattleSceneName(worldSceneName);
-    }
+   
     public void AddToVirtue(int virt)
     {
         Debug.Log($"Local virtue changed by {virt}");
         this.virtueValue += virt;
-        UpdateVirtueText(this.virtueValue);
+        if (virtueValue >= virtueMax)
+        {
+            AllyVirtueFail();
+        }
+        UpdateVirtueText();
+    }
+    public void AllyVirtueFail()
+    {
+        GameObject ally = GetAllyObject();
+        if (ally.name == "Joey")
+        {
+            ally.GetComponent<Joey>().RageMode();
+        } else if (ally.name == "Ritter")
+        {
+
+        }
+    }
+    private void AssignScenes()
+    {
+        worldSceneName = sceneMaster.GetCurrentSceneName();
+        battleSceneName = sceneMaster.GetBattleSceneName(worldSceneName);
     }
     public void BattleEndCheck()
     {
@@ -163,9 +179,11 @@ public class BattleMaster : Kami
     }
     public IEnumerator FlashingBars ()
     {
-        isFlashing = !isFlashing;
-        yield return new WaitForSeconds(.5f);
-        StartCoroutine(FlashingBars());
+        while(isFlashing != !isFlashing)
+        {
+            yield return new WaitForSecondsRealtime(.5f);
+            isFlashing = !isFlashing;
+        }
     }
     public void FillMembers(ListBeingData ronnyParty, ListBeingData enemyParty)
     {
@@ -235,7 +253,7 @@ public class BattleMaster : Kami
         this.MoveCameraTo(-0.05f, 7.23f, -13.4f, 30.066f, 0, 0);
         this.CalculateVirtueMax();
         StartCoroutine(FlashingBars());
-        this.UpdateVirtueText(0);
+        this.UpdateVirtueText();
         this.canvas.gameObject.SetActive(true);
         this.isBattle = true;
         if (gameMaster.firstBattle)
@@ -434,7 +452,11 @@ public class BattleMaster : Kami
                         yield return new WaitForSeconds(action.duration);
                         fighter.RecalculateActions();
                         action = fighter.currentAction;
-                        StartCoroutine("ProcessAction", action);
+                        CoroutineWithData act = new CoroutineWithData(this, this.ProcessAction(action));
+                        while (!act.finished)
+                        {
+                            yield return new WaitForEndOfFrame();
+                        }
                         CoroutineWithData moveBack = new CoroutineWithData(this, fighter.MoveToBattlePosition());
                         while (!moveBack.finished)
                         {
@@ -563,7 +585,7 @@ public class BattleMaster : Kami
         }
         this.FillMembers(allyMembers, foeMembers);
     }
-    public void UpdateVirtueText(int increase)
+    public void UpdateVirtueText()
     {
         this.virtue.text = $"Virtue expectation: {virtueValue}/{this.virtueMax}";
     }

@@ -63,15 +63,6 @@ public class Joey : Human
             case 2:
                 health = 30;
                 break;
-            case 3:
-                health = 40;
-                break;
-            case 4:
-                health = 50;
-                break;
-            case 5:
-                health = 60;
-                break;
         }
         this.follow = false;
         base.InitializeBattle();
@@ -106,6 +97,12 @@ public class Joey : Human
     {
         this.member = true;
         this.follow = true;
+    }
+    public void RageMode()
+    {
+        this.damage += 5;
+        SpriteRenderer spr = this.GetComponent<SpriteRenderer>();
+        spr.color = Color.red;
     }
     public override void RecalculateActions()
     {

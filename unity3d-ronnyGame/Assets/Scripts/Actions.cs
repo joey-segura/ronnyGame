@@ -283,13 +283,13 @@ public class BolsterDefense : FighterAction
     public BolsterDefense(int _duration, int _effectDuration , int _buffValue, Animation _animation)
     {
         this.name = "Bolster Defense";
-        this.description = $"Increase defence by {_buffValue} for {_effectDuration} turns";
+        this.description = $"Increase defense by {_buffValue} for {_effectDuration} turns";
         this.duration = _duration;
         this.effectDuration = _effectDuration;
         this.buffValue = _buffValue;
         this.animation = _animation;
         this.targetCount = 1;
-        this.validTargets = new string[] { "Friend" };
+        this.validTargets = new string[] { "Friend" , "Foe"};
     }
     public override FighterAction Clone()
     {

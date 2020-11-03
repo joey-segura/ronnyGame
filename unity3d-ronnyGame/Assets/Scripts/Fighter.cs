@@ -91,6 +91,9 @@ public class Fighter : Being
         if (action.IsActionAOE())
         {
             newPos = new Vector3(this.transform.position.x + distance, this.transform.position.y, this.transform.position.z);
+        } else if (action.targets[0] == this.gameObject)
+        {
+            newPos = battlePosition;
         }
         else
         {
@@ -105,7 +108,7 @@ public class Fighter : Being
     }
     public IEnumerator MoveToBattlePosition()
     {
-        while (this.transform.position != battlePosition)
+        while (this != null && this.transform.position != battlePosition )
         {
             this.transform.position = Vector3.MoveTowards(this.transform.position, this.battlePosition, 15 * Time.deltaTime);
             yield return new WaitForEndOfFrame();
