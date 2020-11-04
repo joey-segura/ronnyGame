@@ -68,6 +68,10 @@ public class DataMaster : Kami
             return;
         }
         StreamReader reader = new StreamReader(Application.dataPath + KamiDataPath);
+        if (reader.Peek() != 1)
+        {
+            Debug.Log("Empty file");
+        }
         DataMasterJson dataMasterJson = JsonUtility.FromJson<DataMasterJson>(reader.ReadLine());
         GameMasterJson gameMasterJson = JsonUtility.FromJson<GameMasterJson>(reader.ReadLine());
         SceneMasterJson sceneMasterJson = JsonUtility.FromJson<SceneMasterJson>(reader.ReadLine());

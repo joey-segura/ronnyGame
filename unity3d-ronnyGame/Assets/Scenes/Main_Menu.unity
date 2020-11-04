@@ -815,6 +815,21 @@ PrefabInstance:
       propertyPath: m_LocalPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8644737224330319270, guid: 1003651dfbc448b4ab35e2c9bb801972,
+        type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8644737224330319270, guid: 1003651dfbc448b4ab35e2c9bb801972,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8644737224330319270, guid: 1003651dfbc448b4ab35e2c9bb801972,
+        type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8644737224378418360, guid: 1003651dfbc448b4ab35e2c9bb801972,
         type: 3}
       propertyPath: m_Name
@@ -894,6 +909,11 @@ PrefabInstance:
         type: 3}
       propertyPath: firstBattle
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8644737224626032624, guid: 1003651dfbc448b4ab35e2c9bb801972,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8644737224964557637, guid: 1003651dfbc448b4ab35e2c9bb801972,
         type: 3}

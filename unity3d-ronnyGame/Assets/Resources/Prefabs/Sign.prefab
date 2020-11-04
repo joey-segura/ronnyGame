@@ -103,7 +103,7 @@ RectTransform:
   m_GameObject: {fileID: 4438829424568836331}
   m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 5, y: 5, z: 5}
   m_Children:
   - {fileID: 7167802838123124961}
   m_Father: {fileID: 8153113359297954815}
@@ -111,7 +111,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 0, y: 6}
   m_SizeDelta: {x: 1, y: 1}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!223 &4624382804723795518
@@ -428,9 +428,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3044864e6a20ca64ca1b5c41eaeff32c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Kami: {fileID: 0}
+  gameMasterScript: {fileID: 0}
+  battleMasterScript: {fileID: 0}
   interactable: 0
+  isStaticToCamera: 0
   beingData: 
-  multiplier: 0
+  canvas: {fileID: 0}
   message: []
 --- !u!65 &-1150363717971648211
 BoxCollider:

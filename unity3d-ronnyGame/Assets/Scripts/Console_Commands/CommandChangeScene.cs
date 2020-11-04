@@ -16,16 +16,25 @@ namespace Console
             Description = "This is used to have unity change scenes";
             Help = "This command requires one parameter (string) of the scene name";
             Name = "ChangeScene";
-            Command = "changescene";
+            Command = "scene";
 
             AddThisToList();
         }
         public override string ExecuteCommand(string[] args)
         {
             SceneMaster sceneMaster = Kami.GetComponent<SceneMaster>();
-            if (args[0] != string.Empty && args[1] != null)
+            
+            for (int i = 0; i < sceneMaster.SCENENAMES.Length; i++)
             {
-                sceneMaster.ChangeScene(args[1]);
+                if (sceneMaster.SCENENAMES[i] == args[1])
+                {
+                    if (args[0] != string.Empty && args[1] != null)
+                    {
+                        sceneMaster.consoleOverride = true;
+                        sceneMaster.ChangeScene(args[1]);
+                    }
+                    return $"Success!";
+                }
             }
             return $"Scene failed or Scene name {args[1]} was invalid";
         }

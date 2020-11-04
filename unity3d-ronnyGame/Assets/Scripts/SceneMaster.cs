@@ -8,12 +8,12 @@ public class SceneMaster : Kami
     public static SceneMaster Instance { get; private set; }
     public bool[] levelLoaded = { false, false, false, false, false, false, false, false, false, false, false, false };
 
-    public static string[] SCENENAMES = { "exploreScene", "rotation_testScene", "Battle_Scene_Test", "Ritter", "Ritter_Battle", "Joey", "Joey_Battle", "Main_Menu", "Opening_Cinematic" };
+    public string[] SCENENAMES = { "exploreScene", "rotation_testScene", "Battle_Scene_Test", "Ritter", "Ritter_Battle", "Joey", "Joey_Battle", "Main_Menu", "Opening_Cinematic" };
 
     public string currentSceneName;
     public string lastSceneName = "Main_Menu";
 
-    public bool newGame = false;
+    public bool newGame = false, consoleOverride = false;
 
     private new void Awake()
     {
@@ -37,7 +37,6 @@ public class SceneMaster : Kami
         }
         bool validSceneName = false;
         int count = SCENENAMES.Length;
-
         for (int i = 0; i < count; i++)
         {
             if (SCENENAMES[i] == sceneName)
@@ -158,7 +157,10 @@ public class SceneMaster : Kami
     }
     void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        gameMaster.isSceneChanging = true;
+        if (gameMaster != null)
+        {
+            gameMaster.isSceneChanging = true;
+        }
         this.LoadClasses();
         if (Instance != this)
         {
@@ -170,8 +172,7 @@ public class SceneMaster : Kami
         {
             return;
         }
-
-        if (lastSceneName == "Main_Menu")
+        if (lastSceneName == "Main_Menu" && !consoleOverride)
         {
             if (this.newGame) // this gets flagged true in MainMenuMaster.cs by calling sceneMaster.NewGame()
             {
@@ -198,6 +199,8 @@ public class SceneMaster : Kami
                     gameMaster.LoadGameMasterSceneData();
                 }
             }
+            if (consoleOverride) Debug.Log("Console Override");
+            consoleOverride = false;
         }
     }
     public bool WasLastSceneBattle()
