@@ -8,7 +8,7 @@ using System.Linq;
 public class BattleMaster : Kami
 {
     private bool turn;
-    public bool isBattle = false;
+    public bool isBattle = false, playingShadows = false;
     private int enemyID { get; set; }
     public int turnCounter;
     public List<FighterAction> intentions = new List<FighterAction>();
@@ -19,6 +19,7 @@ public class BattleMaster : Kami
     private string worldSceneName;
     private string battleSceneName;
     public GameObject[] shadows;
+    public FighterShadow[] shadowScripts;
 
     [SerializeField]
     private Canvas canvas;
@@ -532,12 +533,11 @@ public class BattleMaster : Kami
     public void SimulateBattle()
     {
         this.virtueExpectation.text = "Expected Gain: 0";
-
         DestroyAllShadows();
         expectedDamageTaken = 0;
         expectedVirtueGain = 0;
         shadows = new GameObject[allFighters.BeingDatas.Count];
-        FighterShadow[] shadowScripts = new FighterShadow[allFighters.BeingDatas.Count];
+        shadowScripts = new FighterShadow[allFighters.BeingDatas.Count];
         for (int i = 0; i < allFighters.BeingDatas.Count; i++)
         {
             Vector3 spawnLoc = allFighters.BeingDatas[i].gameObject.transform.position + new Vector3(allFighters.BeingDatas[i].gameObject.transform.position.x > 0 ? -6f : 6f, 0,0);
@@ -556,6 +556,42 @@ public class BattleMaster : Kami
         {
             shadowScripts[i].SimulateAction();
         }
+    }
+    /*public void Update() //this exists soley to test the SimulateShadowActions function
+    {
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            playingShadows = !playingShadows;
+            if (playingShadows)
+            {
+                StartCoroutine(SimulateShadowActions());
+            }
+        }
+    }*/
+    public IEnumerator SimulateShadowActions()
+    {
+        for (int i = 0; i < shadowScripts.Length; i++)
+        {
+            if (shadowScripts[i].currentAction != null && shadowScripts[i].currentAction.targets != null)
+            {
+                Debug.Log(shadowScripts[i].name);
+                CoroutineWithData sim = new CoroutineWithData(shadowScripts[i], shadowScripts[i].PlayAnimations());
+                while (!sim.finished && playingShadows)
+                {
+                    yield return new WaitForEndOfFrame();
+                }
+                if (!playingShadows)
+                {
+                    for (int j = 0; j < shadowScripts.Length; j++) // put everyone back
+                    {
+                        shadowScripts[j].gameObject.transform.position = shadowScripts[j].battlePosition;
+                    }
+                    break;
+                }
+            }
+        }
+        playingShadows = false;
+        yield return true;
     }
     private void SubmitVirtueToAlly(int virtue)
     {

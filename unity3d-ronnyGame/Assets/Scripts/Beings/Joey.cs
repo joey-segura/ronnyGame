@@ -37,7 +37,22 @@ public class Joey : Human
     }
     public override FighterAction TurnAction(ListBeingData allFighters)
     {
-        return base.TurnAction(allFighters);
+        this.RecalculateActions();
+        GameObject target = null;
+        for (int i = 0; i < allFighters.BeingDatas.Count; i++)
+        {
+            if (allFighters.BeingDatas[i].gameObject.tag == "Enemy")
+            {
+                target = allFighters.BeingDatas[i].gameObject;
+                break;
+            }
+        }
+        FighterAction act = this.actionList[0];
+        act.originator = this.gameObject;
+        act.targets = new GameObject[] { target };
+        this.currentAction = act;
+        Debug.Log(act);
+        return act;
     }
     private void FollowRonny()
     {

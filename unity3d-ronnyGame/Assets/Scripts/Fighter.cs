@@ -142,51 +142,6 @@ public class Fighter : Being
             }
         }
     }
-    public virtual FighterAction TurnAction(ListBeingData allFighters)
-    {
-        this.RecalculateActions();
-        FighterAction action = null;
-        string relation = null;
-        bool valid = false;
-        while (!valid)
-        {
-            int actionIndex = UnityEngine.Random.Range(0, this.actionList.Count);
-            action = this.actionList[actionIndex]; //random action for enemy and friendly units
-            action.originator = this.gameObject;
-            if (action.IsActionAOE())
-            {
-                action.targets = action.GetAOETargets(allFighters);
-                this.currentAction = action;
-                valid = true;
-            } else
-            {
-                GameObject target = null;
-                bool validTarget = false;
-                int attempts = 0;
-                while (!validTarget)
-                {
-                    target = this.ChooseTarget(allFighters);
-                    relation = this.TargetRelationToSelf(target);
-                    if (action.IsValidAction(relation))
-                    {
-                        validTarget = true;
-                    }
-                    if (attempts >= 10) //If no target could be found with valid actions (E.G., a buffer type unit who only has buff friendlies has no more teammates left)
-                    {
-                        return null;
-                    }
-                    else
-                    {
-                        attempts++;
-                    }
-                }
-                action.targets = new GameObject[] { target };
-                this.currentAction = action;
-                valid = true;
-            }
-        }
-        return action;
-    }
     public virtual GameObject ChooseTarget(ListBeingData allFighters) //chooses a target at random!
     {
         int targetIndex = UnityEngine.Random.Range(0, allFighters.BeingDatas.Count);
@@ -380,5 +335,51 @@ public class Fighter : Being
         {
             return "Foe";
         }
+    }
+    public virtual FighterAction TurnAction(ListBeingData allFighters)
+    {
+        this.RecalculateActions();
+        FighterAction action = null;
+        string relation = null;
+        bool valid = false;
+        while (!valid)
+        {
+            int actionIndex = UnityEngine.Random.Range(0, this.actionList.Count);
+            action = this.actionList[actionIndex]; //random action for enemy and friendly units
+            action.originator = this.gameObject;
+            if (action.IsActionAOE())
+            {
+                action.targets = action.GetAOETargets(allFighters);
+                this.currentAction = action;
+                valid = true;
+            }
+            else
+            {
+                GameObject target = null;
+                bool validTarget = false;
+                int attempts = 0;
+                while (!validTarget)
+                {
+                    target = this.ChooseTarget(allFighters);
+                    relation = this.TargetRelationToSelf(target);
+                    if (action.IsValidAction(relation))
+                    {
+                        validTarget = true;
+                    }
+                    if (attempts >= 10) //If no target could be found with valid actions (E.G., a buffer type unit who only has buff friendlies has no more teammates left)
+                    {
+                        return null;
+                    }
+                    else
+                    {
+                        attempts++;
+                    }
+                }
+                action.targets = new GameObject[] { target };
+                this.currentAction = action;
+                valid = true;
+            }
+        }
+        return action;
     }
 } 
