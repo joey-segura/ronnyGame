@@ -6,6 +6,10 @@
     <e p="C:\Users\otejp\Documents\GIT\OTE\ronnyGame\unity3d-ronnyGame" t="IncludeRecursive">
       <e p="Assembly-CSharp.csproj" t="IncludeRecursive" />
       <e p="Assets" t="Include">
+        <e p="Materials" t="Include">
+          <e p="Outline.shader" t="Include" />
+          <e p="SpriteOutline.cs" t="Include" />
+        </e>
         <e p="Resources" t="Include">
           <e p="Kami" t="Include">
             <e p="Kami_Data.txt" t="Include" />
@@ -32,6 +36,7 @@
             <e p="Savage.cs" t="Include" />
             <e p="SavageBaby.cs" t="Include" />
             <e p="Sign.cs" t="Include" />
+            <e p="TikiMan.cs" t="Include" />
             <e p="TriggerCauser.cs" t="Include" />
           </e>
           <e p="cameraRotation.cs" t="Include" />
@@ -48,6 +53,7 @@
           <e p="DataMaster.cs" t="Include" />
           <e p="Effects.cs" t="Include" />
           <e p="Enemy.cs" t="Include" />
+          <e p="FadeSprite.cs" t="Include" />
           <e p="Fighter.cs" t="Include" />
           <e p="GameMaster.cs" t="Include" />
           <e p="GameMenuMaster.cs" t="Include" />
@@ -57,12 +63,18 @@
           <e p="MainMenuMaster.cs" t="Include" />
           <e p="playerMovement.cs" t="Include" />
           <e p="Relater.cs" t="Include" />
+          <e p="Scene_Scripts" t="Include">
+            <e p="Cloud.cs" t="Include" />
+            <e p="CloudGenerator.cs" t="Include" />
+            <e p="SceneChange.cs" t="Include" />
+          </e>
           <e p="SceneMaster.cs" t="Include" />
           <e p="SkyboxRoatation.cs" t="Include" />
           <e p="SunCycle.cs" t="Include" />
           <e p="test.txt" t="Include" />
           <e p="Trigger.cs" t="Include" />
           <e p="Triggers" t="Include">
+            <e p="EndDemo.cs" t="Include" />
             <e p="JoeyBurnFence.cs" t="Include" />
             <e p="JoeyJoinParty.cs" t="Include" />
           </e>
