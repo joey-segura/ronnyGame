@@ -31,7 +31,7 @@ public class Savage : Enemy
             {
                 this.speed = 0;
                 this.health = 1;
-                this.damage = 3;
+                this.damage = 2;
                 this.party = null;
                 this.virtueValue = 1;
             }
@@ -61,11 +61,16 @@ public class Savage : Enemy
     {
         this.RecalculateActions();
         GameObject baby = null;
+        GameObject joey = null;
         for (int i = 0; i < allFighters.BeingDatas.Count; i++)
         {
             if (allFighters.BeingDatas[i].gameObject != null && allFighters.BeingDatas[i].gameObject.name.Contains("Baby"))
             {
                 baby = allFighters.BeingDatas[i].gameObject;
+            }
+            if (allFighters.BeingDatas[i].gameObject != null && allFighters.BeingDatas[i].gameObject.name.Contains("Joey"))
+            {
+                joey = allFighters.BeingDatas[i].gameObject;
             }
         }
         if (baby != null)
@@ -77,7 +82,11 @@ public class Savage : Enemy
             return action;
         } else
         {
-            return base.TurnAction(allFighters);
+            FighterAction action = this.actionList.Find(x => x.name == "Attack");
+            action.targets = new GameObject[] { joey };
+            action.originator = this.gameObject;
+            this.currentAction = action;
+            return action;
         }
     }
     public override string UpdateBeingJsonData()

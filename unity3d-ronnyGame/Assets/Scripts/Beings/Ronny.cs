@@ -108,7 +108,7 @@ public class Ronny : Human
         //this.actionList.Add(new CommandToBlock(3, null));
         //this.actionList.Add(new Attack(3, this.damage * this.damageMultiplier, null));
         //this.actionList.Add(new Heal(3, 5, null));
-        this.actionList.Add(new CommandToAttack(0, null));
+        this.actionList.Add(new Mark(1, null));
         this.actionList.Add(new WeakAttack(3, 3, 1, null));
         this.actionList.Add(new BolsterDefense(3, 3, 2, null));
         this.actionList.Add(new Taunt(3, null));
@@ -196,7 +196,7 @@ public class Ronny : Human
     {
         if (Input.GetKeyDown(KeyCode.W))
         {
-            SetNewAction(GetActionByName("Command to Attack"));
+            SetNewAction(GetActionByName("Mark"));
         }
         else if (Input.GetKeyDown(KeyCode.D))
         {

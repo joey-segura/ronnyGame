@@ -234,6 +234,25 @@ public class BattleMaster : Kami
         }
         return player;
     }
+    public GameObject GetShadow(GameObject parent)
+    {
+        GameObject shadow = null;
+        for (int i = 0; i < allFighters.BeingDatas.Count; i++)
+        {
+            if (allFighters.BeingDatas[i].gameObject == parent)
+            {
+                for (int j = 0; j < parent.transform.childCount; j++)
+                {
+                    if (parent.transform.GetChild(j).name.Contains("Shadow"))
+                    {
+                        shadow = parent.transform.GetChild(j).gameObject;
+                        break;
+                    }
+                }
+            }
+        }
+        return shadow;
+    }
     public void InitializeBattle(ListBeingData partyMembers, ListBeingData enemyMembers)
     {
         this.AssignScenes();

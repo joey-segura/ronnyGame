@@ -560,6 +560,54 @@ public class Heal : FighterAction
         return this.healValue;
     }
 }
+public class Mark : FighterAction
+{
+    public GameObject attackTarget;
+    public Mark(int _duration, Animation _animation)
+    {
+        this.name = "Mark";
+        this.description = $"Mark a target for Joey to attack";
+        this.duration = _duration;
+        this.animation = _animation;
+        this.targetCount = 1;
+        this.validTargets = new string[] { "Foe" };
+    }
+    public override FighterAction Clone()
+    {
+        return new Mark(this.duration, this.animation);
+    }
+    public override IEnumerator Execute()
+    {
+        if (!this.originator.name.Contains("Shadow"))
+        {
+            Ronny ronny = this.originator.GetComponent<Ronny>();
+            GameObject joey = ronny.battleMasterScript.GetAllyObject();
+            Fighter fighter = joey.GetComponent<Fighter>();
+            Attack attack = new Attack(3, Mathf.FloorToInt(fighter.damage * fighter.damageMultiplier), null);
+            attack.originator = joey;
+            attack.targets = this.targets;
+            fighter.SetAction(attack);
+        } else
+        {
+            Ronny ronny = this.originator.transform.GetComponentInParent<Ronny>();
+            GameObject joeyShadow = ronny.battleMasterScript.GetShadow(ronny.battleMasterScript.GetAllyObject());
+            Fighter fighter = joeyShadow.GetComponent<Fighter>();
+            Attack attack = new Attack(3, Mathf.FloorToInt(fighter.damage * fighter.damageMultiplier), null);
+            attack.originator = joeyShadow;
+            attack.targets = this.targets;
+            fighter.SetAction(attack);
+        }
+        yield return true;
+    }
+    public override int GetCost()
+    {
+        return 10;
+    }
+    public override float GetValue()
+    {
+        return 0;
+    }
+}
 public class PoisonAttack : FighterAction
 {
     public int poisonDamage;
