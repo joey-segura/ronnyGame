@@ -137,12 +137,12 @@ public class Poison : Effect
 }
 public class Strengthen : Effect
 {
-    public float multiplier;
-    public Strengthen(int _duration, float _multiplier)
+    public int additive;
+    public Strengthen(int _duration, int _additive)
     {
         this.name = "Strengthen";
         this.duration = _duration;
-        this.multiplier = _multiplier;
+        this.additive = _additive;
     }
     public override void Affliction(Fighter fighter)
     {
@@ -150,12 +150,12 @@ public class Strengthen : Effect
         if (key == -1) // don't add another Effect if we already have a key assigned
         {
             this.key = this.GenerateValidKeyForEffects(fighter);
-            fighter.damageMultiplier = fighter.damageMultiplier * this.multiplier;
+            fighter.damage += this.additive;
         }
     }
     public override void Cleanse(Fighter fighter)
     {
-        fighter.damageMultiplier = fighter.damageMultiplier / this.multiplier;
+        fighter.damage -= this.additive;
     }
 }
 public class Stun : Effect

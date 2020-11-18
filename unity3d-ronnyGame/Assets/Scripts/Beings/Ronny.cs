@@ -14,7 +14,7 @@ public class Ronny : Human
 
     //turn data
     public GameObject turnTarget = null;
-    private int index = 0;
+    private int lastActionSelected = 0, wLevel, dLevel, sLevel, aLevel;
     //end turn data
 
     public Material Outline;
@@ -73,7 +73,11 @@ public class Ronny : Human
     {
         this.currentAction = null;
         this.turnTarget = null;
-        this.index = 0;
+        this.lastActionSelected = 0;
+        this.wLevel = 1;
+        this.dLevel = 1;
+        this.sLevel = 1;
+        this.aLevel = 1;
         this.UnhighlightAll();
     }
     public override void InjectData(string jsonData)
@@ -110,9 +114,10 @@ public class Ronny : Human
         //this.actionList.Add(new Heal(3, 5, null));
         this.actionList.Add(new Mark(1, null));
         this.actionList.Add(new WeakAttack(3, 3, 1, null));
-        this.actionList.Add(new BolsterDefense(3, 3, 2, null));
+        this.actionList.Add(new BuffAttack(3, 3, 1, null));
+        this.actionList.Add(new BolsterDefense(3, 3, 1, null));
+        this.actionList.Add(new VulnerableAttack(3, 3, 1, null));
         this.actionList.Add(new Taunt(3, null));
-        //this.actionList.Add(new BuffAttack(3, 3, 5f, null));
         //this.actionList.Add(new Cleave(3, this.damage * this.damageMultiplier, null));
         //this.actionList.Add(new TauntAll(3, null));
         //base.RecalculateActions();
@@ -164,7 +169,6 @@ public class Ronny : Human
                 this.currentAction.targets[i].GetComponent<SpriteOutline>().enabled = false;
             }
         }
-
         if (!action.IsActionAOE() && turnTarget != null)
         {
             if (action.IsValidAction(TargetRelationToSelf(turnTarget)))
@@ -185,7 +189,6 @@ public class Ronny : Human
 
         action.originator = this.gameObject;
         this.currentAction = action;
-        
 
         BattleMaster battleMaster = this.transform.GetComponentInParent<BattleMaster>();
         battleMaster.SetActionText(action);
@@ -196,19 +199,40 @@ public class Ronny : Human
     {
         if (Input.GetKeyDown(KeyCode.W))
         {
+            lastActionSelected = (int)KeyCode.W;
             SetNewAction(GetActionByName("Mark"));
+            currentAction.skillLevel = wLevel;
         }
         else if (Input.GetKeyDown(KeyCode.D))
         {
-            SetNewAction(GetActionByName("Weak Attack"));
+            lastActionSelected = (int)KeyCode.D;
+            if (dLevel > 0)
+            {
+                SetNewAction(GetActionByName("Buff Attack"));
+            } else
+            {
+                SetNewAction(GetActionByName("Weak Attack"));
+            }
+            currentAction.skillLevel = Mathf.Abs(dLevel);
         }
         else if (Input.GetKeyDown(KeyCode.S))
         {
+            lastActionSelected = (int)KeyCode.S;
             SetNewAction(GetActionByName("Taunt"));
+            currentAction.skillLevel = sLevel;
         }
         else if (Input.GetKeyDown(KeyCode.A))
         {
-            SetNewAction(GetActionByName("Bolster Defense"));
+            lastActionSelected = (int)KeyCode.A;
+            if (aLevel > 0)
+            {
+                SetNewAction(GetActionByName("Bolster Defense"));
+            }
+            else
+            {
+                SetNewAction(GetActionByName("Vulnerable Attack"));
+            }
+            currentAction.skillLevel = Mathf.Abs(aLevel);
         }
         else if (this.currentAction == null)
         {
@@ -242,6 +266,94 @@ public class Ronny : Human
         {
             return null;
         }
+    }
+    public void UpdateSkills(bool increase)
+    {
+        RecalculateActions();
+        switch (lastActionSelected)
+        {
+            case (int)KeyCode.W:
+                break;
+            case (int)KeyCode.D:
+                if (increase)
+                {
+                    if (dLevel == -1)
+                    {
+                        dLevel = 1;
+                        SetNewAction(GetActionByName("Buff Attack"));
+                        currentAction.skillLevel = dLevel;
+                        break;
+                    }
+                    if (currentAction.skillLevel < currentAction.levelCap || dLevel < 0)
+                    {
+                        dLevel++;
+                        currentAction.skillLevel = Mathf.Abs(dLevel);
+                    }
+                } else
+                {
+                    if (dLevel == 1)
+                    {
+                        dLevel = -1;
+                        SetNewAction(GetActionByName("Weak Attack"));
+                        currentAction.skillLevel = dLevel;
+                        break;
+                    }
+                    if (currentAction.skillLevel < currentAction.levelCap || dLevel > 0)
+                    {
+                        dLevel--;
+                        currentAction.skillLevel = Mathf.Abs(dLevel);
+                    }
+                }
+                break;
+            case (int)KeyCode.S:
+                break;
+            case (int)KeyCode.A:
+                if (increase)
+                {
+                    if (aLevel == -1)
+                    {
+                        aLevel = 1;
+                        SetNewAction(GetActionByName("Bolster Defense"));
+                        currentAction.skillLevel = aLevel;
+                        break;
+                    }
+                    if (currentAction.skillLevel < currentAction.levelCap || aLevel < 0)
+                    {
+                        aLevel++;
+                        currentAction.skillLevel = Mathf.Abs(aLevel);
+                    }
+                }
+                else
+                {
+                    if (aLevel == 1)
+                    {
+                        aLevel = -1;
+                        SetNewAction(GetActionByName("Vulnerable Attack"));
+                        currentAction.skillLevel = aLevel;
+                        break;
+                    }
+                    if (currentAction.skillLevel < currentAction.levelCap || aLevel > 0)
+                    {
+                        aLevel--;
+                        currentAction.skillLevel = Mathf.Abs(aLevel);
+                    }
+                }
+                break;
+        }
+        currentAction.LevelUpdate();
+        SetNewAction(currentAction);
+        battleMasterScript.SetActionText(currentAction);
+    }
+    public void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.UpArrow))
+        {
+            UpdateSkills(true);
+        } else if (Input.GetKeyDown(KeyCode.DownArrow))
+        {
+            UpdateSkills(false);
+        }
+        base.Update();
     }
     public void ToggleMovementAndCamera()
     {

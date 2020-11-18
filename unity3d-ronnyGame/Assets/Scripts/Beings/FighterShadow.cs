@@ -122,11 +122,4 @@ public class FighterShadow : Fighter
     {
         //StartCoroutine(PlayAnimations());
     }
-    public void Update()
-    {
-        if (name.Contains("Joey"))
-        {
-            Debug.Log(this.currentAction);
-        }
-    }
 }

@@ -7,8 +7,7 @@ public abstract class FighterAction
 {
     public GameObject originator { get; set; }
     public GameObject[] targets { get; set; }
-    public int duration, effectDuration;
-    public int targetCount;
+    public int duration, effectDuration, targetCount, skillLevel = 1, levelCap;
     public Animation animation;
     public string name { get; set; }
     public string description;
@@ -93,11 +92,8 @@ public abstract class FighterAction
             return false;
         }
     }
-    public virtual void ReevaluateActionValues(Fighter self)
-    {
-
-    }
-    
+    public virtual void LevelUpdate(){}
+    public virtual void ReevaluateActionValues(Fighter self){}
 }
 public class CoroutineWithData
 {
@@ -171,9 +167,9 @@ public class Attack : FighterAction
 }
 public class AttackAndBuff : FighterAction
 {
-    public float buffValue;
+    public int buffValue;
     public int damage;
-    public AttackAndBuff(int _duration, int _damage, int _effectDuration, float _buffValue, Animation _animation)
+    public AttackAndBuff(int _duration, int _damage, int _effectDuration, int _buffValue, Animation _animation)
     {
         this.name = "Attack and Buff";
         this.description = $"Attack for {_damage} and buff target for {_buffValue}";
@@ -279,16 +275,19 @@ public class BlockAll : FighterAction
 }
 public class BolsterDefense : FighterAction
 {
-    public int buffValue;
+    public int buffValue, baseValue, baseDuration, cost;
     public BolsterDefense(int _duration, int _effectDuration , int _buffValue, Animation _animation)
     {
         this.name = "Bolster Defense";
         this.description = $"Increase defense by {_buffValue} for {_effectDuration} turns";
         this.duration = _duration;
         this.effectDuration = _effectDuration;
+        this.baseDuration = _effectDuration;
         this.buffValue = _buffValue;
+        this.baseValue = _buffValue;
         this.animation = _animation;
         this.targetCount = 1;
+        this.levelCap = 3;
         this.validTargets = new string[] { "Friend" , "Foe"};
     }
     public override FighterAction Clone()
@@ -307,7 +306,7 @@ public class BolsterDefense : FighterAction
     }
     public override int GetCost()
     {
-        return 10;
+        return cost;
     }
     public override float GetEffectValue()
     {
@@ -317,20 +316,48 @@ public class BolsterDefense : FighterAction
     {
         return this.buffValue;
     }
+    public override void LevelUpdate()
+    {
+        switch (skillLevel)
+        {
+            case 1:
+                name = "Bolster Defense";
+                cost = 6;
+                buffValue = baseValue;
+                break;
+            case 2:
+                name = "Bolster Defense+";
+                cost = 8;
+                buffValue = baseValue + 1;
+                effectDuration = baseDuration;
+                break;
+            case 3:
+                name = "Bolster Defense++";
+                cost = 10;
+                buffValue = baseValue + 2;
+                effectDuration = baseDuration + 1;
+                break;
+        }
+        description = $"Increase defense by {buffValue} for {effectDuration} turns";
+    }
 }
 public class BuffAttack : FighterAction
 {
-    public float buffValue;
-    public BuffAttack(int _duration, int _effectDuration , float _buffValue, Animation _animation)
+    public int buffValue, baseValue, baseDuration, cost;
+    public BuffAttack(int _duration, int _effectDuration , int _buffValue, Animation _animation)
     {
         this.name = "Buff Attack";
         this.description = $"Buff Attack for {_buffValue} for {_effectDuration} turns";
+        this.cost = 6;
         this.duration = _duration;
         this.effectDuration = _effectDuration;
+        this.baseDuration = _effectDuration;
         this.buffValue = _buffValue;
+        this.baseValue = _buffValue;
         this.animation = _animation;
         this.targetCount = 1;
-        this.validTargets = new string[] { "Friend" };
+        this.levelCap = 3;
+        this.validTargets = new string[] { "Foe", "Friend" };
     }
     public override FighterAction Clone()
     {
@@ -352,11 +379,35 @@ public class BuffAttack : FighterAction
     }
     public override int GetCost()
     {
-        return 10;
+        return cost;
     }
     public override float GetValue()
     {
         return this.buffValue;
+    }
+    public override void LevelUpdate()
+    {
+        switch (skillLevel)
+        {
+            case 1:
+                name = "Buff attack";
+                buffValue = baseValue;
+                cost = 6;
+                break;
+            case 2:
+                name = "Buff attack+";
+                buffValue = baseValue + 1;
+                cost = 8;
+                effectDuration = baseDuration;
+                break;
+            case 3:
+                name = "Buff attack++";
+                buffValue = baseValue + 2;
+                cost = 10;
+                effectDuration = baseDuration + 1;
+                break;
+        }
+        this.description = $"Buff attack by {buffValue} for {effectDuration} turns";
     }
 }
 public class Cleave : FighterAction
@@ -578,25 +629,22 @@ public class Mark : FighterAction
     }
     public override IEnumerator Execute()
     {
+        Ronny ronny = null;
+        GameObject joey = null;
         if (!this.originator.name.Contains("Shadow"))
         {
-            Ronny ronny = this.originator.GetComponent<Ronny>();
-            GameObject joey = ronny.battleMasterScript.GetAllyObject();
-            Fighter fighter = joey.GetComponent<Fighter>();
-            Attack attack = new Attack(3, Mathf.FloorToInt(fighter.damage * fighter.damageMultiplier), null);
-            attack.originator = joey;
-            attack.targets = this.targets;
-            fighter.SetAction(attack);
+            ronny = this.originator.GetComponent<Ronny>();
+            joey = ronny.battleMasterScript.GetAllyObject();
         } else
         {
-            Ronny ronny = this.originator.transform.GetComponentInParent<Ronny>();
-            GameObject joeyShadow = ronny.battleMasterScript.GetShadow(ronny.battleMasterScript.GetAllyObject());
-            Fighter fighter = joeyShadow.GetComponent<Fighter>();
-            Attack attack = new Attack(3, Mathf.FloorToInt(fighter.damage * fighter.damageMultiplier), null);
-            attack.originator = joeyShadow;
-            attack.targets = this.targets;
-            fighter.SetAction(attack);
+            ronny = this.originator.transform.GetComponentInParent<Ronny>();
+            joey = ronny.battleMasterScript.GetShadow(ronny.battleMasterScript.GetAllyObject());
         }
+        Fighter fighter = joey.GetComponent<Fighter>();
+        Attack attack = new Attack(3, Mathf.FloorToInt(fighter.damage * fighter.damageMultiplier), null);
+        attack.originator = joey;
+        attack.targets = this.targets;
+        fighter.SetAction(attack);
         yield return true;
     }
     public override int GetCost()
@@ -719,17 +767,20 @@ public class TauntAll :FighterAction
 }
 public class VulnerableAttack : FighterAction
 {
-    public int vulnerableValue;
+    public int vulnerableValue, baseValue, baseDuration, cost;
     public VulnerableAttack(int _duration, int _effectDuration , int _vulnerableValue, Animation _animation)
     {
         this.name = "Vulnerable Attack";
         this.description = $"Lowers targets defense by {_vulnerableValue} for {_effectDuration} turns";
         this.duration = _duration;
         this.effectDuration = _effectDuration;
+        this.baseDuration = _effectDuration;
         this.vulnerableValue = _vulnerableValue;
+        this.baseValue = _vulnerableValue;
         this.animation = _animation;
         this.targetCount = 1;
-        this.validTargets = new string[] { "Foe" };
+        this.levelCap = 3;
+        this.validTargets = new string[] { "Foe", "Friend" };
     }
     public override FighterAction Clone()
     {
@@ -753,19 +804,51 @@ public class VulnerableAttack : FighterAction
     {
         return this.vulnerableValue;
     }
+    public override int GetCost()
+    {
+        return cost;
+    }
+    public override void LevelUpdate()
+    {
+        switch (skillLevel)
+        {
+            case 1:
+                name = "Vulnerable attack";
+                cost = 6;
+                vulnerableValue = baseValue;
+                break;
+            case 2:
+                name = "Vulnerable attack+";
+                cost = 8;
+                vulnerableValue = baseValue + 1;
+                effectDuration = baseDuration;
+                break;
+            case 3:
+                name = "Vulnerable attack++";
+                cost = 10;
+                vulnerableValue = baseValue + 2;
+                effectDuration = baseDuration + 1;
+                break;
+        }
+        description = $"Lowers targets defense by {vulnerableValue} for {effectDuration} turns";
+    }
 }
 public class WeakAttack : FighterAction
 {
-    public int weakValue;
+    public int weakValue, baseValue, baseDuration, cost;
     public WeakAttack (int _duration, int _effectDuration , int _weakValue, Animation _animation)
     {
         this.name = "Weak Attack";
         this.description = $"Minus targets attack by {_weakValue} for {_effectDuration} turns";
+        this.cost = 6;
         this.duration = _duration;
         this.effectDuration = _effectDuration;
         this.weakValue = _weakValue;
+        this.baseValue = _weakValue;
+        this.baseDuration = _effectDuration;
         this.animation = _animation;
         this.targetCount = 1;
+        this.levelCap = 3;
         this.validTargets = new string[] { "Foe", "Friend" };
     }
     public override FighterAction Clone()
@@ -784,7 +867,7 @@ public class WeakAttack : FighterAction
     }
     public override int GetCost()
     {
-        return 7;
+        return cost;
     }
     public override float GetEffectValue()
     {
@@ -793,5 +876,29 @@ public class WeakAttack : FighterAction
     public override float GetValue()
     {
         return this.weakValue;
+    }
+    public override void LevelUpdate()
+    {
+        switch(skillLevel)
+        {
+            case 1:
+                name = "Weak attack";
+                cost = 6;
+                weakValue = baseValue;
+                break;
+            case 2:
+                name = "Weak attack+";
+                cost = 8;
+                weakValue = baseValue + 1;
+                effectDuration = baseDuration;
+                break;
+            case 3:
+                name = "Weak attack++";
+                cost = 10;
+                weakValue = baseValue + 2;
+                effectDuration = baseDuration + 1;
+                break;
+        }
+        this.description = $"Minus targets attack by {weakValue} for {effectDuration} turns";
     }
 }
