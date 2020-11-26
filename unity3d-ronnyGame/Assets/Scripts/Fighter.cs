@@ -120,7 +120,7 @@ public class Fighter : Being
         FighterAction action = null;
         foreach (FighterAction act in actionList)
         {
-            if (act.name == name)
+            if (act.name.Contains(name))
             {
                 action = act;
             }

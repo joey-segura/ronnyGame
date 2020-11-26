@@ -21,7 +21,7 @@ public class FighterShadow : Fighter
         {
             change = change + this.defense;
         }
-        Debug.Log($"{this.name}'s health just got changed by {change} by {causer.name}");
+        //Debug.Log($"{this.name}'s health just got changed by {change} by {causer.name}");
         if (this.gameObject.tag == "Player")
         {
             this.GetComponentInParent<BattleMaster>().expectedDamageTaken += change;

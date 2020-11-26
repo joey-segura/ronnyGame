@@ -436,7 +436,7 @@ public class BattleMaster : Kami
     {
         if (action.targets != null)
         {
-            Debug.Log($"{action.originator.name} just used {action.name} on {action.targets[0].name} for {action.GetValue()} whatever!");
+            Debug.Log($"{action.originator.name} just used {action.name} on {action.targets[0].name}!");
             CoroutineWithData cd = new CoroutineWithData(this, action.Execute());
             while (!cd.finished)
             {
@@ -576,19 +576,18 @@ public class BattleMaster : Kami
             shadowScripts[i].SimulateAction();
         }
     }
-    /*public void Update() //this exists soley to test the SimulateShadowActions function
+    public void Update() //this exists soley to test the SimulateShadowActions function
     {
         if (Input.GetKeyDown(KeyCode.R))
         {
-            playingShadows = !playingShadows;
-            if (playingShadows)
-            {
-                StartCoroutine(SimulateShadowActions());
-            }
+            playingShadows = false;
+            StartCoroutine(SimulateShadowActions());
         }
-    }*/
+    }
     public IEnumerator SimulateShadowActions()
     {
+        SimulateBattle();
+        playingShadows = true;
         for (int i = 0; i < shadowScripts.Length; i++)
         {
             if (shadowScripts[i].currentAction != null && shadowScripts[i].currentAction.targets != null)

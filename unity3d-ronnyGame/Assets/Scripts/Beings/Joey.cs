@@ -51,7 +51,6 @@ public class Joey : Human
         act.originator = this.gameObject;
         act.targets = new GameObject[] { target };
         this.currentAction = act;
-        Debug.Log(act);
         return act;
     }
     private void FollowRonny()

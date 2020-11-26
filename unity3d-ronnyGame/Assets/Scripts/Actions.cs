@@ -59,7 +59,6 @@ public abstract class FighterAction
     {
         return 0;
     }
-    public abstract float GetValue();
     public VisualEffectMaster GetVisualEffectMaster()
     {
         if (this.originator)
@@ -156,10 +155,6 @@ public class Attack : FighterAction
         }
         yield return true;
     }
-    public override float GetValue()
-    {
-        return this.damage;
-    }
     public override void ReevaluateActionValues(Fighter self)
     {
         this.damage = Mathf.FloorToInt(self.damage * self.damageMultiplier);
@@ -200,10 +195,6 @@ public class AttackAndBuff : FighterAction
     {
         return this.buffValue;
     }
-    public override float GetValue()
-    {
-        return this.damage;
-    }
     public override void ReevaluateActionValues(Fighter self)
     {
         this.damage = Mathf.FloorToInt(self.damage * self.damageMultiplier);
@@ -237,10 +228,6 @@ public class ApplyThorns : FighterAction
         }
         yield return true;
     }
-    public override float GetValue()
-    {
-        return this.percentValue;
-    }
 }
 public class BlockAll : FighterAction
 {
@@ -267,10 +254,6 @@ public class BlockAll : FighterAction
             fighter.AddEffect(fighter, block);
         }
         yield return true;
-    }
-    public override float GetValue()
-    {
-        return 0;
     }
 }
 public class BolsterDefense : FighterAction
@@ -309,10 +292,6 @@ public class BolsterDefense : FighterAction
         return cost;
     }
     public override float GetEffectValue()
-    {
-        return this.buffValue;
-    }
-    public override float GetValue()
     {
         return this.buffValue;
     }
@@ -381,27 +360,23 @@ public class BuffAttack : FighterAction
     {
         return cost;
     }
-    public override float GetValue()
-    {
-        return this.buffValue;
-    }
     public override void LevelUpdate()
     {
         switch (skillLevel)
         {
             case 1:
-                name = "Buff attack";
+                name = "Buff Attack";
                 buffValue = baseValue;
                 cost = 6;
                 break;
             case 2:
-                name = "Buff attack+";
+                name = "Buff Attack+";
                 buffValue = baseValue + 1;
                 cost = 8;
                 effectDuration = baseDuration;
                 break;
             case 3:
-                name = "Buff attack++";
+                name = "Buff Attack++";
                 buffValue = baseValue + 2;
                 cost = 10;
                 effectDuration = baseDuration + 1;
@@ -434,10 +409,6 @@ public class Cleave : FighterAction
             targets[i].GetComponent<Fighter>().AddToHealth(this.damage * -1, this.originator.GetComponent<Fighter>());
         }
         yield return true;
-    }
-    public override float GetValue()
-    {
-        return this.damage;
     }
     public override void ReevaluateActionValues(Fighter self)
     {
@@ -493,10 +464,6 @@ public class CommandToAttack : FighterAction
     {
         return 10;
     }
-    public override float GetValue()
-    {
-        return 0;
-    }
 }
 public class CommandToBlock : FighterAction
 {
@@ -530,10 +497,6 @@ public class CommandToBlock : FighterAction
     {
         return 10;
     }
-    public override float GetValue()
-    {
-        return 0;
-    }
 }
 public class DoubleAttack : FighterAction
 {
@@ -562,13 +525,31 @@ public class DoubleAttack : FighterAction
         }
         yield return true;
     }
-    public override float GetValue()
-    {
-        return this.damage * 2;
-    }
     public override void ReevaluateActionValues(Fighter self)
     {
         this.damage = Mathf.FloorToInt(self.damage * self.damageMultiplier);
+    }
+}
+public class Skip : FighterAction
+{
+    public Skip(int _duration, Animation _animation)
+    {
+        this.name = "Skip";
+        this.description = "Skip your turn";
+        this.duration = _duration;
+        this.animation = _animation;
+        this.targets = null;
+        this.targetCount = 1;
+        this.validTargets = new string[] {  };
+    }
+    public override FighterAction Clone()
+    {
+        return new Skip(this.duration, this.animation);
+    }
+    public override IEnumerator Execute()
+    {
+        Debug.Log("Skipped");
+        yield return true;
     }
 }
 public class Heal : FighterAction
@@ -606,14 +587,11 @@ public class Heal : FighterAction
     {
         return 7;
     }
-    public override float GetValue()
-    {
-        return this.healValue;
-    }
 }
 public class Mark : FighterAction
 {
     public GameObject attackTarget;
+    public int cost;
     public Mark(int _duration, Animation _animation)
     {
         this.name = "Mark";
@@ -621,6 +599,8 @@ public class Mark : FighterAction
         this.duration = _duration;
         this.animation = _animation;
         this.targetCount = 1;
+        this.cost = 10;
+        this.levelCap = 2;
         this.validTargets = new string[] { "Foe" };
     }
     public override FighterAction Clone()
@@ -649,11 +629,27 @@ public class Mark : FighterAction
     }
     public override int GetCost()
     {
-        return 10;
+        return cost;
     }
-    public override float GetValue()
+    public override void LevelUpdate()
     {
-        return 0;
+        switch (skillLevel)
+        {
+            case 1:
+                name = "Mark";
+                targetCount = 1;
+                cost = 10;
+                this.description = $"Mark a target for Joey to attack";
+                this.targets = null;
+                break;
+            case 2:
+                name = "Mark+";
+                targetCount = 0;
+                Ronny ronny = this.originator.name.Contains("Shadow") ? ronny = this.originator.GetComponentInParent<Ronny>() : ronny = this.originator.GetComponent<Ronny>();
+                cost = 10 + 5 * (this.GetAOETargets(ronny.battleMasterScript.allFighters).Length - 1);
+                this.description = $"Mark all targets for Joey to attack";
+                break;
+        }
     }
 }
 public class PoisonAttack : FighterAction
@@ -684,14 +680,11 @@ public class PoisonAttack : FighterAction
         }
         yield return true;
     }
-    public override float GetValue()
-    {
-        return this.poisonDamage;
-    }
 }
 public class Taunt : FighterAction
 {
     public GameObject attackTarget;
+    public int cost;
     public Taunt(int _duration, Animation _animation)
     {
         this.name = "Taunt";
@@ -699,6 +692,8 @@ public class Taunt : FighterAction
         this.duration = _duration;
         this.animation = _animation;
         this.targetCount = 1;
+        this.cost = 10;
+        this.levelCap = 2;
         this.validTargets = new string[] { "Foe" };
     }
     public override FighterAction Clone()
@@ -720,11 +715,27 @@ public class Taunt : FighterAction
     }
     public override int GetCost()
     {
-        return 10;
+        return cost;
     }
-    public override float GetValue()
+    public override void LevelUpdate()
     {
-        return 0;
+        switch (skillLevel)
+        {
+            case 1:
+                name = "Taunt";
+                targetCount = 1;
+                cost = 10;
+                this.description = $"Causes a foe to attack you";
+                this.targets = null;
+                break;
+            case 2:
+                name = "Taunt+";
+                targetCount = 0;
+                Ronny ronny = this.originator.name.Contains("Shadow") ? ronny = this.originator.GetComponentInParent<Ronny>() : ronny = this.originator.GetComponent<Ronny>();
+                cost = 10 + 5 * (this.GetAOETargets(ronny.battleMasterScript.allFighters).Length - 1);
+                this.description = $"Causes all foes to attack you";
+                break;
+        }
     }
 }
 public class TauntAll :FighterAction
@@ -759,10 +770,6 @@ public class TauntAll :FighterAction
     public override int GetCost()
     {
         return 10;
-    }
-    public override float GetValue()
-    {
-        return 0;
     }
 }
 public class VulnerableAttack : FighterAction
@@ -800,10 +807,6 @@ public class VulnerableAttack : FighterAction
     {
         return this.vulnerableValue;
     }
-    public override float GetValue()
-    {
-        return this.vulnerableValue;
-    }
     public override int GetCost()
     {
         return cost;
@@ -813,18 +816,18 @@ public class VulnerableAttack : FighterAction
         switch (skillLevel)
         {
             case 1:
-                name = "Vulnerable attack";
+                name = "Vulnerable Attack";
                 cost = 6;
                 vulnerableValue = baseValue;
                 break;
             case 2:
-                name = "Vulnerable attack+";
+                name = "Vulnerable Attack+";
                 cost = 8;
                 vulnerableValue = baseValue + 1;
                 effectDuration = baseDuration;
                 break;
             case 3:
-                name = "Vulnerable attack++";
+                name = "Vulnerable Attack++";
                 cost = 10;
                 vulnerableValue = baseValue + 2;
                 effectDuration = baseDuration + 1;
@@ -873,27 +876,24 @@ public class WeakAttack : FighterAction
     {
         return this.weakValue;
     }
-    public override float GetValue()
-    {
-        return this.weakValue;
-    }
     public override void LevelUpdate()
     {
         switch(skillLevel)
         {
             case 1:
-                name = "Weak attack";
+                name = "Weak Attack";
                 cost = 6;
                 weakValue = baseValue;
+                effectDuration = baseDuration;
                 break;
             case 2:
-                name = "Weak attack+";
+                name = "Weak Attack+";
                 cost = 8;
                 weakValue = baseValue + 1;
                 effectDuration = baseDuration;
                 break;
             case 3:
-                name = "Weak attack++";
+                name = "Weak Attack++";
                 cost = 10;
                 weakValue = baseValue + 2;
                 effectDuration = baseDuration + 1;

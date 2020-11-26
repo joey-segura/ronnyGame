@@ -118,6 +118,7 @@ public class Ronny : Human
         this.actionList.Add(new BolsterDefense(3, 3, 1, null));
         this.actionList.Add(new VulnerableAttack(3, 3, 1, null));
         this.actionList.Add(new Taunt(3, null));
+        this.actionList.Add(new Skip(1, null));
         //this.actionList.Add(new Cleave(3, this.damage * this.damageMultiplier, null));
         //this.actionList.Add(new TauntAll(3, null));
         //base.RecalculateActions();
@@ -135,19 +136,16 @@ public class Ronny : Human
         }
         return null;
     }
-    private void SetActionTargets(GameObject[] targets)
+    private GameObject[] SetActionTargets(GameObject[] targets)
     {
-        if (this.currentAction.targets != null)
+        UnhighlightAll();
+        if (targets == null)
         {
-            for (int i = 0; i < this.currentAction.targets.Length; i++)
-            {
-                this.currentAction.targets[i].GetComponent<SpriteOutline>().enabled = false;
-            }
+            return null;
         }
-        this.currentAction.targets = targets;
-        for (int i = 0; i < this.currentAction.targets.Length; i++)
+        for (int i = 0; i < targets.Length; i++)
         {
-            GameObject targ = this.currentAction.targets[i];
+            GameObject targ = targets[i];
             SpriteRenderer targRend = targ.GetComponent<SpriteRenderer>();
             if (targRend.material.name.Contains("Outline"))
             {
@@ -159,35 +157,52 @@ public class Ronny : Human
                 targ.GetComponent<SpriteOutline>().enabled = true;
             }
         }
+        return targets;
     }
     private void SetNewAction(FighterAction action)
     {
-        if (this.currentAction != null && this.currentAction.targets != null)
+        if (action == null) // if this happens then death
         {
-            for (int i = 0; i < this.currentAction.targets.Length; i++)
-            {
-                this.currentAction.targets[i].GetComponent<SpriteOutline>().enabled = false;
-            }
+            Debug.LogError("null");
+            Debug.LogError(currentAction);
         }
-        if (!action.IsActionAOE() && turnTarget != null)
+        switch (lastActionSelected)
         {
-            if (action.IsValidAction(TargetRelationToSelf(turnTarget)))
-            {
-                action.targets = new GameObject[] { turnTarget };
-            } else
-            {
-                action.targets = null;
-            }
+            case (int)KeyCode.W:
+                action.skillLevel = Mathf.Abs(wLevel);
+                break;
+            case (int)KeyCode.D:
+                action.skillLevel = Mathf.Abs(dLevel);
+                break;
+            case (int)KeyCode.S:
+                action.skillLevel = Mathf.Abs(sLevel);
+                break;
+            case (int)KeyCode.A:
+                action.skillLevel = Mathf.Abs(aLevel);
+                break;
+        }
+        action.originator = this.gameObject;
+        action.LevelUpdate();
+        
+        if (action.IsActionAOE())
+        {
+            action.targets = SetActionTargets(this.currentAction.GetAOETargets(battleMasterScript.allFighters));
         } else
         {
-            //action.targets = action.GetAOETargets();
+            if (turnTarget != null)
+            {
+                if (action.IsValidAction(TargetRelationToSelf(turnTarget)))
+                {
+                    action.targets = SetActionTargets(new GameObject[] { turnTarget });
+                } else
+                {
+                    action.targets = SetActionTargets(null);
+                }
+            } else
+            {
+                action.targets = SetActionTargets(null);
+            }
         }
-        if (action.targets != null && action.targets[0] != null)
-        {
-            SetActionTargets(action.targets);
-        }
-
-        action.originator = this.gameObject;
         this.currentAction = action;
 
         BattleMaster battleMaster = this.transform.GetComponentInParent<BattleMaster>();
@@ -200,51 +215,38 @@ public class Ronny : Human
         if (Input.GetKeyDown(KeyCode.W))
         {
             lastActionSelected = (int)KeyCode.W;
-            SetNewAction(GetActionByName("Mark"));
-            currentAction.skillLevel = wLevel;
+            if (wLevel > 0)
+                SetNewAction(GetActionByName("Mark"));
+            else
+                SetNewAction(GetActionByName("Taunt"));
         }
         else if (Input.GetKeyDown(KeyCode.D))
         {
             lastActionSelected = (int)KeyCode.D;
             if (dLevel > 0)
-            {
                 SetNewAction(GetActionByName("Buff Attack"));
-            } else
-            {
+            else
                 SetNewAction(GetActionByName("Weak Attack"));
-            }
-            currentAction.skillLevel = Mathf.Abs(dLevel);
         }
         else if (Input.GetKeyDown(KeyCode.S))
         {
             lastActionSelected = (int)KeyCode.S;
-            SetNewAction(GetActionByName("Taunt"));
-            currentAction.skillLevel = sLevel;
+            SetNewAction(GetActionByName("Skip"));
         }
         else if (Input.GetKeyDown(KeyCode.A))
         {
             lastActionSelected = (int)KeyCode.A;
             if (aLevel > 0)
-            {
                 SetNewAction(GetActionByName("Bolster Defense"));
-            }
             else
-            {
                 SetNewAction(GetActionByName("Vulnerable Attack"));
-            }
-            currentAction.skillLevel = Mathf.Abs(aLevel);
         }
         else if (this.currentAction == null)
         {
-            //FighterAction heal = this.actionList[0];
-            //heal.targets = new GameObject[] { this.gameObject };
-            this.SetNewAction(this.actionList[0]);
+            this.SetNewAction(GetActionByName("Mark"));
         }
-        
-        if (this.currentAction.IsActionAOE())
-        {
-            SetActionTargets(this.currentAction.GetAOETargets(allFighters));
-        } else
+
+        if (!this.currentAction.IsActionAOE())
         {
             GameObject newTarget = this.ChooseTarget(allFighters);
             if (newTarget != null)
@@ -253,13 +255,12 @@ public class Ronny : Human
                 string relation = this.TargetRelationToSelf(newTarget);
                 if (this.currentAction.IsValidAction(relation) && (this.currentAction.targets == null || this.currentAction.targets[0] != newTarget)) //we can access the first area because we know it only has 1 member (if/else proves this)
                 {
-                    SetActionTargets(new GameObject[] { newTarget });
+                    this.currentAction.targets = SetActionTargets(new GameObject[] { newTarget });
                     battleMasterScript.SimulateBattle();
                 }
             }
         }
-        
-        if (Input.GetKey(KeyCode.Return) && this.currentAction.targets != null)
+        if (Input.GetKey(KeyCode.Return) && (this.currentAction.targets != null || this.currentAction.name.Contains("Skip")))
         {
             return this.currentAction;
         } else
@@ -273,6 +274,36 @@ public class Ronny : Human
         switch (lastActionSelected)
         {
             case (int)KeyCode.W:
+                if (increase)
+                {
+                    if (wLevel == -1)
+                    {
+                        wLevel = 1;
+                        SetNewAction(GetActionByName("Mark"));
+                        currentAction.skillLevel = wLevel;
+                        break;
+                    }
+                    if (currentAction.skillLevel < currentAction.levelCap || wLevel < 0)
+                    {
+                        wLevel++;
+                        currentAction.skillLevel = Mathf.Abs(wLevel);
+                    }
+                }
+                else
+                {
+                    if (wLevel == 1)
+                    {
+                        wLevel = -1;
+                        SetNewAction(GetActionByName("Taunt"));
+                        currentAction.skillLevel = wLevel;
+                        break;
+                    }
+                    if (currentAction.skillLevel < currentAction.levelCap || wLevel > 0)
+                    {
+                        wLevel--;
+                        currentAction.skillLevel = Mathf.Abs(wLevel);
+                    }
+                }
                 break;
             case (int)KeyCode.D:
                 if (increase)
