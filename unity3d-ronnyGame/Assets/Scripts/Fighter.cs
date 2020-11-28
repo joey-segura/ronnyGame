@@ -216,6 +216,17 @@ public class Fighter : Being
     {
         return this.transform.GetComponentInChildren<FighterShadow>();
     }
+    public bool HasEffect(string name)
+    {
+        foreach (Effect effect in currentEffects.Values)
+        {
+            if (effect.name.Contains(name))
+            {
+                return true;
+            }
+        }
+        return false;
+    }
     public virtual void InitializeBattle()
     {
         this.isBattle = true;

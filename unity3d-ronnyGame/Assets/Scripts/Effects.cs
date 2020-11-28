@@ -8,13 +8,13 @@ public abstract class Effect
     public int duration { get; set; }
     protected int key = -1;
     protected Fighter self = null;
-    public abstract void Affliction(Fighter fighter);
-    public abstract void Cleanse(Fighter fighter);
-    public virtual void OnTick(Fighter fighter) 
+    public abstract void Affliction(Fighter fighter); // actually implement effect changes
+    public abstract void Cleanse(Fighter fighter); // clears affliction (usually called sometime after affliction)
+    public virtual void OnTick(Fighter fighter) //ticks at the start of every turn
     {
         return;
     }
-    public int GenerateRandomKey()
+    private int GenerateRandomKey()
     {
         return Random.Range(0, 1025);
     }
@@ -53,6 +53,34 @@ public abstract class Effect
     public int GetKey()
     {
         return key;
+    }
+}
+public class Berserk : Effect
+{
+    public int toll;
+    public Berserk(int _duration, int _toll)
+    {
+        this.name = "Berserk";
+        this.duration = _duration;
+        this.toll = _toll;
+    }
+    public override void Affliction(Fighter fighter)
+    {
+        this.self = fighter;
+        if (key == -1)
+        {
+            this.key = this.GenerateValidKeyForEffects(fighter);
+            fighter.damage += toll;
+            OnTick(fighter);
+        }
+    }
+    public override void Cleanse(Fighter fighter)
+    {
+        fighter.damage -= toll;
+    }
+    public override void OnTick(Fighter fighter)
+    {
+        fighter.AddToHealth(toll * -1, fighter);
     }
 }
 public class Block : Effect

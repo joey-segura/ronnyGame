@@ -73,8 +73,10 @@
     <Compile Include="Assets\Scripts\BattleMaster.cs" />
     <Compile Include="Assets\Scripts\Being.cs" />
     <Compile Include="Assets\Scripts\Beings\BurnableFence.cs" />
+    <Compile Include="Assets\Scripts\Beings\Cannibal.cs" />
     <Compile Include="Assets\Scripts\Beings\DialogueCauser.cs" />
     <Compile Include="Assets\Scripts\Beings\FighterShadow.cs" />
+    <Compile Include="Assets\Scripts\Beings\Glutton.cs" />
     <Compile Include="Assets\Scripts\Beings\Joey.cs" />
     <Compile Include="Assets\Scripts\Beings\Ritter.cs" />
     <Compile Include="Assets\Scripts\Beings\Rogue.cs" />
@@ -84,6 +86,7 @@
     <Compile Include="Assets\Scripts\Beings\Sign.cs" />
     <Compile Include="Assets\Scripts\Beings\TikiMan.cs" />
     <Compile Include="Assets\Scripts\Beings\TriggerCauser.cs" />
+    <Compile Include="Assets\Scripts\Beings\Zerker.cs" />
     <Compile Include="Assets\Scripts\CinematicPlayer.cs" />
     <Compile Include="Assets\Scripts\ConsoleMaster.cs" />
     <Compile Include="Assets\Scripts\Console_Commands\CommandBeingDebug.cs" />

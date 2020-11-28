@@ -453,12 +453,17 @@ public class BattleMaster : Kami
             if (intentions[i].originator != null)
             {
                 Fighter fighter = intentions[i].originator.GetComponent<Fighter>();
+                if (fighter.isStunned) 
+                {
+                    fighter.TickEffects();
+                    continue;
+                }
                 fighter.TickEffects();
                 if (fighter != null && fighter.currentAction != null)
                 {
                     if (fighter.currentAction.targets[0] == null)
                     {
-                        break;
+                        continue;
                     } else
                     {
                         FighterAction action = fighter.currentAction; //gets current action instead of playing intention in case ronny influences it

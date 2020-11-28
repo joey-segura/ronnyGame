@@ -30,8 +30,8 @@ public class TikiMan : Enemy
             else
             {
                 this.speed = 0;
-                this.health = 5;
-                this.damage = 3;
+                this.health = 16;
+                this.damage = 2;
                 this.party = null;
                 this.virtueValue = 2;
             }
@@ -48,30 +48,28 @@ public class TikiMan : Enemy
     {
         this.actionList = new List<FighterAction>();
         //this.actionList.Add(new AttackAndBuff(3, this.damage * this.damageMultiplier, 2, 2, null));
-        this.actionList.Add(new Attack(3, Mathf.FloorToInt(this.damage * this.damageMultiplier), null));
-        /*
-        this.actionList.Add(new WeakAttack(3, 3, 2, null));
-        this.actionList.Add(new BuffAttack(3, 3, 2, null));
-        this.actionList.Add(new BolsterDefense(3, 3, 2, null));
-        this.actionList.Add(new VulnerableAttack(3, 3, 2, null));
-        */
+        //this.actionList.Add(new Attack(3, Mathf.FloorToInt(this.damage * this.damageMultiplier), null));
+        this.actionList.Add(new StunAttack(3, this.damage, 1, null));
+        this.actionList.Add(new Skip(1, null)); //play resting animation
         base.RecalculateActions();
     }
     public override FighterAction TurnAction(ListBeingData allFighters)
     {
         this.RecalculateActions();
-        FighterAction action;
-        switch (battleMasterScript.turnCounter)
+        GameObject joey = battleMasterScript.GetAllyObject();
+        if (battleMasterScript.turnCounter % 2 == 0)
         {
-            case 2:
-                action = new VulnerableAttack(3, 3, 2, null);
-                action.targets = new GameObject[] { this.gameObject };
+            if (joey != null)
+            {
+                FighterAction action = this.actionList.Find(x => x.name == "Stun Attack");
+                action.targets = new GameObject[] { joey };
                 action.originator = this.gameObject;
                 this.currentAction = action;
                 return action;
-            default:
-                return base.TurnAction(allFighters);
-        }
+            }
+        } 
+        FighterAction skip = new Skip(1, null);
+        return skip;
     }
     public override string UpdateBeingJsonData()
     {

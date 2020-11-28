@@ -229,6 +229,39 @@ public class ApplyThorns : FighterAction
         yield return true;
     }
 }
+public class Berserker : FighterAction
+{
+    public int tollValue;
+    public Berserker(int _duration, int _effectDuration, int _tollValue, Animation _animation)
+    {
+        this.name = "Berserker";
+        this.description = $"Gain +{_tollValue} damage by paying {_tollValue} per turn for {_effectDuration} turns";
+        this.duration = _duration;
+        this.effectDuration = _effectDuration;
+        this.tollValue = _tollValue;
+        this.animation = _animation;
+        this.targetCount = 1;
+        this.validTargets = new string[] { "Self" };
+    }
+    public override FighterAction Clone()
+    {
+        return new Berserker(this.duration, this.effectDuration, this.tollValue, this.animation);
+    }
+    public override IEnumerator Execute()
+    {
+        Effect bers = new Berserk(this.effectDuration, this.tollValue);
+        for (int i = 0; i < targets.Length; i++)
+        {
+            Fighter fighter = targets[i].GetComponent<Fighter>();
+            fighter.AddEffect(fighter, bers);
+        }
+        yield return true;
+    }
+    public override float GetEffectValue()
+    {
+        return this.tollValue;
+    }
+}
 public class BlockAll : FighterAction
 {
     public BlockAll(int _duration, Animation _animation)
@@ -530,6 +563,39 @@ public class DoubleAttack : FighterAction
         this.damage = Mathf.FloorToInt(self.damage * self.damageMultiplier);
     }
 }
+public class LifeSteal : FighterAction
+{
+    public int damage;
+    public LifeSteal(int _duration, int _damage, Animation _animation)
+    {
+        this.name = "Life Steal";
+        this.description = $"Attack and heal for _damage";
+        this.duration = _duration;
+        this.damage = _damage;
+        this.animation = _animation;
+        this.targetCount = 1;
+        this.validTargets = new string[] { "Foe" };
+    }
+    public override FighterAction Clone()
+    {
+        return new LifeSteal(this.duration, this.damage, this.animation);
+    }
+    public override IEnumerator Execute()
+    {
+
+        for (int i = 0; i < targets.Length; i++)
+        {
+            Fighter self = this.originator.GetComponent<Fighter>();
+            targets[i].GetComponent<Fighter>().AddToHealth(this.damage * -1, self);
+            self.AddToHealth(this.damage, self);
+        }
+        yield return true;
+    }
+    public override void ReevaluateActionValues(Fighter self)
+    {
+        this.damage = Mathf.FloorToInt(self.damage * self.damageMultiplier);
+    }
+}
 public class Skip : FighterAction
 {
     public Skip(int _duration, Animation _animation)
@@ -549,6 +615,36 @@ public class Skip : FighterAction
     public override IEnumerator Execute()
     {
         Debug.Log("Skipped");
+        yield return true;
+    }
+}
+public class StunAttack : FighterAction
+{
+    public int damage;
+    public StunAttack(int _duration, int _damage, int _effectDuration, Animation _animation)
+    {
+        this.name = "Stun Attack";
+        this.description = "Stun enemy and attack them for {}";
+        this.duration = _duration;
+        this.animation = _animation;
+        this.damage = _damage;
+        this.effectDuration = _effectDuration;
+        this.targetCount = 1;
+        this.validTargets = new string[] { "Foe" };
+    }
+    public override FighterAction Clone()
+    {
+        return new StunAttack(this.duration, this.damage, this.effectDuration, this.animation);
+    }
+    public override IEnumerator Execute()
+    {
+        Effect stun = new Stun(effectDuration);
+        for (int i = 0; i < targets.Length; i++)
+        {
+            Fighter targ = targets[i].GetComponent<Fighter>();
+            targ.AddToHealth(this.damage * -1, this.originator.GetComponent<Fighter>());
+            targ.AddEffect(targ, stun);
+        }
         yield return true;
     }
 }
@@ -601,7 +697,7 @@ public class Mark : FighterAction
         this.targetCount = 1;
         this.cost = 10;
         this.levelCap = 2;
-        this.validTargets = new string[] { "Foe" };
+        this.validTargets = new string[] { "Foe", "Friend" };
     }
     public override FighterAction Clone()
     {
@@ -694,7 +790,7 @@ public class Taunt : FighterAction
         this.targetCount = 1;
         this.cost = 10;
         this.levelCap = 2;
-        this.validTargets = new string[] { "Foe" };
+        this.validTargets = new string[] { "Foe", "Friend" };
     }
     public override FighterAction Clone()
     {
