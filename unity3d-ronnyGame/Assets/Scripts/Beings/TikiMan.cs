@@ -67,8 +67,10 @@ public class TikiMan : Enemy
                 this.currentAction = action;
                 return action;
             }
-        } 
-        FighterAction skip = new Skip(1, null);
+        }
+        FighterAction skip = this.actionList.Find(x => x.name == "Skip");
+        skip.originator = this.gameObject;
+        this.currentAction = skip;
         return skip;
     }
     public override string UpdateBeingJsonData()

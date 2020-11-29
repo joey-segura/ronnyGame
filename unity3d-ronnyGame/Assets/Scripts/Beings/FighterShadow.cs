@@ -68,28 +68,36 @@ public class FighterShadow : Fighter
             this.currentAction.originator = this.gameObject;
             this.currentAction.targets = (GameObject[]) source.currentAction.targets.Clone();
         }
+        
         //this.animations = source.animations;
     }
     public IEnumerator PlayAnimations()
     {
-        playing = true;
-        this.transform.position = battlePosition;
-        CoroutineWithData move = new CoroutineWithData(this, MoveToBattleTarget(this.currentAction));
-        while (!move.finished)
+        if (!this.isStunned)
         {
-            yield return new WaitForEndOfFrame();
-        }
-        if (this.currentAction.animation != null)
+            playing = true;
+            this.transform.position = battlePosition;
+            CoroutineWithData move = new CoroutineWithData(this, MoveToBattleTarget(this.currentAction));
+            while (!move.finished)
+            {
+                yield return new WaitForEndOfFrame();
+            }
+            if (this.currentAction.animation != null)
+            {
+                this.currentAction.animation.Play();
+            }
+            yield return new WaitForSeconds(this.currentAction.duration);
+            CoroutineWithData moveBack = new CoroutineWithData(this, MoveToBattlePosition());
+            while (!moveBack.finished)
+            {
+                yield return new WaitForEndOfFrame();
+            }
+            playing = false;
+        } else
         {
-            this.currentAction.animation.Play();
+            //play stunned animation
+            spriteRenderer.color += new Color(0, 0, 1, 0);
         }
-        yield return new WaitForSeconds(this.currentAction.duration);
-        CoroutineWithData moveBack = new CoroutineWithData(this, MoveToBattlePosition());
-        while (!moveBack.finished)
-        {
-            yield return new WaitForEndOfFrame();
-        }
-        playing = false;
         yield return true;
     }
     public void ResetPosition()
@@ -98,7 +106,7 @@ public class FighterShadow : Fighter
     }
     public void SimulateAction()
     {
-        if (this.currentAction != null && this.currentAction.targets != null)
+        if (this.currentAction != null && this.currentAction.targets != null && !this.isStunned)
         {
             for (int i = 0; i < this.currentAction.targets.Length; i++)
             {

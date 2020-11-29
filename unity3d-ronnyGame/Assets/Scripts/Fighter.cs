@@ -191,10 +191,14 @@ public class Fighter : Being
     }
     public FighterAction GetIntention(ListBeingData allFighters)
     {
+        
         if (this.isStunned)
         {
             this.TickEffects();
-            return null;
+            FighterAction skp = new Skip(1, null);
+            skp.originator = this.gameObject;
+            Debug.Log("stunned!");
+            return skp;
         }
 
         FighterAction action = this.TurnAction(allFighters);

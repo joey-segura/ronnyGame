@@ -461,7 +461,7 @@ public class BattleMaster : Kami
                 fighter.TickEffects();
                 if (fighter != null && fighter.currentAction != null)
                 {
-                    if (fighter.currentAction.targets[0] == null)
+                    if (fighter.currentAction.targets == null)
                     {
                         continue;
                     } else

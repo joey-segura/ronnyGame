@@ -65,6 +65,8 @@ public class Cannibal : Enemy
         else
         {
             FighterAction skip = new Skip(1, null);
+            skip.originator = this.gameObject;
+            this.currentAction = skip;
             return skip;
         }
     }

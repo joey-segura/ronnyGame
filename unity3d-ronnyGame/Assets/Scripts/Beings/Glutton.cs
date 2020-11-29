@@ -65,6 +65,8 @@ public class Glutton : Enemy
         {
             Debug.LogError("Can't find Joey target, returning skip action!");
             FighterAction skip = new Skip(1, null);
+            skip.originator = this.gameObject;
+            this.currentAction = skip;
             return skip;
         }
     }
