@@ -620,7 +620,7 @@ public class Skip : FighterAction
 }
 public class StunAttack : FighterAction
 {
-    public int damage;
+    public int damage, charge, chargeLimit;
     public StunAttack(int _duration, int _damage, int _effectDuration, Animation _animation)
     {
         this.name = "Stun Attack";
@@ -630,22 +630,35 @@ public class StunAttack : FighterAction
         this.damage = _damage;
         this.effectDuration = _effectDuration;
         this.targetCount = 1;
+        this.charge = 0;
+        this.chargeLimit = 1;
         this.validTargets = new string[] { "Foe" };
     }
     public override FighterAction Clone()
     {
-        return new StunAttack(this.duration, this.damage, this.effectDuration, this.animation);
+        StunAttack atk = new StunAttack(this.duration, this.damage, this.effectDuration, this.animation);
+        atk.charge = this.charge;
+        return atk;
     }
     public override IEnumerator Execute()
     {
-        Effect stun = new Stun(effectDuration);
-        for (int i = 0; i < targets.Length; i++)
+        if (charge < chargeLimit)
         {
-            Fighter targ = targets[i].GetComponent<Fighter>();
-            targ.AddToHealth(this.damage * -1, this.originator.GetComponent<Fighter>());
-            targ.AddEffect(targ, stun);
+            this.charge++;
+            yield return true;
+        } else
+        {
+            Debug.Log(1 < 1);
+            Effect stun = new Stun(effectDuration);
+            for (int i = 0; i < targets.Length; i++)
+            {
+                Fighter targ = targets[i].GetComponent<Fighter>();
+                targ.AddToHealth(this.damage * -1, this.originator.GetComponent<Fighter>());
+                targ.AddEffect(targ, stun);
+            }
+            this.charge = 0;
+            yield return true;
         }
-        yield return true;
     }
 }
 public class Heal : FighterAction

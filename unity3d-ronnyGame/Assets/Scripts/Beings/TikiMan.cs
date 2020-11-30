@@ -46,32 +46,35 @@ public class TikiMan : Enemy
     }
     public override void RecalculateActions()
     {
-        this.actionList = new List<FighterAction>();
-        //this.actionList.Add(new AttackAndBuff(3, this.damage * this.damageMultiplier, 2, 2, null));
-        //this.actionList.Add(new Attack(3, Mathf.FloorToInt(this.damage * this.damageMultiplier), null));
-        this.actionList.Add(new StunAttack(3, this.damage, 1, null));
-        this.actionList.Add(new Skip(1, null)); //play resting animation
+        if (this.actionList.Count == 0)
+        {
+            this.actionList = new List<FighterAction>();
+            this.actionList.Add(new StunAttack(3, this.damage, 1, null));
+        } else
+        {
+            StunAttack action = (StunAttack)this.actionList.Find(x => x.name == "Stun Attack");
+            action.damage = this.damage;
+        }
         base.RecalculateActions();
     }
     public override FighterAction TurnAction(ListBeingData allFighters)
     {
         this.RecalculateActions();
         GameObject joey = battleMasterScript.GetAllyObject();
-        if (battleMasterScript.turnCounter % 2 == 0)
+        if (joey != null)
         {
-            if (joey != null)
-            {
-                FighterAction action = this.actionList.Find(x => x.name == "Stun Attack");
-                action.targets = new GameObject[] { joey };
-                action.originator = this.gameObject;
-                this.currentAction = action;
-                return action;
-            }
+            StunAttack action = (StunAttack)this.actionList.Find(x => x.name == "Stun Attack");
+            action.targets = new GameObject[] { action.charge == 1 ? joey : this.gameObject };
+            action.originator = this.gameObject;
+            this.currentAction = action;
+            return action;
+        } else
+        {
+            FighterAction skip = this.actionList.Find(x => x.name == "Skip");
+            skip.originator = this.gameObject;
+            this.currentAction = skip;
+            return skip;
         }
-        FighterAction skip = this.actionList.Find(x => x.name == "Skip");
-        skip.originator = this.gameObject;
-        this.currentAction = skip;
-        return skip;
     }
     public override string UpdateBeingJsonData()
     {
