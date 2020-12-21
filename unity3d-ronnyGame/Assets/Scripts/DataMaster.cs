@@ -32,6 +32,11 @@ public class SceneMasterJson
     public string currentSceneName;
     public string lastSceneName;
 }
+public class SoundMasterJson
+{
+    public float masterVolume;
+    public float[] volumeTypes = new float[3];
+}
 public class DataMaster : Kami
 {
     private bool loadFromFile;
@@ -45,10 +50,11 @@ public class DataMaster : Kami
         }
         DataMasterJson dataMasterJson = new DataMasterJson(true); //Since DataMaster is a very individual class, it is necessary to construct its Json class
         dataMasterJson.levelName = sceneMaster.GetCurrentSceneName();
-        string dataMasterData = JsonUtility.ToJson(dataMasterJson);
         gameMaster.UpdateAllBeingsInList();
+        string dataMasterData = JsonUtility.ToJson(dataMasterJson);
         string gameMasterData = gameMaster.GetMasterData();
         string sceneMasterData = sceneMaster.GetMasterData();
+        string soundMasterData = soundMaster.GetMasterData();
         if (!Directory.Exists(Application.dataPath + KamiDataPath) && !File.Exists(Application.dataPath + KamiDataPath))
         {
             File.CreateText(Application.dataPath + KamiDataPath);
@@ -57,6 +63,7 @@ public class DataMaster : Kami
         streamWriter.WriteLine(dataMasterData);
         streamWriter.WriteLine(gameMasterData);
         streamWriter.WriteLine(sceneMasterData);
+        streamWriter.WriteLine(soundMasterData);
         streamWriter.Close();
         return;
     }
@@ -75,36 +82,14 @@ public class DataMaster : Kami
         DataMasterJson dataMasterJson = JsonUtility.FromJson<DataMasterJson>(reader.ReadLine());
         GameMasterJson gameMasterJson = JsonUtility.FromJson<GameMasterJson>(reader.ReadLine());
         SceneMasterJson sceneMasterJson = JsonUtility.FromJson<SceneMasterJson>(reader.ReadLine());
+        SoundMasterJson soundMasterJson = JsonUtility.FromJson<SoundMasterJson>(reader.ReadLine());
         reader.Close();
         if (dataMasterJson != null && gameMasterJson != null && sceneMasterJson != null)
         {
             gameMaster.DestroyAllBeings();
             gameMaster.InjectData(gameMasterJson);
             sceneMaster.InjectData(sceneMasterJson);
-        }
-    }
-    public string GetMasterJson(string name)
-    {
-        if (!File.Exists(Application.dataPath + KamiDataPath))
-        {
-            Debug.LogError("No File Found");
-            return null;
-        }
-        StreamReader reader = new StreamReader(Application.dataPath + KamiDataPath);
-        string dataMaster = reader.ReadLine();
-        string gameMaster = reader.ReadLine();
-        string sceneMaster = reader.ReadLine();
-
-        switch (name)
-        {
-            case "dataMaster":
-                return dataMaster;
-            case "gameMaster":
-                return gameMaster;
-            case "sceneMaster":
-                return sceneMaster;
-            default:
-                return null;
+            soundMaster.InjectData(soundMasterJson);
         }
     }
 }

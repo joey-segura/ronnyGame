@@ -160,6 +160,7 @@ public class playerMovement : MonoBehaviour
             {
                 if (Physics.Raycast(newPos, Vector3.down, out hit, 4))
                 {
+                    //Debug.Log(hit.collider.transform.parent != null ? hit.collider.transform.parent.name : hit.collider.name); //use this to attribute sound
                     this.transform.position = newPos;
                     //final test to see if we are running off the board, lame solution will need to fix this later
                 }

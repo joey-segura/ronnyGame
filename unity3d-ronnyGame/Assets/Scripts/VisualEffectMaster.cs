@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class VisualEffectMaster : Kami
 {
-    
     public GameObject InstantiateVisualSprite(Object obj, Vector3 position, Quaternion rotation, Transform parent, float time = 0)
     {
         GameObject entity = Instantiate(obj, position, rotation, parent) as GameObject;

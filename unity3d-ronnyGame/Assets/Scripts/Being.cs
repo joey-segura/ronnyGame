@@ -14,6 +14,7 @@ public class Being : MonoBehaviour
     public GameObject Kami;
     public GameMaster gameMasterScript;
     public BattleMaster battleMasterScript;
+    public SoundMaster soundMasterScript;
 
     private bool debugMode = false;
 
@@ -100,6 +101,7 @@ public class Being : MonoBehaviour
         Kami = this.gameObject.transform.parent.gameObject;
         gameMasterScript = Kami.GetComponent<GameMaster>();
         battleMasterScript = Kami.GetComponent<BattleMaster>();
+        soundMasterScript = Kami.GetComponent<SoundMaster>();
         if (this.gameObject.GetComponentInChildren<Canvas>() != null)
         {
             

@@ -112,6 +112,7 @@
     <Compile Include="Assets\Scripts\Scene_Scripts\CloudGenerator.cs" />
     <Compile Include="Assets\Scripts\Scene_Scripts\SceneChange.cs" />
     <Compile Include="Assets\Scripts\SkyboxRoatation.cs" />
+    <Compile Include="Assets\Scripts\SoundMaster.cs" />
     <Compile Include="Assets\Scripts\SunCycle.cs" />
     <Compile Include="Assets\Scripts\Trigger.cs" />
     <Compile Include="Assets\Scripts\Triggers\EndDemo.cs" />
