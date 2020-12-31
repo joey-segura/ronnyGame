@@ -20,6 +20,10 @@ public class FighterShadow : Fighter
         if (!heal)
         {
             change = change + this.defense;
+            foreach (Func<int, Fighter, int> a in causer.onAttackEffects.Values)
+            {
+                a.Invoke(change, causer);
+            }
         }
         //Debug.Log($"{this.name}'s health just got changed by {change} by {causer.name}");
         if (this.gameObject.tag == "Player")
@@ -38,7 +42,6 @@ public class FighterShadow : Fighter
             {
                 BattleMaster battleMasterScript = this.GetComponentInParent<BattleMaster>();
                 battleMasterScript.expectedVirtueGain = Mathf.FloorToInt(Mathf.Abs(health));
-                battleMasterScript.virtueExpectation.text = $"Expected Gain: {Mathf.FloorToInt(Mathf.Abs(health))}";
             }
             dead = true;
             parent.DeathTrigger(true);

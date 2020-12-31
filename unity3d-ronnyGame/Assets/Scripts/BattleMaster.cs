@@ -23,13 +23,24 @@ public class BattleMaster : Kami
 
     [SerializeField]
     private Canvas canvas;
-    public Text virtue, virtueExpectation, action;
-    public Image abilityKeys;
+    public Image abilityKeys, actionIcon, actionIconModifier;
+    public Button upArrow, downArrow, simulateButton, executeButton;
+    public Sprite[] actionIcons; //0 minus - 1 plus - 2 atk - 3 cmnd - 4 def
     public Texture holder, healthBar, damageBar, costBar, virtueBar;
     public float expectedDamageTaken, costDamage, expectedVirtueGain;
     private bool isFlashing = false;
     private float ronnyMaxHP = 0, guiX, guiY;
     private int virtueValue = 0, virtueMax = 0;
+
+    public new void Awake()
+    {
+        //save.onClick.AddListener(Save);
+        upArrow.onClick.AddListener(delegate { ChangeActionModifier(true); });
+        downArrow.onClick.AddListener(delegate { ChangeActionModifier(false); });
+        simulateButton.onClick.AddListener(SimulateShadowsButton);
+        executeButton.onClick.AddListener(ExecuteTurn);
+        base.Awake();
+    }
 
     public void AddFighter(BeingData being)
     {
@@ -44,7 +55,6 @@ public class BattleMaster : Kami
         {
             AllyVirtueFail();
         }
-        UpdateVirtueText();
     }
     public void AllyVirtueFail()
     {
@@ -92,6 +102,10 @@ public class BattleMaster : Kami
             }
         }
         this.virtueMax = Mathf.RoundToInt(virt);
+    }
+    private void ChangeActionModifier(bool increase)
+    {
+        GetPlayerObject().GetComponent<Ronny>().UpdateSkills(increase);
     }
     public void CleanseAllFighters()
     {
@@ -177,6 +191,10 @@ public class BattleMaster : Kami
             //I.E (Continue?)
         }
         yield return null;
+    }
+    private void ExecuteTurn()
+    {
+        GetPlayerObject().GetComponent<Ronny>().exec = true;
     }
     public IEnumerator FlashingBars ()
     {
@@ -273,7 +291,6 @@ public class BattleMaster : Kami
         this.MoveCameraTo(-0.05f, 7.23f, -13.4f, 30.066f, 0, 0);
         this.CalculateVirtueMax();
         StartCoroutine(FlashingBars());
-        this.UpdateVirtueText();
         this.canvas.gameObject.SetActive(true);
         this.isBattle = true;
         if (gameMaster.firstBattle)
@@ -320,7 +337,6 @@ public class BattleMaster : Kami
             intentions = new List<FighterAction>();
             intentions = this.GetIntentions();
             expectedVirtueGain = 0;
-            virtueExpectation.text = "0";
             expectedDamageTaken = 0;
             costDamage = 0;
             StartCoroutine(PlayerAction());
@@ -367,7 +383,7 @@ public class BattleMaster : Kami
                     GUI.DrawTexture(rect, costBar);
                 }
             }
-            GUI.DrawTexture(virtueHolderRect, virtueBar, ScaleMode.ScaleToFit);
+            //GUI.DrawTexture(virtueHolderRect, virtueBar, ScaleMode.ScaleToFit);
             //GUI.DrawTexture(virtueHolderRect, virtueBar);
             GUI.DrawTexture(healthRect, healthBar);
             
@@ -434,7 +450,7 @@ public class BattleMaster : Kami
     }
     public IEnumerator ProcessAction(FighterAction action)
     {
-        if (action.targets != null)
+        if (action.targets != null && action.targets[0] != null)
         {
             Debug.Log($"{action.originator.name} just used {action.name} on {action.targets[0].name}!");
             CoroutineWithData cd = new CoroutineWithData(this, action.Execute());
@@ -530,9 +546,35 @@ public class BattleMaster : Kami
     {
         gameMaster.RemoveBeingFromList(ID);
     }
-    public void SetActionText(FighterAction a)
+    public void SetActionIcon(int lastAction, FighterAction a)
     {
-        action.text = $"{a.name} \n{a.description}";
+        actionIcon.enabled = true;
+        actionIconModifier.enabled = true;
+        switch (lastAction)
+        {
+            case (int)KeyCode.W:
+                actionIcon.sprite = actionIcons[3];
+                break;
+            case (int)KeyCode.D:
+                actionIcon.sprite = actionIcons[2];
+                break;
+            case (int)KeyCode.S:
+                actionIcon.enabled = false;
+                break;
+            case (int)KeyCode.A:
+                actionIcon.sprite = actionIcons[4];
+                break;
+        }
+        if(a.name.Contains("Buff") || a.name.Contains("Bolster") || a.name.Contains("Mark"))
+        {
+            actionIconModifier.sprite = actionIcons[1];
+        } else if (a.name.Contains("Weak") || a.name.Contains("Vulnerable") || a.name.Contains("Taunt"))
+        {
+            actionIconModifier.sprite = actionIcons[0];
+        } else
+        {
+            actionIconModifier.enabled = false;
+        }
     }
     public void SetEnemyID(int ID)
     {
@@ -556,7 +598,6 @@ public class BattleMaster : Kami
     }
     public void SimulateBattle()
     {
-        this.virtueExpectation.text = "Expected Gain: 0";
         DestroyAllShadows();
         expectedDamageTaken = 0;
         expectedVirtueGain = 0;
@@ -571,6 +612,7 @@ public class BattleMaster : Kami
                 allFighters.BeingDatas[i].gameObject.transform.rotation,
                 allFighters.BeingDatas[i].gameObject.transform);
             shadowScripts[i] = shadows[i].GetComponent<FighterShadow>();
+            shadows[i].GetComponent<SpriteRenderer>().enabled = false;
             shadowScripts[i].InjectShadowData(origin);
         }
         List<FighterShadow> list = shadowScripts.ToList<FighterShadow>();
@@ -581,18 +623,16 @@ public class BattleMaster : Kami
             shadowScripts[i].SimulateAction();
         }
     }
-    public void Update() //this exists soley to test the SimulateShadowActions function
+    private void SimulateShadowsButton()
     {
-        if (Input.GetKeyDown(KeyCode.R))
-        {
-            playingShadows = false;
-            StartCoroutine(SimulateShadowActions());
-        }
+        playingShadows = false;
+        StartCoroutine(SimulateShadowActions());
     }
     public IEnumerator SimulateShadowActions()
     {
         SimulateBattle();
         playingShadows = true;
+        ToggleShadowSprites();
         for (int i = 0; i < shadowScripts.Length; i++)
         {
             if (shadowScripts[i].currentAction != null && shadowScripts[i].currentAction.targets != null)
@@ -613,6 +653,7 @@ public class BattleMaster : Kami
                 }
             }
         }
+        ToggleShadowSprites();
         playingShadows = false;
         yield return true;
     }
@@ -625,6 +666,14 @@ public class BattleMaster : Kami
             {
                 allFighters.BeingDatas[i].gameObject.GetComponent<Human>().AddToVirtue(virtueGain);
             }
+        }
+    }
+    private void ToggleShadowSprites()
+    {
+        for (int i = 0; i < shadowScripts.Length; i++)
+        {
+            SpriteRenderer sr = shadowScripts[i].GetComponent<SpriteRenderer>();
+            sr.enabled = !sr.enabled;
         }
     }
     private void UpdateBothPartiesFromAllFigthers()
@@ -644,8 +693,8 @@ public class BattleMaster : Kami
         }
         this.FillMembers(allyMembers, foeMembers);
     }
-    public void UpdateVirtueText()
+    public void UpdateVirtueBar()
     {
-        this.virtue.text = $"Virtue expectation: {virtueValue}/{this.virtueMax}";
+        //move needle just a bit
     }
 }

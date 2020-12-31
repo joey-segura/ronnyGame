@@ -7,11 +7,10 @@ public class SavageJson
     public int damage;
     public float speed, health, virtueValue;
     public string[] party;
+    public Vector4[] patrolPoints;
 }
 public class Savage : Enemy
 {
-    public float speed;
-
     public override void InjectData(string jsonData)
     {
         if (JsonUtility.FromJson<BeingData>(jsonData) != null)
@@ -26,6 +25,7 @@ public class Savage : Enemy
                 this.damage = savage.damage;
                 this.party = savage.party;
                 this.virtueValue = savage.virtueValue;
+                this.patrolPoints = savage.patrolPoints == null ? null : (Vector4[])savage.patrolPoints.Clone();
             }
             else
             {
@@ -97,6 +97,7 @@ public class Savage : Enemy
         savage.damage = this.damage;
         savage.party = this.party;
         savage.virtueValue = this.virtueValue;
+        savage.patrolPoints = this.patrolPoints == null ? null : (Vector4[])this.patrolPoints.Clone();
         return JsonUtility.ToJson(savage);
     }
 }

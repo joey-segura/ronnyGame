@@ -7,11 +7,10 @@ public class GluttonJson
     public int damage;
     public float speed, health, virtueValue;
     public string[] party;
+    public Vector4[] patrolPoints;
 }
 public class Glutton : Enemy
 {
-    public float speed;
-
     public override void InjectData(string jsonData)
     {
         if (JsonUtility.FromJson<BeingData>(jsonData) != null)
@@ -26,6 +25,7 @@ public class Glutton : Enemy
                 this.damage = glutton.damage;
                 this.party = glutton.party;
                 this.virtueValue = glutton.virtueValue;
+                this.patrolPoints = glutton.patrolPoints == null ? null : (Vector4[])glutton.patrolPoints.Clone();
             }
             else
             {
@@ -78,6 +78,7 @@ public class Glutton : Enemy
         glutton.damage = this.damage;
         glutton.party = this.party;
         glutton.virtueValue = this.virtueValue;
+        glutton.patrolPoints = this.patrolPoints == null ? null : (Vector4[])this.patrolPoints.Clone();
         return JsonUtility.ToJson(glutton);
     }
 }

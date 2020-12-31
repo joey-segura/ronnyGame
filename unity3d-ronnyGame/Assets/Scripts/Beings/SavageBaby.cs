@@ -22,7 +22,7 @@ public class SavageBaby : Enemy
             }
             else
             {
-                this.health = 8;
+                this.health = 9;
                 this.virtueValue = 2;
             }
             this.ID = being.objectID;
@@ -44,7 +44,8 @@ public class SavageBaby : Enemy
         {
             battleMasterScript = this.GetComponentInParent<BattleMaster>();
         }
-        FighterAction sacrifice = new BuffAttack(3, 3, 4, null);
+        FighterAction sacrifice = new BuffAttack(3, 5, 8, null);
+        FighterAction atk = new Attack(3, 8, null);
         GameObject joey = null;
         if (joey = battleMasterScript.GetAllyObject())
         {
@@ -60,9 +61,12 @@ public class SavageBaby : Enemy
             }
             sacrifice.targets = new GameObject[] { joey };
             sacrifice.originator = this.gameObject;
+            atk.targets = sacrifice.targets;
+            atk.originator = this.gameObject;
             //battleMasterScript.StartCoroutine(sacrifice.Execute());
 
             battleMasterScript.StartCoroutine(battleMasterScript.ProcessAction(sacrifice));
+            battleMasterScript.StartCoroutine(battleMasterScript.ProcessAction(atk));
         }
     }
     public override FighterAction TurnAction(ListBeingData allFighters)

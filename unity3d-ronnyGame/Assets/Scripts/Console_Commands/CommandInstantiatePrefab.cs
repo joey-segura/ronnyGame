@@ -15,8 +15,8 @@ namespace Console
         {
             Description = "This is used to instantaite gameobjects";
             Help = "This command requires one parameter 'prefabname'";
-            Name = "CreateBeing";
-            Command = "createbeing";
+            Name = "Spawn";
+            Command = "spawn";
 
 
             AddThisToList();
@@ -29,12 +29,11 @@ namespace Console
                 BeingData being = new BeingData();
                 being.prefabName = args[1];
                 being.objectID = -1;
-                being.location = gameMaster.GetPlayerGameObject().transform.position;
+                being.location = gameMaster.GetPlayerGameObject().transform.position + new Vector3(5,5,5);
                 being.angle = new Quaternion(0, 0, 0, 0);
                 gameMaster.InstantiateObject(JsonUtility.ToJson(being));
                 
                 return "Object instantiated sucessfully";
-                
                 
             } else if (Resources.Load($"Prefabs/{args[1]}") == null)
             {

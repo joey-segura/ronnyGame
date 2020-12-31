@@ -7,11 +7,10 @@ public class ZerkerJson
     public int damage;
     public float speed, health, virtueValue;
     public string[] party;
+    public Vector4[] patrolPoints;
 }
 public class Zerker : Enemy
 {
-    public float speed;
-
     public override void InjectData(string jsonData)
     {
         if (JsonUtility.FromJson<BeingData>(jsonData) != null)
@@ -26,12 +25,13 @@ public class Zerker : Enemy
                 this.damage = zerker.damage;
                 this.party = zerker.party;
                 this.virtueValue = zerker.virtueValue;
+                this.patrolPoints = zerker.patrolPoints == null ? null : (Vector4[])zerker.patrolPoints.Clone();
             }
             else
             {
                 this.speed = 0;
                 this.health = 10;
-                this.damage = 1;
+                this.damage = 2;
                 this.party = null;
                 this.virtueValue = 2;
             }
@@ -57,7 +57,7 @@ public class Zerker : Enemy
     {
         this.RecalculateActions();
         GameObject joey = battleMasterScript.GetAllyObject();
-        if (!HasEffect("Berserker"))
+        if (!HasEffect("Berserk"))
         {
             FighterAction action = this.actionList.Find(x => x.name == "Berserker");
             action.targets = new GameObject[] { this.gameObject };
@@ -88,6 +88,7 @@ public class Zerker : Enemy
         zerker.damage = this.damage;
         zerker.party = this.party;
         zerker.virtueValue = this.virtueValue;
+        zerker.patrolPoints = this.patrolPoints == null ? null : (Vector4[])this.patrolPoints.Clone();
         return JsonUtility.ToJson(zerker);
     }
 }

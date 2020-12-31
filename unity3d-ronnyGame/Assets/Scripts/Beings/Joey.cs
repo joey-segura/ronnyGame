@@ -12,7 +12,6 @@ public class JoeyJson
 public class Joey : Human
 {
     public GameObject ronny;
-    public float speed;
     public bool member = true, follow = true;
     private new void Update()
     {
@@ -114,17 +113,19 @@ public class Joey : Human
     }
     public void RageMode()
     {
-        this.damage += 5;
+        Debug.Log("RageMode function called");
+        /*this.damage += 5;
         SpriteRenderer spr = this.GetComponent<SpriteRenderer>();
-        spr.color = Color.red;
+        spr.color = Color.red;*/
     }
     public override void RecalculateActions()
     {
         this.actionList = new List<FighterAction>();
-        switch (GetLevel())
+        this.actionList.Add(new Attack(3, Mathf.FloorToInt(this.damage * this.damageMultiplier), null));
+        /*switch (GetLevel())
         {
             case 0:
-                this.actionList.Add(new Attack(3, Mathf.FloorToInt(this.damage * this.damageMultiplier), null));
+                
                 break;
             case 1:
                 this.actionList.Add(new Attack(3, Mathf.FloorToInt(this.damage * this.damageMultiplier), null));
@@ -138,7 +139,7 @@ public class Joey : Human
                 break;
             case 5:
                 break;
-        }
+        }*/
         
         //this.actionList.Add(new Cleave(3, this.damage * this.damageMultiplier, null));
         //this.actionList.Add(new ApplyThorns(3, 3, .5f, null));

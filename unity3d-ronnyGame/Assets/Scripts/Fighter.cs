@@ -14,6 +14,8 @@ public class Fighter : Being
     public bool isStunned = false, isPoisoned = false;
     protected bool isBattle = false;
 
+    private Shader defaultShader;
+
     public string[] party;
     public FighterAction currentAction = null;
     public Dictionary<int, Effect> currentEffects = new Dictionary<int, Effect>();
@@ -22,6 +24,7 @@ public class Fighter : Being
 
     public Vector3 battlePosition;
     public Dictionary<int, Func<int, Fighter, int>> onHitEffects = new Dictionary<int, Func<int, Fighter, int>>();
+    public Dictionary<int, Func<int, Fighter, int>> onAttackEffects = new Dictionary<int, Func<int, Fighter, int>>();
 
     public void AddEffect(Fighter fighter, Effect effect)
     {
@@ -39,7 +42,11 @@ public class Fighter : Being
         Debug.Log($"{this.name} has {onHitEffects.Count} onhit functions");
         if (!heal)
         {
-            change = change + this.defense;
+            change = change + this.defense > 0 ? 0 : change + this.defense;
+            foreach (Func<int, Fighter, int> a in causer.onAttackEffects.Values)
+            {
+                a.Invoke(change, causer);
+            }
         }
         Debug.Log($"{this.name}'s health just got changed by {change}");
         if (change < 0)
@@ -48,6 +55,18 @@ public class Fighter : Being
         }
         this.health += change;
         this.DeathCheck(causer.gameObject);
+    }
+    public bool AddToOnAttackEffects(int key, Func<int, Fighter, int> method)
+    {
+        if (onAttackEffects.ContainsKey(key))
+        {
+            return false;
+        }
+        else
+        {
+            onAttackEffects.Add(key, method);
+            return true;
+        }
     }
     public bool AddToOnHitEffects(int key, Func<int, Fighter, int> method)
     {
@@ -80,29 +99,33 @@ public class Fighter : Being
     public IEnumerator MoveToBattleTarget(FighterAction action) {
         float distance = 0;
         Vector3 newPos;
-        if (this.transform.position.x > 0)
+        if (action.targets[0] != null)
         {
-            distance = -.25f;
-        }
-        else
-        {
-            distance = .25f;
-        }
-        if (action.IsActionAOE())
-        {
-            newPos = new Vector3(this.transform.position.x + distance, this.transform.position.y, this.transform.position.z);
-        } else if (action.targets[0] == this.gameObject)
-        {
-            newPos = battlePosition;
-        }
-        else
-        {
-            newPos = Vector3.Lerp(this.transform.position, action.targets[0].GetComponent<Fighter>().battlePosition, .75f);
-        }
-        while (this.transform.position != newPos)
-        {
-            this.transform.position = Vector3.MoveTowards(this.transform.position, newPos, 15 * Time.deltaTime);
-            yield return new WaitForEndOfFrame();
+            if (this.transform.position.x > 0)
+            {
+                distance = -.25f;
+            }
+            else
+            {
+                distance = .25f;
+            }
+            if (action.IsActionAOE())
+            {
+                newPos = new Vector3(this.transform.position.x + distance, this.transform.position.y, this.transform.position.z);
+            }
+            else if (action.targets[0] == this.gameObject)
+            {
+                newPos = battlePosition;
+            }
+            else
+            {
+                newPos = Vector3.Lerp(this.transform.position, action.targets[0].GetComponent<Fighter>().battlePosition, .75f);
+            }
+            while (this.gameObject != null && this.transform.position != newPos)
+            {
+                this.transform.position = Vector3.MoveTowards(this.transform.position, newPos, 15 * Time.deltaTime);
+                yield return new WaitForEndOfFrame();
+            }
         }
         yield return true;
     }
@@ -169,10 +192,9 @@ public class Fighter : Being
     {
         Shader whiteGUI = Shader.Find("GUI/Text Shader");
         SpriteRenderer self = this.GetComponent<SpriteRenderer>();
-        Shader defaultShad = self.material.shader;
         self.material.shader = whiteGUI;
         yield return new WaitForSeconds(seconds);
-        self.material.shader = defaultShad;
+        self.material.shader = defaultShader;
     }
     public List<FighterAction> GetActions()
     {
@@ -236,9 +258,10 @@ public class Fighter : Being
         this.isBattle = true;
         this.battlePosition = this.transform.position;
         this.RemoveAllEffects();
+        this.defaultShader = this.GetComponent<SpriteRenderer>().material.shader;
         return; // this is for any enemy script to disable their movement script once the battle starts
     }
-    private void OnGUI()
+    private new void OnGUI()
     {
         if (isBattle)
         {
@@ -267,6 +290,7 @@ public class Fighter : Being
             
             GUI.Box(rect, $"Name: {name}\n HP: {health}\n Damage: {damage}\n Defense: {defense}\n Action: {(this.currentAction != null ? this.currentAction.name : string.Empty)}");
         }
+        base.OnGUI();
     }
     public virtual void RecalculateActions()
     {
@@ -312,6 +336,17 @@ public class Fighter : Being
     public bool RemoveEffect(int key)
     {
         if (currentEffects.Remove(key))
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+    public bool RemoveOnAttackEffect(int key)
+    {
+        if (onAttackEffects.Remove(key))
         {
             return true;
         }

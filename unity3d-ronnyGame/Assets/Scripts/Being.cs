@@ -16,12 +16,10 @@ public class Being : MonoBehaviour
     public BattleMaster battleMasterScript;
     public SoundMaster soundMasterScript;
 
+    public float speed;
+
     private bool debugMode = false;
-
-    public bool interactable = false;
-
-    public bool isStaticToCamera = false;
-
+    public bool isStaticToCamera = false, interactable = false, inTransit = false;
     protected bool isHovering = false;
 
     public int ID { get; set; }
@@ -32,9 +30,9 @@ public class Being : MonoBehaviour
 
     public Canvas canvas;
 
-    private void OnGUI()
+    protected void OnGUI()
     {
-        if (debugMode && this.GetComponent<Renderer>().isVisible)
+        if (debugMode && (this.GetComponent<Renderer>().isVisible || this.GetComponent<SpriteRenderer>().isVisible))
         {
             Vector3[] verts;
             if (this.gameObject.GetComponent<MeshFilter>() != null) //3D objects
@@ -42,7 +40,7 @@ public class Being : MonoBehaviour
                 Mesh mesh = this.gameObject.GetComponent<MeshFilter>().mesh;
                 verts = mesh.vertices;
             }
-            else //2D
+            else//2D
             {
                 SpriteRenderer spriteRenderer = this.gameObject.GetComponent<SpriteRenderer>();
                 Vector3[] vert = new Vector3[spriteRenderer.sprite.vertices.Length];
@@ -52,36 +50,36 @@ public class Being : MonoBehaviour
                 }
                 verts = vert;
             }
-                
-                Vector3 center = cam.WorldToScreenPoint(this.transform.position);
-                float minX = center.x, maxX = center.x, minY = center.y, maxY = center.y;
+            cam = Camera.main;
+            Vector3 center = cam.WorldToScreenPoint(this.transform.position);
+            float minX = center.x, maxX = center.x, minY = center.y, maxY = center.y;
 
-                for (int i = 0; i < verts.Length; i++)
+            for (int i = 0; i < verts.Length; i++)
+            {
+                Vector3 truePoint = transform.TransformPoint(verts[i]);
+                Vector3 screenPoint = cam.WorldToScreenPoint(truePoint);
+                if (screenPoint.x < minX)
                 {
-                    Vector3 truePoint = transform.TransformPoint(verts[i]);
-                    Vector3 screenPoint = cam.WorldToScreenPoint(truePoint);
-                    if (screenPoint.x < minX)
-                    {
-                        minX = screenPoint.x;
-                    }
-                    if (screenPoint.x > maxX)
-                    {
-                        maxX = screenPoint.x;
-                    }
-                    if (screenPoint.y < minY)
-                    {
-                        minY = screenPoint.y;
-                    }
-                    if (screenPoint.y > maxY)
-                    {
-                        maxY = screenPoint.y;
-                    }
+                    minX = screenPoint.x;
                 }
+                if (screenPoint.x > maxX)
+                {
+                    maxX = screenPoint.x;
+                }
+                if (screenPoint.y < minY)
+                {
+                    minY = screenPoint.y;
+                }
+                if (screenPoint.y > maxY)
+                {
+                    maxY = screenPoint.y;
+                }
+            }
 
-                float width = maxX - minX;
-                float height = maxY - minY;
+            float width = maxX - minX;
+            float height = maxY - minY;
 
-                GUI.Box(new Rect(minX, (Screen.height - maxY), width, height), $"{this.gameObject.name} {ID.ToString()}");
+            GUI.Box(new Rect(minX, (Screen.height - maxY), width, height), $"{this.gameObject.name}\n {ID.ToString()}");
         }
     }
     protected void Update()
@@ -112,6 +110,26 @@ public class Being : MonoBehaviour
     public void ChangeTransparancy(float alpha = .7f)
     {
         this.GetComponent<MeshRenderer>().material.color = new Color(1.0f, 1.0f, 1.0f, alpha);
+    }
+    public IEnumerator ChaseObject(GameObject obj)
+    {
+        if (inTransit)
+        {
+            inTransit = false;
+            yield return new WaitForEndOfFrame();
+        }
+        Vector3 loc = obj.transform.position;
+        inTransit = true;
+        while (this.transform.position != loc)
+        {
+            if (!inTransit || obj == null) //someone kicked us out
+                break;
+            loc = obj.transform.position;
+            this.transform.position = Vector3.MoveTowards(this.transform.position, loc, speed * Time.deltaTime);
+            yield return new WaitForEndOfFrame();
+        }
+        inTransit = false;
+        yield return true;
     }
     public virtual string CompactBeingDataIntoJson()
     {
@@ -154,6 +172,22 @@ public class Being : MonoBehaviour
     public virtual void Interact()
     {
         //will be overriden by extended objects but left to be referenced by Being.Interact()
+    }
+    public IEnumerator MoveToStaticLoc(Vector3 loc)
+    {
+        if (!inTransit)
+        {
+            inTransit = true;
+            while (this.transform.position != loc)
+            {
+                if (!inTransit) //someone kicked us out
+                    break;
+                this.transform.position = Vector3.MoveTowards(this.transform.position, loc, speed * Time.deltaTime);
+                yield return new WaitForEndOfFrame();
+            }
+            inTransit = false;
+        }
+        yield return true;
     }
     private void OnDestroy()
     {

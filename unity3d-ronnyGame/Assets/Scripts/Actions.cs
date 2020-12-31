@@ -536,7 +536,7 @@ public class DoubleAttack : FighterAction
     public int damage;
     public DoubleAttack(int _duration, int _damage, Animation _animation)
     {
-        this.name = "Attack";
+        this.name = "Double Attack";
         this.description = $"Attack twice for {_damage}";
         this.duration = _duration;
         this.damage = _damage;
@@ -555,39 +555,6 @@ public class DoubleAttack : FighterAction
         {
             targets[i].GetComponent<Fighter>().AddToHealth(this.damage * -1, this.originator.GetComponent<Fighter>());
             targets[i].GetComponent<Fighter>().AddToHealth(this.damage * -1, this.originator.GetComponent<Fighter>());
-        }
-        yield return true;
-    }
-    public override void ReevaluateActionValues(Fighter self)
-    {
-        this.damage = Mathf.FloorToInt(self.damage * self.damageMultiplier);
-    }
-}
-public class LifeSteal : FighterAction
-{
-    public int damage;
-    public LifeSteal(int _duration, int _damage, Animation _animation)
-    {
-        this.name = "Life Steal";
-        this.description = $"Attack and heal for _damage";
-        this.duration = _duration;
-        this.damage = _damage;
-        this.animation = _animation;
-        this.targetCount = 1;
-        this.validTargets = new string[] { "Foe" };
-    }
-    public override FighterAction Clone()
-    {
-        return new LifeSteal(this.duration, this.damage, this.animation);
-    }
-    public override IEnumerator Execute()
-    {
-
-        for (int i = 0; i < targets.Length; i++)
-        {
-            Fighter self = this.originator.GetComponent<Fighter>();
-            targets[i].GetComponent<Fighter>().AddToHealth(this.damage * -1, self);
-            self.AddToHealth(this.damage, self);
         }
         yield return true;
     }
@@ -648,7 +615,6 @@ public class StunAttack : FighterAction
             yield return true;
         } else
         {
-            Debug.Log(1 < 1);
             Effect stun = new Stun(effectDuration);
             for (int i = 0; i < targets.Length; i++)
             {
@@ -755,7 +721,7 @@ public class Mark : FighterAction
                 name = "Mark+";
                 targetCount = 0;
                 Ronny ronny = this.originator.name.Contains("Shadow") ? ronny = this.originator.GetComponentInParent<Ronny>() : ronny = this.originator.GetComponent<Ronny>();
-                cost = 10 + 5 * (this.GetAOETargets(ronny.battleMasterScript.allFighters).Length - 1);
+                cost = 10 + 3 * (this.GetAOETargets(ronny.battleMasterScript.allFighters).Length - 1);
                 this.description = $"Mark all targets for Joey to attack";
                 break;
         }
@@ -841,7 +807,7 @@ public class Taunt : FighterAction
                 name = "Taunt+";
                 targetCount = 0;
                 Ronny ronny = this.originator.name.Contains("Shadow") ? ronny = this.originator.GetComponentInParent<Ronny>() : ronny = this.originator.GetComponent<Ronny>();
-                cost = 10 + 5 * (this.GetAOETargets(ronny.battleMasterScript.allFighters).Length - 1);
+                cost = 10 + 3 * (this.GetAOETargets(ronny.battleMasterScript.allFighters).Length - 1);
                 this.description = $"Causes all foes to attack you";
                 break;
         }

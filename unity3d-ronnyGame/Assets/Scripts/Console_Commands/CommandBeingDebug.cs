@@ -16,7 +16,7 @@ namespace Console
             Description = "This will display the beings colider as well as display information about that being";
             Help = "This command toggles all beings into debug mode or just a specific ID if ID is supplied as the first parameter";
             Name = "BeingDebug";
-            Command = "beingdebug";
+            Command = "debug";
             
             AddThisToList();
         }

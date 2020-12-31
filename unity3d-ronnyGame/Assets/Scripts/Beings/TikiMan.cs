@@ -7,11 +7,10 @@ public class TikiManJson
     public int damage;
     public float speed, health, virtueValue;
     public string[] party;
+    public Vector4[] patrolPoints;
 }
 public class TikiMan : Enemy
 {
-    public float speed;
-
     public override void InjectData(string jsonData)
     {
         if (JsonUtility.FromJson<BeingData>(jsonData) != null)
@@ -26,12 +25,13 @@ public class TikiMan : Enemy
                 this.damage = tikiMan.damage;
                 this.party = tikiMan.party;
                 this.virtueValue = tikiMan.virtueValue;
+                this.patrolPoints = tikiMan.patrolPoints == null ? null : (Vector4[])tikiMan.patrolPoints.Clone();
             }
             else
             {
                 this.speed = 0;
                 this.health = 16;
-                this.damage = 2;
+                this.damage = 6;
                 this.party = null;
                 this.virtueValue = 2;
             }
@@ -84,6 +84,7 @@ public class TikiMan : Enemy
         tikiMan.damage = this.damage;
         tikiMan.party = this.party;
         tikiMan.virtueValue = this.virtueValue;
+        tikiMan.patrolPoints = this.patrolPoints == null ? null : (Vector4[])this.patrolPoints.Clone();
         return JsonUtility.ToJson(tikiMan);
     }
 }

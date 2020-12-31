@@ -7,11 +7,10 @@ public class CannibalJson
     public int damage;
     public float speed, health, virtueValue;
     public string[] party;
+    public Vector4[] patrolPoints;
 }
 public class Cannibal : Enemy
 {
-    public float speed;
-
     public override void InjectData(string jsonData)
     {
         if (JsonUtility.FromJson<BeingData>(jsonData) != null)
@@ -26,6 +25,7 @@ public class Cannibal : Enemy
                 this.damage = cannibal.damage;
                 this.party = cannibal.party;
                 this.virtueValue = cannibal.virtueValue;
+                this.patrolPoints = cannibal.patrolPoints == null ? null : (Vector4[])cannibal.patrolPoints.Clone();
             }
             else
             {
@@ -44,10 +44,18 @@ public class Cannibal : Enemy
     {
         base.Interact();
     }
+    public override void InitializeBattle()
+    {
+        base.InitializeBattle();
+        Effect lifeSteal = new LifeSteal(99);
+        this.AddEffect(this, lifeSteal);
+        return;
+    }
     public override void RecalculateActions()
     {
         this.actionList = new List<FighterAction>();
-        this.actionList.Add(new LifeSteal(3, this.damage, null));
+        this.actionList.Add(new DoubleAttack(3, this.damage, null));
+        //this.actionList.Add(new LifeSteal(3, this.damage, null));
         base.RecalculateActions();
     }
     public override FighterAction TurnAction(ListBeingData allFighters)
@@ -56,7 +64,7 @@ public class Cannibal : Enemy
         GameObject joey = battleMasterScript.GetAllyObject();
         if (joey != null)
         {
-            FighterAction action = this.actionList.Find(x => x.name == "Life Steal");
+            FighterAction action = this.actionList.Find(x => x.name == "Double Attack");
             action.targets = new GameObject[] { joey };
             action.originator = this.gameObject;
             this.currentAction = action;
@@ -78,6 +86,7 @@ public class Cannibal : Enemy
         cannibal.damage = this.damage;
         cannibal.party = this.party;
         cannibal.virtueValue = this.virtueValue;
+        cannibal.patrolPoints = this.patrolPoints == null ? null : (Vector4[])this.patrolPoints.Clone();
         return JsonUtility.ToJson(cannibal);
     }
 }

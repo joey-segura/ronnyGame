@@ -134,6 +134,35 @@ public class Bolster : Effect
         fighter.defense = fighter.defense - this.additive;
     }
 }
+public class LifeSteal : Effect
+{
+    public LifeSteal(int _duration)
+    {
+        this.name = "LifeSteal";
+        this.duration = _duration;
+    }
+    public override void Affliction(Fighter fighter)
+    {
+        this.self = fighter;
+        if (key == -1) // don't add another onHitEffect if we already have a key assigned
+        {
+            this.key = this.GenerateValidKeyForOnHitEffects(fighter);
+            fighter.AddToOnAttackEffects(this.key, this.Steal);
+        }
+    }
+    private int Steal(int change, Fighter self)
+    {
+        self.AddToHealth(Mathf.Abs(change), self);
+        return 0;
+    }
+    public override void Cleanse(Fighter fighter)
+    {
+        if (!fighter.RemoveOnAttackEffect(key))
+        {
+            Debug.LogWarning($"Effect '{this.name}' not found with key {key}");
+        }
+    }
+}
 public class Poison : Effect
 {
     private GameObject causer;

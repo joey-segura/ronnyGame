@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 3898894396780799268}
   - component: {fileID: 3898894396780799269}
   - component: {fileID: 3898894396780799270}
-  - component: {fileID: 3898894396780799271}
+  - component: {fileID: 1233812856265333123}
   - component: {fileID: 7755155547644253842}
   m_Layer: 0
   m_Name: Savage_Female
@@ -103,7 +103,7 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
---- !u!114 &3898894396780799271
+--- !u!114 &1233812856265333123
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -112,27 +112,30 @@ MonoBehaviour:
   m_GameObject: {fileID: 3898894396780799264}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2f3803474496dcb4cabf30ee222cebb8, type: 3}
+  m_Script: {fileID: 11500000, guid: b40fcd9caa53c114b83ccd9685db3167, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   Kami: {fileID: 0}
   gameMasterScript: {fileID: 0}
   battleMasterScript: {fileID: 0}
+  soundMasterScript: {fileID: 0}
+  speed: 0
+  isStaticToCamera: 1
   interactable: 0
-  isStaticToCamera: 0
+  inTransit: 0
   beingData: 
   canvas: {fileID: 0}
   health: 0
-  damage: 0
   damageMultiplier: 1
-  defenseMultiplier: 1
+  damage: 0
+  defense: 0
   isStunned: 0
   isPoisoned: 0
   party: []
-  direction: []
   battlePosition: {x: 0, y: 0, z: 0}
+  patrolPoints: []
   virtueValue: 0
-  speed: 0
+  chasingPlayer: 0
 --- !u!65 &7755155547644253842
 BoxCollider:
   m_ObjectHideFlags: 0

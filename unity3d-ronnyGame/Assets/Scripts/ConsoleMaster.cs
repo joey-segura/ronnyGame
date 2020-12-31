@@ -21,6 +21,8 @@ namespace Console
     public class ConsoleMaster : MonoBehaviour
     {
 
+        public string[] previousInputs;
+        private int viewingIndex = -1;
         public static Dictionary<string,ConsoleCommand> Commands;
 
         public Canvas consoleCanvas;
@@ -47,6 +49,7 @@ namespace Console
             CommandDescription.CreateCommand();
             CommandInstantiatePrefab.CreateCommand();
             CommandChangeScene.CreateCommand();
+            CommandGenerateObjectJson.CreateCommand();
 
             CommandHelp.CreateCommand();
         }
@@ -58,11 +61,20 @@ namespace Console
                 Commands.Add(name, Command);
             }
         }
-        
         public void AddLineToConsole(string input)
         {
             consoleText.text += $"{input} \n";
             //consoleText.text += input + "\n";
+        }
+        public void CollectInput(string input)
+        {
+            string[] placeHolder = new string[previousInputs.Length + 1];
+            for (int i = 0; i < previousInputs.Length; i++)
+            {
+                placeHolder[i + 1] = previousInputs[i];
+            }
+            placeHolder[0] = input;
+            previousInputs = placeHolder;
         }
         private void ParseInput(string input)
         {
@@ -91,7 +103,7 @@ namespace Console
                 consoleCanvas.gameObject.SetActive(!consoleCanvas.gameObject.activeInHierarchy);
                 consoleInput.Select();
                 consoleInput.ActivateInputField();
-                inputText.text = string.Empty;
+                consoleInput.text = string.Empty;
             }
             if (consoleCanvas.gameObject.activeInHierarchy)
             {
@@ -101,8 +113,44 @@ namespace Console
                     {
                         AddLineToConsole(inputText.text);
                         ParseInput(inputText.text);
-                        inputText.text = string.Empty;
+                        CollectInput(inputText.text);
+                        consoleInput.text = string.Empty;
+                        consoleInput.Select();
+                        consoleInput.ActivateInputField();
+                        viewingIndex = -1;
                     }
+                }
+            }
+            if (Input.GetKeyDown(KeyCode.UpArrow))
+            {
+                if (previousInputs.Length == 0)
+                {
+                    return;
+                }
+                viewingIndex++;
+                if (viewingIndex > 9)
+                {
+                    viewingIndex = 9;
+                }
+                if (viewingIndex > previousInputs.Length - 1 || previousInputs[viewingIndex] == null || previousInputs[viewingIndex] == string.Empty)
+                {
+                    viewingIndex--;
+                }
+                consoleInput.text = previousInputs[viewingIndex];
+            } else if (Input.GetKeyDown(KeyCode.DownArrow))
+            {
+                if (previousInputs.Length == 0)
+                {
+                    return;
+                }
+                viewingIndex--;
+                if (viewingIndex < 0)
+                {
+                    viewingIndex = -1;
+                    consoleInput.text = string.Empty;
+                } else
+                {
+                    consoleInput.text = previousInputs[viewingIndex];
                 }
             }
         }

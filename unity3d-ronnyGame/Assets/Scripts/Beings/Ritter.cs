@@ -11,8 +11,7 @@ public class RitterJson
 public class Ritter : Human
 {
     public GameObject ronny;
-    public float speed;
-    private bool follow = true;
+    public bool follow = true;
     private new void Update()
     {
         if (ronny != null && follow)

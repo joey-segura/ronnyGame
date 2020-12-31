@@ -8,7 +8,7 @@ public class SceneMaster : Kami
     public static SceneMaster Instance { get; private set; }
     public bool[] levelLoaded = { false, false, false, false, false, false, false, false, false, false, false, false };
 
-    public string[] SCENENAMES = { "exploreScene", "rotation_testScene", "Battle_Scene_Test", "Ritter", "Ritter_Battle", "Joey", "Joey_Battle", "Main_Menu", "Opening_Cinematic" };
+    public string[] SCENENAMES = { "Test", "Battle_Scene_Test", "Ritter", "Ritter_Battle", "Joey", "Joey_Battle", "Main_Menu", "Opening_Cinematic" };
 
     public string currentSceneName;
     public string lastSceneName = "Main_Menu";

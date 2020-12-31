@@ -18,10 +18,9 @@ public class JoeyBurnFence : Trigger
         joeyScript = joey.GetComponent<Joey>();
         joeyScript.follow = false;
         Vector3 destination = new Vector3(target.transform.position.x, joey.transform.position.y, target.transform.position.z);
-        float joeySpeed = joey.GetComponent<Joey>().speed;
-        while (Vector3.Distance(joey.transform.position, destination) > 1)
+        CoroutineWithData cd = new CoroutineWithData(this, joeyScript.MoveToStaticLoc(destination));
+        while (!cd.finished)
         {
-            joey.transform.position = Vector3.MoveTowards(joey.transform.position, destination, Time.deltaTime * joeySpeed);
             yield return new WaitForEndOfFrame();
         }
         Debug.Log("made it to the fence, play animation!");

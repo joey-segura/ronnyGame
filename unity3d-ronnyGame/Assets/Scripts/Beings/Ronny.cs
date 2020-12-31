@@ -10,11 +10,10 @@ public class RonnyJson
 public class Ronny : Human
 {
     private GameObject target = null;
-    public float speed;
-
+    public bool exec = false;
     //turn data
     public GameObject turnTarget = null;
-    private int lastActionSelected = 0, wLevel, dLevel, sLevel, aLevel;
+    public int lastActionSelected = 0, wLevel, dLevel, sLevel, aLevel;
     //end turn data
 
     public Material Outline;
@@ -206,7 +205,7 @@ public class Ronny : Human
         this.currentAction = action;
 
         BattleMaster battleMaster = this.transform.GetComponentInParent<BattleMaster>();
-        battleMaster.SetActionText(action);
+        battleMaster.SetActionIcon(lastActionSelected, action);
         battleMaster.costDamage = action.GetCost();
         battleMaster.SimulateBattle();
     }
@@ -243,9 +242,9 @@ public class Ronny : Human
         }
         else if (this.currentAction == null)
         {
+            lastActionSelected = (int)KeyCode.W;
             this.SetNewAction(GetActionByName("Mark"));
         }
-
         if (!this.currentAction.IsActionAOE())
         {
             GameObject newTarget = this.ChooseTarget(allFighters);
@@ -260,11 +259,12 @@ public class Ronny : Human
                 }
             }
         }
-        if (Input.GetKey(KeyCode.Return) && (this.currentAction.targets != null || this.currentAction.name.Contains("Skip")))
+        if ((Input.GetKey(KeyCode.Return) || exec) && (this.currentAction.targets != null || this.currentAction.name.Contains("Skip")))
         {
             return this.currentAction;
         } else
         {
+            exec = false;
             return null;
         }
     }
@@ -373,9 +373,9 @@ public class Ronny : Human
         }
         currentAction.LevelUpdate();
         SetNewAction(currentAction);
-        battleMasterScript.SetActionText(currentAction);
+        battleMasterScript.SetActionIcon(lastActionSelected, currentAction);
     }
-    public void Update()
+    public new void Update()
     {
         if (Input.GetKeyDown(KeyCode.UpArrow))
         {

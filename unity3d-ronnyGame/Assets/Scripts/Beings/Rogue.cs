@@ -7,11 +7,10 @@ public class RogueJson
     public int damage;
     public float speed, health, virtueValue;
     public string[] party;
+    public Vector4[] patrolPoints;
 }
 public class Rogue : Enemy
 {
-    public float speed;
-   
     public override void InjectData(string jsonData)
     {
         if (JsonUtility.FromJson<BeingData>(jsonData) != null)
@@ -26,6 +25,7 @@ public class Rogue : Enemy
                 this.damage = rogue.damage;
                 this.party = rogue.party;
                 this.virtueValue = rogue.virtueValue;
+                this.patrolPoints = rogue.patrolPoints == null ? null : (Vector4[])rogue.patrolPoints.Clone();
             }
             else
             {
@@ -65,6 +65,7 @@ public class Rogue : Enemy
         rogue.damage = this.damage;
         rogue.party = this.party;
         rogue.virtueValue = this.virtueValue;
+        rogue.patrolPoints = this.patrolPoints == null ? null : (Vector4[])this.patrolPoints.Clone();
         return JsonUtility.ToJson(rogue);
     }
 }
