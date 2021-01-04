@@ -2,13 +2,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class TikiManJson
-{
-    public int damage;
-    public float speed, health, virtueValue;
-    public string[] party;
-    public Vector4[] patrolPoints;
-}
 public class TikiMan : Enemy
 {
     public override void InjectData(string jsonData)
@@ -19,13 +12,7 @@ public class TikiMan : Enemy
             BeingData being = JsonUtility.FromJson<BeingData>(jsonData);
             if (being.jsonData != null && being.jsonData != string.Empty)
             {
-                TikiManJson tikiMan = JsonUtility.FromJson<TikiManJson>(being.jsonData);
-                this.speed = tikiMan.speed;
-                this.health = tikiMan.health;
-                this.damage = tikiMan.damage;
-                this.party = tikiMan.party;
-                this.virtueValue = tikiMan.virtueValue;
-                this.patrolPoints = tikiMan.patrolPoints == null ? null : (Vector4[])tikiMan.patrolPoints.Clone();
+                GenericEnemyInject(being.jsonData);
             }
             else
             {
@@ -78,13 +65,6 @@ public class TikiMan : Enemy
     }
     public override string UpdateBeingJsonData()
     {
-        TikiManJson tikiMan = new TikiManJson();
-        tikiMan.speed = this.speed;
-        tikiMan.health = this.health;
-        tikiMan.damage = this.damage;
-        tikiMan.party = this.party;
-        tikiMan.virtueValue = this.virtueValue;
-        tikiMan.patrolPoints = this.patrolPoints == null ? null : (Vector4[])this.patrolPoints.Clone();
-        return JsonUtility.ToJson(tikiMan);
+        return GenericEnemyJsonify();
     }
 }

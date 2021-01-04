@@ -2,13 +2,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SavageJson
-{
-    public int damage;
-    public float speed, health, virtueValue;
-    public string[] party;
-    public Vector4[] patrolPoints;
-}
 public class Savage : Enemy
 {
     public override void InjectData(string jsonData)
@@ -19,13 +12,7 @@ public class Savage : Enemy
             BeingData being = JsonUtility.FromJson<BeingData>(jsonData);
             if (being.jsonData != null && being.jsonData != string.Empty)
             {
-                SavageJson savage = JsonUtility.FromJson<SavageJson>(being.jsonData);
-                this.speed = savage.speed;
-                this.health = savage.health;
-                this.damage = savage.damage;
-                this.party = savage.party;
-                this.virtueValue = savage.virtueValue;
-                this.patrolPoints = savage.patrolPoints == null ? null : (Vector4[])savage.patrolPoints.Clone();
+                GenericEnemyInject(being.jsonData);
             }
             else
             {
@@ -47,14 +34,7 @@ public class Savage : Enemy
     public override void RecalculateActions()
     {
         this.actionList = new List<FighterAction>();
-        //this.actionList.Add(new AttackAndBuff(3, this.damage * this.damageMultiplier, 2, 2, null));
         this.actionList.Add(new Attack(3, Mathf.FloorToInt(this.damage * this.damageMultiplier), null));
-        /*
-        this.actionList.Add(new WeakAttack(3, 3, 2, null));
-        this.actionList.Add(new BuffAttack(3, 3, 2, null));
-        this.actionList.Add(new BolsterDefense(3, 3, 2, null));
-        this.actionList.Add(new VulnerableAttack(3, 3, 2, null));
-        */
         base.RecalculateActions();
     }
     public override FighterAction TurnAction(ListBeingData allFighters)
@@ -91,13 +71,6 @@ public class Savage : Enemy
     }
     public override string UpdateBeingJsonData()
     {
-        SavageJson savage = new SavageJson();
-        savage.speed = this.speed;
-        savage.health = this.health;
-        savage.damage = this.damage;
-        savage.party = this.party;
-        savage.virtueValue = this.virtueValue;
-        savage.patrolPoints = this.patrolPoints == null ? null : (Vector4[])this.patrolPoints.Clone();
-        return JsonUtility.ToJson(savage);
+        return GenericEnemyJsonify();
     }
 }

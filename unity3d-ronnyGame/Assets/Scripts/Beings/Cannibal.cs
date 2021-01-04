@@ -2,13 +2,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CannibalJson
-{
-    public int damage;
-    public float speed, health, virtueValue;
-    public string[] party;
-    public Vector4[] patrolPoints;
-}
 public class Cannibal : Enemy
 {
     public override void InjectData(string jsonData)
@@ -19,13 +12,7 @@ public class Cannibal : Enemy
             BeingData being = JsonUtility.FromJson<BeingData>(jsonData);
             if (being.jsonData != null && being.jsonData != string.Empty)
             {
-                CannibalJson cannibal = JsonUtility.FromJson<CannibalJson>(being.jsonData);
-                this.speed = cannibal.speed;
-                this.health = cannibal.health;
-                this.damage = cannibal.damage;
-                this.party = cannibal.party;
-                this.virtueValue = cannibal.virtueValue;
-                this.patrolPoints = cannibal.patrolPoints == null ? null : (Vector4[])cannibal.patrolPoints.Clone();
+                GenericEnemyInject(being.jsonData);
             }
             else
             {
@@ -80,13 +67,6 @@ public class Cannibal : Enemy
     }
     public override string UpdateBeingJsonData()
     {
-        CannibalJson cannibal = new CannibalJson();
-        cannibal.speed = this.speed;
-        cannibal.health = this.health;
-        cannibal.damage = this.damage;
-        cannibal.party = this.party;
-        cannibal.virtueValue = this.virtueValue;
-        cannibal.patrolPoints = this.patrolPoints == null ? null : (Vector4[])this.patrolPoints.Clone();
-        return JsonUtility.ToJson(cannibal);
+        return GenericEnemyJsonify();
     }
 }

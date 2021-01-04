@@ -2,13 +2,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SavageFemaleJson
-{
-    public int damage;
-    public float speed, health, virtueValue;
-    public string[] party;
-    public Vector4[] patrolPoints;
-}
 public class SavageFemale : Enemy
 {
     public override void InjectData(string jsonData)
@@ -19,13 +12,7 @@ public class SavageFemale : Enemy
             BeingData being = JsonUtility.FromJson<BeingData>(jsonData);
             if (being.jsonData != null && being.jsonData != string.Empty)
             {
-                SavageFemaleJson savage = JsonUtility.FromJson<SavageFemaleJson>(being.jsonData);
-                this.speed = savage.speed;
-                this.health = savage.health;
-                this.damage = savage.damage;
-                this.party = savage.party;
-                this.virtueValue = savage.virtueValue;
-                this.patrolPoints = savage.patrolPoints == null ? null : (Vector4[])savage.patrolPoints.Clone();
+                GenericEnemyInject(being.jsonData);
             }
             else
             {
@@ -92,13 +79,6 @@ public class SavageFemale : Enemy
     }
     public override string UpdateBeingJsonData()
     {
-        SavageFemaleJson savage = new SavageFemaleJson();
-        savage.speed = this.speed;
-        savage.health = this.health;
-        savage.damage = this.damage;
-        savage.party = this.party;
-        savage.virtueValue = this.virtueValue;
-        savage.patrolPoints = this.patrolPoints == null ? null : (Vector4[])this.patrolPoints.Clone();
-        return JsonUtility.ToJson(savage);
+        return GenericEnemyJsonify();
     }
 }

@@ -2,13 +2,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GluttonJson
-{
-    public int damage;
-    public float speed, health, virtueValue;
-    public string[] party;
-    public Vector4[] patrolPoints;
-}
 public class Glutton : Enemy
 {
     public override void InjectData(string jsonData)
@@ -19,13 +12,7 @@ public class Glutton : Enemy
             BeingData being = JsonUtility.FromJson<BeingData>(jsonData);
             if (being.jsonData != null && being.jsonData != string.Empty)
             {
-                GluttonJson glutton = JsonUtility.FromJson<GluttonJson>(being.jsonData);
-                this.speed = glutton.speed;
-                this.health = glutton.health;
-                this.damage = glutton.damage;
-                this.party = glutton.party;
-                this.virtueValue = glutton.virtueValue;
-                this.patrolPoints = glutton.patrolPoints == null ? null : (Vector4[])glutton.patrolPoints.Clone();
+                GenericEnemyInject(being.jsonData);
             }
             else
             {
@@ -72,13 +59,6 @@ public class Glutton : Enemy
     }
     public override string UpdateBeingJsonData()
     {
-        GluttonJson glutton = new GluttonJson();
-        glutton.speed = this.speed;
-        glutton.health = this.health;
-        glutton.damage = this.damage;
-        glutton.party = this.party;
-        glutton.virtueValue = this.virtueValue;
-        glutton.patrolPoints = this.patrolPoints == null ? null : (Vector4[])this.patrolPoints.Clone();
-        return JsonUtility.ToJson(glutton);
+        return GenericEnemyJsonify();
     }
 }
