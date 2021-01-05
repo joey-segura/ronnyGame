@@ -7,7 +7,7 @@ public abstract class Effect
     public string name { get; set; }
     public int duration { get; set; }
     protected int key = -1;
-    protected Fighter self = null;
+    public Fighter self = null;
     public abstract void Affliction(Fighter fighter); // actually implement effect changes
     public abstract void Cleanse(Fighter fighter); // clears affliction (usually called sometime after affliction)
     public virtual void OnTick(Fighter fighter) //ticks at the start of every turn

@@ -4,6 +4,33 @@ using UnityEngine;
 
 public class Glutton : Enemy
 {
+    public List<Effect> effects = new List<Effect>();
+    public override void DeathTrigger(bool shadow)
+    {
+        foreach(Effect effect in effects)
+        {
+            if (effect.self != null)
+            {
+                if (shadow)
+                {
+                    effect.self.GetShadow().GetComponent<Fighter>().RemoveEffect(effect.GetKey());
+                } else
+                {
+                    effect.Cleanse(effect.self);
+                }
+            }
+        }
+    }
+    public override void BattleStart()
+    {
+        foreach (BeingData obj in battleMasterScript.enemyMembers.BeingDatas)
+        {
+            Effect def = new Bolster(99, 1);
+            Fighter fighter = obj.gameObject.GetComponent<Fighter>();
+            fighter.AddEffect(fighter, def);
+            effects.Add(def);
+        }
+    }
     public override void InjectData(string jsonData)
     {
         if (JsonUtility.FromJson<BeingData>(jsonData) != null)

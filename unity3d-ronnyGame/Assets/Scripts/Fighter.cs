@@ -79,6 +79,7 @@ public class Fighter : Being
             return true;
         }
     }
+    public virtual void BattleStart() { }
     public virtual void DeathCheck(GameObject causer)
     {
         if (this.health <= 0)
@@ -238,7 +239,7 @@ public class Fighter : Being
             return party;
         }
     }
-    private FighterShadow GetShadow()
+    public FighterShadow GetShadow()
     {
         return this.transform.GetComponentInChildren<FighterShadow>();
     }

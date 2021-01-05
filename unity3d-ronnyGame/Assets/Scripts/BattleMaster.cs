@@ -317,11 +317,16 @@ public class BattleMaster : Kami
             being.angle = new Quaternion(0, 0, 0, 0);
             gameMaster.InstantiateObject(JsonUtility.ToJson(being));
         }
+        this.UpdateBothPartiesFromAllFigthers();
         for (int i = 0; i < allFighters.BeingDatas.Count; i++)
         {
             allFighters.BeingDatas[i].gameObject.GetComponent<Fighter>().InitializeBattle(); //stops all movement scripts of each fighter
         }
-        this.UpdateBothPartiesFromAllFigthers();
+        for (int i = 0; i < allFighters.BeingDatas.Count; i++)
+        {
+            allFighters.BeingDatas[i].gameObject.GetComponent<Fighter>().BattleStart(); //stops all movement scripts of each fighter
+        }
+
     }
     private void MoveCameraTo(float x, float y, float z, float ex, float ey, float ez)
     {
