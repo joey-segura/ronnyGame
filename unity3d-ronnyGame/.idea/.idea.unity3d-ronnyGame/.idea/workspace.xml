@@ -12,13 +12,14 @@
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
   </component>
   <component name="HighlightingSettingsPerFile">
-    <setting file="file://$PROJECT_DIR$/Assets/Scripts/displayText.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Assets/Scripts/companionFollow.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.ide.rider@1.1.4/Rider/Editor/RiderInitializer.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/Scripts/SkyboxRoatation.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/Scripts/SunCycle.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/Scripts/LightSwitch.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Scripts/playerMovement.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Assets/Scripts/followCamera.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Scripts/cameraRotation.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Assets/Scripts/playerHealth.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/Scripts/AnimateTextures.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/Scripts/BattleMaster.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/Scripts/SceneMaster.cs" root0="FORCE_HIGHLIGHTING" />
   </component>
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
@@ -27,14 +28,13 @@
         <option value="$PROJECT_DIR$/Assets/cameraFollow.cs" />
         <option value="$PROJECT_DIR$/Assets/Scripts/cameraFollow.cs" />
         <option value="$PROJECT_DIR$/Assets/Scripts/followCamera.cs" />
-        <option value="$PROJECT_DIR$/Assets/Scripts/cameraRotation.cs" />
-        <option value="$PROJECT_DIR$/Assets/Scripts/compFollow.cs" />
-        <option value="$PROJECT_DIR$/Assets/Scripts/compionFollow.cs" />
-        <option value="$PROJECT_DIR$/Assets/Scripts/companionFollow.cs" />
         <option value="$PROJECT_DIR$/Assets/Scripts/playerMovement.cs" />
-        <option value="$PROJECT_DIR$/Assets/Scripts/UIcontroller.cs" />
-        <option value="$PROJECT_DIR$/Assets/Scripts/playerHealth.cs" />
-        <option value="$PROJECT_DIR$/Assets/Scripts/displayText.cs" />
+        <option value="$PROJECT_DIR$/Assets/Scripts/SkyboxRoatation.cs" />
+        <option value="$PROJECT_DIR$/Assets/Scripts/SunCycle.cs" />
+        <option value="$PROJECT_DIR$/Assets/Scripts/AnimateTextures.cs" />
+        <option value="$PROJECT_DIR$/Assets/FixedBGRotation.cs" />
+        <option value="$PROJECT_DIR$/Assets/Scripts/ScrollingBackground.cs" />
+        <option value="$PROJECT_DIR$/Assets/Scripts/LightSwitch.cs" />
       </list>
     </option>
   </component>
@@ -45,7 +45,6 @@
     <property name="Rider.DefaultBreakpoints.AreToggled" value="true" />
     <property name="Rider.ProjectViewActivator.IsNotFirstRun" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="settings.editor.selected.configurable" value="preferences.customizations" />
   </component>
   <component name="RunDashboard">
     <option name="ruleStates">
@@ -59,7 +58,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Attach to Unity Editor.Attach to Unity Editor">
+  <component name="RunManager">
     <configuration name="Attach to Unity Editor &amp; Play" type="UNITY_DEBUG_RUN_CONFIGURATION" factoryName="UNITY_ATTACH_AND_PLAY" show_console_on_std_err="false" show_console_on_std_out="false" port="50000" address="localhost">
       <option name="allowRunningInParallel" value="false" />
       <option name="listenPortForConnections" value="false" />
@@ -88,27 +87,14 @@
       <workItem from="1581556516706" duration="32000" />
       <workItem from="1581557300724" duration="4356000" />
       <workItem from="1581725198143" duration="4624000" />
-      <workItem from="1584673996401" duration="2725000" />
-      <workItem from="1585184642855" duration="1218000" />
-      <workItem from="1585317187968" duration="5931000" />
-      <workItem from="1586400949516" duration="1890000" />
-      <workItem from="1586492701550" duration="4447000" />
-      <workItem from="1586551362831" duration="621000" />
-      <workItem from="1586662533275" duration="292000" />
-      <workItem from="1586903748730" duration="7183000" />
-      <workItem from="1587092927925" duration="451000" />
-      <workItem from="1587348856747" duration="738000" />
-      <workItem from="1587437912523" duration="247000" />
-      <workItem from="1587504698326" duration="71000" />
-      <workItem from="1587534623113" duration="775000" />
-      <workItem from="1588134615148" duration="34000" />
-      <workItem from="1588398179707" duration="336000" />
-      <workItem from="1588485158736" duration="698000" />
-      <workItem from="1588552012563" duration="22000" />
-      <workItem from="1588735934730" duration="409000" />
-      <workItem from="1588868767242" duration="871000" />
-      <workItem from="1588957465560" duration="2804000" />
-      <workItem from="1589253734487" duration="770000" />
+      <workItem from="1596306283851" duration="14000" />
+      <workItem from="1598626156880" duration="2387000" />
+      <workItem from="1598630269151" duration="4187000" />
+      <workItem from="1599334850449" duration="2249000" />
+      <workItem from="1599413589005" duration="4260000" />
+      <workItem from="1601153612197" duration="899000" />
+      <workItem from="1601312131776" duration="730000" />
+      <workItem from="1604950652948" duration="63000" />
     </task>
     <servers />
   </component>
@@ -132,10 +118,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="LOCAL_CHANGES_DETAILS_PREVIEW_SHOWN" value="true" />
-  </component>
-  <component name="WindowStateProjectService">
-    <state x="-2577" y="356" key="SettingsEditor" />
-    <state x="-2577" y="356" key="SettingsEditor/3840.2160/3840.2160" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

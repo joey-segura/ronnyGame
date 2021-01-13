@@ -4,26 +4,40 @@ using UnityEngine;
 
 public class cameraRotation : MonoBehaviour
 {
-    public float speed = 100f;
+    public float speed;
+    private Vector3 lastMousePos;
 
 void Update()
     {
         if (Input.GetKey(KeyCode.Q))
         {
-            transform.Rotate(0, -speed * Time.deltaTime, 0);
-        }
-        else
+            speed = 50f;
+        } else if (Input.GetKey(KeyCode.E))
         {
-            transform.Rotate(0, 0, 0);
-        }
-        
-        if (Input.GetKey(KeyCode.E))
+            speed = -50f;
+        } else if (Input.GetMouseButton(1))
         {
-            transform.Rotate(0, speed * Time.deltaTime, 0);
-        }
-        else
+            Vector3 mousePos = Input.mousePosition;
+            if (lastMousePos != null && lastMousePos != mousePos)
+            {
+                if (mousePos.x > lastMousePos.x)
+                {
+                    speed = (mousePos.x - lastMousePos.x) * 25;
+                } else if (mousePos.x < lastMousePos.x)
+                {
+                    speed = (mousePos.x - lastMousePos.x) * 25;
+                } 
+                lastMousePos = mousePos;
+            } else
+            {
+                lastMousePos = mousePos;
+                speed = 0f;
+            }
+        } else
         {
-            transform.Rotate(0, 0, 0);
+            lastMousePos = Input.mousePosition;
+            speed = 0f;
         }
+        transform.Rotate(0, speed * Time.deltaTime, 0);
     }
 }
