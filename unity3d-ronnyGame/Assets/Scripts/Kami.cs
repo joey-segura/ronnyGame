@@ -11,6 +11,8 @@ public class Kami : MonoBehaviour
     protected static DataMaster dataMaster;
     protected static VisualEffectMaster visualEffectMaster;
     protected static SoundMaster soundMaster;
+    protected static SoundBankMaster soundBankMaster;
+    
 
     protected void Awake()
     {
@@ -24,6 +26,7 @@ public class Kami : MonoBehaviour
         dataMaster = this.GetComponent<DataMaster>();
         visualEffectMaster = this.GetComponent<VisualEffectMaster>();
         soundMaster = this.GetComponent<SoundMaster>();
+        soundBankMaster = this.GetComponent<SoundBankMaster>();
     }
     public virtual string GetMasterData()
     {

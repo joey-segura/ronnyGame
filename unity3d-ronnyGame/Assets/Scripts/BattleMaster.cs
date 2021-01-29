@@ -28,7 +28,7 @@ public class BattleMaster : Kami
     public Sprite[] actionIcons; //0 minus - 1 plus - 2 atk - 3 cmnd - 4 def
     public Texture holder, healthBar, damageBar, costBar, virtueBar;
     public float expectedDamageTaken, costDamage, expectedVirtueGain;
-    private bool isFlashing = false;
+    public bool isFlashing = false;
     private float ronnyMaxHP = 0, guiX, guiY;
     private int virtueValue = 0, virtueMax = 0;
 

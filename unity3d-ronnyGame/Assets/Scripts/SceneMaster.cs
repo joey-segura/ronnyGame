@@ -202,6 +202,7 @@ public class SceneMaster : Kami
             if (consoleOverride) Debug.Log("Console Override");
             consoleOverride = false;
         }
+        soundBankMaster.LoadSounds();
     }
     public bool WasLastSceneBattle()
     {

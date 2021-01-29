@@ -11,7 +11,7 @@ public class Fighter : Being
 {
     public float health, damageMultiplier = 1;
     public int damage, defense = 0;
-    public bool isStunned = false, isPoisoned = false;
+    public bool isStunned = false, isPoisoned = false, playingWalkingSound = false;
     protected bool isBattle = false;
 
     private Shader defaultShader;
@@ -278,20 +278,50 @@ public class Fighter : Being
             {
                 rect = new Rect((Screen.width / 5) - width, (Screen.height - fighterScreenPos.y) - height / 2, width, height);
             }
+            GUI.Box(rect, $"Name: {name}\n HP: {health}\n Damage: {damage}\n Defense: {defense}\n Action: {(this.currentAction != null ? this.currentAction.name : string.Empty)}");
 
-            FighterShadow shadow = null;
-            if (currentAction != null && currentAction.targets != null)
+            int effectIndex = 0;
+            foreach (Effect effect in currentEffects.Values)
             {
-                shadow = GetShadow();
-                if (shadow && !shadow.playing && isHovering)
+                Rect effectRect = rect;
+                effectRect.width = 25;
+                effectRect.height = 25;
+                effectRect.y -= 25;
+                effectRect.x += 25 * effectIndex;
+                effectIndex++;
+                if (effect.duration == 1)
                 {
-                    shadow.StartCoroutine(shadow.PlayAnimations());
+                    if (battleMasterScript.isFlashing)
+                        GUI.Box(effectRect, effect.name.Substring(0, 1));
+                } else
+                {
+                    GUI.Box(effectRect, effect.name.Substring(0, 1));
+                }
+                //Debug.Log($"{effectRect.x} and {effectRect.y} and {Input.mousePosition} and {Screen.height - Input.mousePosition.y}");
+                Vector2 mousePos = new Vector2(Input.mousePosition.x, Screen.height - Input.mousePosition.y);
+                if (effectRect.Contains(mousePos))
+                {
+                    Rect descriptionRect = rect;
+                    descriptionRect.width *= 2;
+                    descriptionRect.height /= 2;
+                    descriptionRect.x = (Screen.width / 2) - (descriptionRect.width / 2);
+                    descriptionRect.y = Screen.height / 2;
+                    GUI.Box(descriptionRect, $"{effect.name}\n {effect.description}");
                 }
             }
-            
-            GUI.Box(rect, $"Name: {name}\n HP: {health}\n Damage: {damage}\n Defense: {defense}\n Action: {(this.currentAction != null ? this.currentAction.name : string.Empty)}");
         }
         base.OnGUI();
+    }
+    public IEnumerator PlayWalkingSound (AudioClip sound)
+    {
+        if (!playingWalkingSound)
+        {
+            playingWalkingSound = true;
+            soundMasterScript.PlaySound(sound, 0);
+            yield return new WaitForSeconds(sound.length);
+            playingWalkingSound = false;
+        }
+        yield return true;
     }
     public virtual void RecalculateActions()
     {

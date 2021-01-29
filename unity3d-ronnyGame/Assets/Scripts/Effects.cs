@@ -5,6 +5,7 @@ using UnityEngine;
 public abstract class Effect
 {
     public string name { get; set; }
+    public string description;
     public int duration { get; set; }
     protected int key = -1;
     public Fighter self = null;
@@ -61,6 +62,7 @@ public class Berserk : Effect
     public Berserk(int _duration, int _toll)
     {
         this.name = "Berserk";
+        this.description = $"Takes {_toll} each turn from fighter's health in exchange for increase in damage";
         this.duration = _duration;
         this.toll = _toll;
     }
@@ -88,6 +90,7 @@ public class Block : Effect
     public Block()
     {
         this.name = "Block";
+        this.description = $"Block all incoming damage for 1 turn";
         this.duration = 1;
     }
     public override void Affliction(Fighter fighter)
@@ -119,6 +122,7 @@ public class Bolster : Effect
         this.name = "Bolster";
         this.duration = _duration;
         this.additive = _additive;
+        this.description = $"Increases defense by {this.additive} for {this.duration}";
     }
     public override void Affliction(Fighter fighter)
     {
@@ -139,6 +143,7 @@ public class LifeSteal : Effect
     public LifeSteal(int _duration)
     {
         this.name = "LifeSteal";
+        this.description = $"Converts all damage dealt by this fighter to heal itself";
         this.duration = _duration;
     }
     public override void Affliction(Fighter fighter)
@@ -172,6 +177,7 @@ public class Poison : Effect
         this.name = "Poison";
         this.duration = _duration;
         this.poisonDamage = _poisonDamage;
+        this.description = $"Deals {this.poisonDamage} each turn for {this.duration} turns";
         this.causer = _causer;
     }
     public override void Affliction(Fighter fighter)
@@ -200,6 +206,7 @@ public class Strengthen : Effect
         this.name = "Strengthen";
         this.duration = _duration;
         this.additive = _additive;
+        this.description = $"Increases fighters damage by {this.additive} for {this.duration}";
     }
     public override void Affliction(Fighter fighter)
     {
@@ -221,6 +228,7 @@ public class Stun : Effect
     {
         this.name = "Stun";
         this.duration = _duration;
+        this.description = $"Fighter's turn is skipped for {this.duration} turns";
     }
     public override void Affliction(Fighter fighter)
     {
@@ -287,6 +295,7 @@ public class Vulnerable : Effect
         this.name = "Vulnerable";
         this.duration = _duration;
         this.additive = _additive;
+        this.description = $"Lower Fighter's defense by {this.additive} for {this.duration}";
     }
     public override void Affliction(Fighter fighter)
     {
@@ -310,6 +319,7 @@ public class Weak : Effect
         this.name = "Weak";
         this.duration = _duration;
         this.value = _value;
+        this.description = $"Decreased damage by {this.value} for {this.duration} turns";
     }
     public override void Affliction(Fighter fighter)
     {

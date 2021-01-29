@@ -9,6 +9,12 @@ public class playerMovement : MonoBehaviour
     public float angle = 0f;
     public Animator anim;
     public CharacterController controller;
+    public Ronny ronny;
+
+    public void Awake()
+    {
+        ronny = this.GetComponent<Ronny>();
+    }
 
     void FixedUpdate()
     {
@@ -113,7 +119,6 @@ public class playerMovement : MonoBehaviour
                         if (!pos)
                         {
                             dist1 = playa.distance;
-
                             lineVector = point2 - playa.point;
                         } else
                         {
@@ -162,6 +167,12 @@ public class playerMovement : MonoBehaviour
                 {
                     //Debug.Log(hit.collider.transform.parent != null ? hit.collider.transform.parent.name : hit.collider.name); //use this to attribute sound
                     this.transform.position = newPos;
+                    if (!ronny.playingWalkingSound)
+                    {
+                        MeshRenderer mesh = hit.collider.gameObject.GetComponent<MeshRenderer>();
+                        AudioClip sound = ronny.soundBankMaster.GetSoundOfTexture("Test", hit.textureCoord);
+                        ronny.StartCoroutine(ronny.PlayWalkingSound(sound));
+                    }
                     //final test to see if we are running off the board, lame solution will need to fix this later
                 }
             }

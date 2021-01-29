@@ -61,6 +61,5 @@ namespace Console
         {
             return new CommandBeingDebug();
         }
-
     }
 }

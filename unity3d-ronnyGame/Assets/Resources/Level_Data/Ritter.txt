@@ -1,4 +1,3 @@
-{"gameObject":"","objectID":-1,"jsonData":"{\"message\":[\"helloworld\"]}","prefabName":"Cylinder","location":{"x":0.0,"y":-2.3,"z":0.0},"angle":{"x":0.0,"y":0.0,"z":0.0,"w":0.0},"scale":{"x":100,"y":1,"z":100}}
 {"gameObject":"","objectID":-1,"jsonData":"{\"message\":[\"Welcome to the game!\"]}","prefabName":"Sign","location":{"x":0.0,"y":1.5,"z":0.0},"angle":{"x":0.0,"y":180.0,"z":0.0,"w":0.0},"scale":{"x":1,"y":1,"z":1}}
 {"gameObject":"","objectID":-1,"jsonData":"{\"speed\":10, \"health\": 30, \"damage\":6}","prefabName":"Ronny","location":{"x":-1.0,"y":1.5,"z":0.0},"angle":{"x":0.0,"y":0.0,"z":0.0,"w":0.0},"scale":{"x":8,"y":8,"z":8}}
 {"gameObject":"","objectID":-1,"jsonData":"{\"ronny\":{}, \"virtue\": 70, \"speed\":8, \"health\": 20, \"damage\":8, \"member\":true}","prefabName":"Joey","location":{"x":-3.0,"y":1.5,"z":1.0},"angle":{"x":0.0,"y":0.0,"z":0.0,"w":0.0},"scale":{"x":8,"y":8,"z":8}}

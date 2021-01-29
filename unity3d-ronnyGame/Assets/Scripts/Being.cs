@@ -12,9 +12,11 @@ public class Being : MonoBehaviour
     // Interact() <- no return value
 
     public GameObject Kami;
+    public Kami kami;
     public GameMaster gameMasterScript;
     public BattleMaster battleMasterScript;
     public SoundMaster soundMasterScript;
+    public SoundBankMaster soundBankMaster;
 
     public float speed;
 
@@ -100,6 +102,7 @@ public class Being : MonoBehaviour
         gameMasterScript = Kami.GetComponent<GameMaster>();
         battleMasterScript = Kami.GetComponent<BattleMaster>();
         soundMasterScript = Kami.GetComponent<SoundMaster>();
+        soundBankMaster = Kami.GetComponent<SoundBankMaster>();
         if (this.gameObject.GetComponentInChildren<Canvas>() != null)
         {
             
