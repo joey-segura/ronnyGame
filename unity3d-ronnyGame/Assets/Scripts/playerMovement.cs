@@ -132,8 +132,7 @@ public class playerMovement : MonoBehaviour
                     anim.SetBool("Moving", true);
                     calc = true;
                 }
-                //Debug.Log($"Dist1:{dist1} Dist2:{dist2}");
-                //Debug.Log(calc);
+
                 newPos = this.transform.position;
 
                 if (calc && (dist2 - dist1) > 0)
@@ -165,8 +164,7 @@ public class playerMovement : MonoBehaviour
             {
                 if (Physics.Raycast(newPos, Vector3.down, out hit, 4))
                 {
-                    //Debug.Log(hit.collider.transform.parent != null ? hit.collider.transform.parent.name : hit.collider.name); //use this to attribute sound
-                    this.transform.position = newPos;
+                    this.transform.position = new Vector3(newPos.x, hit.point.y + 2.75f, newPos.z);
                     if (!ronny.playingWalkingSound)
                     {
                         MeshRenderer mesh = hit.collider.gameObject.GetComponent<MeshRenderer>();

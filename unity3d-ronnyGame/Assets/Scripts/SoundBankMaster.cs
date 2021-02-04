@@ -28,7 +28,7 @@ public abstract class TextureSound
                 return sounds[this.rectSounds[i][soundIndex]];
             }
         }
-        Debug.LogError($"No Sound Found for {this.textureName}");
+        Debug.LogError($"No Sound Found for {this.textureName} at coord {pixelCoord}");
         return null;
     }
 }

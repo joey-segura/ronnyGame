@@ -314,7 +314,7 @@ public class Fighter : Being
     }
     public IEnumerator PlayWalkingSound (AudioClip sound)
     {
-        if (!playingWalkingSound)
+        if (!playingWalkingSound && sound)
         {
             playingWalkingSound = true;
             soundMasterScript.PlaySound(sound, 0);
