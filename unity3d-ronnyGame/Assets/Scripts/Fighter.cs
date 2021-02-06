@@ -206,11 +206,11 @@ public class Fighter : Being
         Vector3 pos = this.transform.position;
         float distance = .2f;
         StartCoroutine(FlashWhite(.4f));
-        this.transform.position = Vector3.MoveTowards(pos, new Vector3(pos.x + distance, pos.y, pos.z), 1);
-        yield return new WaitForSeconds(.05f);
-        this.transform.position = Vector3.MoveTowards(this.transform.position, new Vector3(pos.x - 2 * distance, pos.y, pos.z), 1);
-        yield return new WaitForSeconds(.05f);
-        this.transform.position = Vector3.MoveTowards(this.transform.position, pos, 1);
+        this.transform.position += new Vector3(distance, 0, 0);
+        yield return new WaitForSeconds(.075f);
+        this.transform.position -= new Vector3(2 * distance, 0, 0);
+        yield return new WaitForSeconds(.075f);
+        this.transform.position += new Vector3(distance, 0, 0);
     }
     public FighterAction GetIntention(ListBeingData allFighters)
     {

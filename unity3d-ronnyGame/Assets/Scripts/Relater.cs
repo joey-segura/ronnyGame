@@ -8,9 +8,10 @@ public class Relater : Being
     private GameObject relative;
     private Relater relativeComponent;
 
-    private void Awake()
+    private new void Awake()
     {
         Invoke("FindRelative", 1); // give it a second for all things to load in (necessary)
+        base.Awake();
     }
     private void FindRelative()
     {

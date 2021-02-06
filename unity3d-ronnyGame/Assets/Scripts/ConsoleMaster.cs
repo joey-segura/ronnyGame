@@ -50,6 +50,7 @@ namespace Console
             CommandInstantiatePrefab.CreateCommand();
             CommandChangeScene.CreateCommand();
             CommandGenerateObjectJson.CreateCommand();
+            CommandChangeSong.CreateCommand();
 
             CommandHelp.CreateCommand();
         }

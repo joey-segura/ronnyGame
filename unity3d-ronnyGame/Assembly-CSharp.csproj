@@ -92,6 +92,7 @@
     <Compile Include="Assets\Scripts\ConsoleMaster.cs" />
     <Compile Include="Assets\Scripts\Console_Commands\CommandBeingDebug.cs" />
     <Compile Include="Assets\Scripts\Console_Commands\CommandChangeScene.cs" />
+    <Compile Include="Assets\Scripts\Console_Commands\CommandChangeSong.cs" />
     <Compile Include="Assets\Scripts\Console_Commands\CommandDescription.cs" />
     <Compile Include="Assets\Scripts\Console_Commands\CommandDestroyBeing.cs" />
     <Compile Include="Assets\Scripts\Console_Commands\CommandGenerateObjectJson.cs" />

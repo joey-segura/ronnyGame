@@ -100,10 +100,6 @@ public class Ronny : Human
         }
         return;
     }
-    public override void Interact()
-    {
-        
-    }
     public override void RecalculateActions()
     {
         this.actionList = new List<FighterAction>();
@@ -135,7 +131,7 @@ public class Ronny : Human
         }
         return null;
     }
-    private GameObject[] SetActionTargets(GameObject[] targets)
+    public GameObject[] SetActionTargets(GameObject[] targets)
     {
         UnhighlightAll();
         if (targets == null)
@@ -148,6 +144,7 @@ public class Ronny : Human
             SpriteRenderer targRend = targ.GetComponent<SpriteRenderer>();
             if (targRend.material.name.Contains("Outline"))
             {
+                targRend.material = Outline; //need to reassign because fuck unity
                 targ.GetComponent<SpriteOutline>().enabled = true;
             } else
             {
@@ -377,12 +374,16 @@ public class Ronny : Human
     }
     public new void Update()
     {
-        if (Input.GetKeyDown(KeyCode.UpArrow))
+        if (battleMasterScript.isBattle)
         {
-            UpdateSkills(true);
-        } else if (Input.GetKeyDown(KeyCode.DownArrow))
-        {
-            UpdateSkills(false);
+            if (Input.GetKeyDown(KeyCode.UpArrow))
+            {
+                UpdateSkills(true);
+            }
+            else if (Input.GetKeyDown(KeyCode.DownArrow))
+            {
+                UpdateSkills(false);
+            }
         }
         base.Update();
     }

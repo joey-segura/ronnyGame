@@ -7,7 +7,6 @@ using System.Linq;
 
 public class BattleMaster : Kami
 {
-    private bool turn;
     public bool isBattle = false, playingShadows = false;
     private int enemyID { get; set; }
     public int turnCounter;
@@ -339,6 +338,7 @@ public class BattleMaster : Kami
     {
         if (this.isBattle)
         {
+            //GetPlayerObject().GetComponent<Ronny>().SetActionTargets(null);
             intentions = new List<FighterAction>();
             intentions = this.GetIntentions();
             expectedVirtueGain = 0;
@@ -426,7 +426,7 @@ public class BattleMaster : Kami
         {
             yield return new WaitForEndOfFrame(); // make sure all data is initialized like all entity sprites (yes this was a problem)
         }
-        this.turn = true;
+        //this.turn = true;
         GameObject player = this.GetPlayerObject();
         Ronny ronny = player.GetComponent<Ronny>();
         ronny.TickEffects();
@@ -450,7 +450,7 @@ public class BattleMaster : Kami
         ronny.AddToHealth(action.GetCost() * -1, ronny);
         ronny.StartCoroutine(ronny.MoveToBattlePosition()); ;
         costDamage = 0;
-        turn = false;
+        //turn = false;
         StartCoroutine(ProcessAIActions());
     }
     public IEnumerator ProcessAction(FighterAction action)

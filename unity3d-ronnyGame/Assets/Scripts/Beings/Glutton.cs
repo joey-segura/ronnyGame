@@ -13,10 +13,12 @@ public class Glutton : Enemy
             {
                 if (shadow)
                 {
+                    effect.Cleanse(effect.self.GetShadow());
                     effect.self.GetShadow().GetComponent<Fighter>().RemoveEffect(effect.GetKey());
                 } else
                 {
                     effect.Cleanse(effect.self);
+                    effect.self.GetComponent<Fighter>().RemoveEffect(effect.GetKey());
                 }
             }
         }
@@ -45,7 +47,7 @@ public class Glutton : Enemy
             {
                 this.speed = 2;
                 this.health = 30;
-                this.damage = 2;
+                this.damage = 4;
                 this.party = null;
                 this.virtueValue = 3;
             }

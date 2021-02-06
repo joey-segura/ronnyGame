@@ -17,8 +17,8 @@ public class Savage : Enemy
             else
             {
                 this.speed = 0;
-                this.health = 1;
-                this.damage = 2;
+                this.health = 20;
+                this.damage = 6;
                 this.party = null;
                 this.virtueValue = 1;
             }

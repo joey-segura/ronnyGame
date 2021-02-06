@@ -296,6 +296,7 @@ public class BolsterDefense : FighterAction
     {
         this.name = "Bolster Defense";
         this.description = $"Increase defense by {_buffValue} for {_effectDuration} turns";
+        this.cost = 4;
         this.duration = _duration;
         this.effectDuration = _effectDuration;
         this.baseDuration = _effectDuration;
@@ -334,18 +335,18 @@ public class BolsterDefense : FighterAction
         {
             case 1:
                 name = "Bolster Defense";
-                cost = 6;
+                cost = 4;
                 buffValue = baseValue;
                 break;
             case 2:
                 name = "Bolster Defense+";
-                cost = 8;
+                cost = 6;
                 buffValue = baseValue + 1;
                 effectDuration = baseDuration;
                 break;
             case 3:
                 name = "Bolster Defense++";
-                cost = 10;
+                cost = 8;
                 buffValue = baseValue + 2;
                 effectDuration = baseDuration + 1;
                 break;
@@ -360,7 +361,7 @@ public class BuffAttack : FighterAction
     {
         this.name = "Buff Attack";
         this.description = $"Buff Attack for {_buffValue} for {_effectDuration} turns";
-        this.cost = 6;
+        this.cost = 4;
         this.duration = _duration;
         this.effectDuration = _effectDuration;
         this.baseDuration = _effectDuration;
@@ -400,18 +401,18 @@ public class BuffAttack : FighterAction
             case 1:
                 name = "Buff Attack";
                 buffValue = baseValue;
-                cost = 6;
+                cost = 4;
                 break;
             case 2:
                 name = "Buff Attack+";
                 buffValue = baseValue + 1;
-                cost = 8;
+                cost = 6;
                 effectDuration = baseDuration;
                 break;
             case 3:
                 name = "Buff Attack++";
                 buffValue = baseValue + 2;
-                cost = 10;
+                cost = 8;
                 effectDuration = baseDuration + 1;
                 break;
         }
@@ -674,7 +675,7 @@ public class Mark : FighterAction
         this.duration = _duration;
         this.animation = _animation;
         this.targetCount = 1;
-        this.cost = 10;
+        this.cost = 5;
         this.levelCap = 2;
         this.validTargets = new string[] { "Foe", "Friend" };
     }
@@ -713,7 +714,7 @@ public class Mark : FighterAction
             case 1:
                 name = "Mark";
                 targetCount = 1;
-                cost = 10;
+                cost = 5;
                 this.description = $"Mark a target for Joey to attack";
                 this.targets = null;
                 break;
@@ -721,7 +722,7 @@ public class Mark : FighterAction
                 name = "Mark+";
                 targetCount = 0;
                 Ronny ronny = this.originator.name.Contains("Shadow") ? ronny = this.originator.GetComponentInParent<Ronny>() : ronny = this.originator.GetComponent<Ronny>();
-                cost = 10 + 3 * (this.GetAOETargets(ronny.battleMasterScript.allFighters).Length - 1);
+                cost = 5 + 3 * (this.GetAOETargets(ronny.battleMasterScript.allFighters).Length - 1);
                 this.description = $"Mark all targets for Joey to attack";
                 break;
         }
@@ -767,7 +768,7 @@ public class Taunt : FighterAction
         this.duration = _duration;
         this.animation = _animation;
         this.targetCount = 1;
-        this.cost = 10;
+        this.cost = 5;
         this.levelCap = 2;
         this.validTargets = new string[] { "Foe", "Friend" };
     }
@@ -799,7 +800,7 @@ public class Taunt : FighterAction
             case 1:
                 name = "Taunt";
                 targetCount = 1;
-                cost = 10;
+                cost = 5;
                 this.description = $"Causes a foe to attack you";
                 this.targets = null;
                 break;
@@ -807,7 +808,7 @@ public class Taunt : FighterAction
                 name = "Taunt+";
                 targetCount = 0;
                 Ronny ronny = this.originator.name.Contains("Shadow") ? ronny = this.originator.GetComponentInParent<Ronny>() : ronny = this.originator.GetComponent<Ronny>();
-                cost = 10 + 3 * (this.GetAOETargets(ronny.battleMasterScript.allFighters).Length - 1);
+                cost = 5 + 3 * (this.GetAOETargets(ronny.battleMasterScript.allFighters).Length - 1);
                 this.description = $"Causes all foes to attack you";
                 break;
         }
@@ -855,6 +856,7 @@ public class VulnerableAttack : FighterAction
         this.name = "Vulnerable Attack";
         this.description = $"Lowers targets defense by {_vulnerableValue} for {_effectDuration} turns";
         this.duration = _duration;
+        this.cost = 4;
         this.effectDuration = _effectDuration;
         this.baseDuration = _effectDuration;
         this.vulnerableValue = _vulnerableValue;
@@ -892,18 +894,18 @@ public class VulnerableAttack : FighterAction
         {
             case 1:
                 name = "Vulnerable Attack";
-                cost = 6;
+                cost = 4;
                 vulnerableValue = baseValue;
                 break;
             case 2:
                 name = "Vulnerable Attack+";
-                cost = 8;
+                cost = 6;
                 vulnerableValue = baseValue + 1;
                 effectDuration = baseDuration;
                 break;
             case 3:
                 name = "Vulnerable Attack++";
-                cost = 10;
+                cost = 8;
                 vulnerableValue = baseValue + 2;
                 effectDuration = baseDuration + 1;
                 break;
@@ -918,7 +920,7 @@ public class WeakAttack : FighterAction
     {
         this.name = "Weak Attack";
         this.description = $"Minus targets attack by {_weakValue} for {_effectDuration} turns";
-        this.cost = 6;
+        this.cost = 4;
         this.duration = _duration;
         this.effectDuration = _effectDuration;
         this.weakValue = _weakValue;
@@ -957,19 +959,19 @@ public class WeakAttack : FighterAction
         {
             case 1:
                 name = "Weak Attack";
-                cost = 6;
+                cost = 4;
                 weakValue = baseValue;
                 effectDuration = baseDuration;
                 break;
             case 2:
                 name = "Weak Attack+";
-                cost = 8;
+                cost = 6;
                 weakValue = baseValue + 1;
                 effectDuration = baseDuration;
                 break;
             case 3:
                 name = "Weak Attack++";
-                cost = 10;
+                cost = 8;
                 weakValue = baseValue + 2;
                 effectDuration = baseDuration + 1;
                 break;
