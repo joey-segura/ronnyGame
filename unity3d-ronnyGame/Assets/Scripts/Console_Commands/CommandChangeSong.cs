@@ -23,7 +23,7 @@ namespace Console
         public override string ExecuteCommand(string[] args)
         {
             SoundMaster soundMaster = Kami.GetComponent<SoundMaster>();
-            if (soundMaster.ChangeSong(4,null,args[1]))
+            if (soundMaster.ChangeSong(null,args[1]))
             {
                 return "Song Changed Successfully!";
             } else

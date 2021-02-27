@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -51,6 +52,7 @@ public abstract class FighterAction
         return targets.ToArray();
     }
     public abstract IEnumerator Execute();
+    public Func<int> onExecute;
     public virtual int GetCost()
     {
         return 0;
@@ -148,6 +150,8 @@ public class Attack : FighterAction
     }
     public override IEnumerator Execute()
     {
+        if (onExecute != null)
+            onExecute.Invoke();
 
         for (int i = 0; i < targets.Length; i++)
         {
@@ -586,12 +590,12 @@ public class Skip : FighterAction
         yield return true;
     }
 }
-public class StunAttack : FighterAction
+public class ChargedStunAttack : FighterAction
 {
     public int damage, charge, chargeLimit;
-    public StunAttack(int _duration, int _damage, int _effectDuration, Animation _animation)
+    public ChargedStunAttack(int _duration, int _damage, int _chargeLimit, int _effectDuration, Animation _animation)
     {
-        this.name = "Stun Attack";
+        this.name = "Charged Stun Attack";
         this.description = "Stun enemy and attack them for {}";
         this.duration = _duration;
         this.animation = _animation;
@@ -599,12 +603,12 @@ public class StunAttack : FighterAction
         this.effectDuration = _effectDuration;
         this.targetCount = 1;
         this.charge = 0;
-        this.chargeLimit = 1;
+        this.chargeLimit = _chargeLimit;
         this.validTargets = new string[] { "Foe" };
     }
     public override FighterAction Clone()
     {
-        StunAttack atk = new StunAttack(this.duration, this.damage, this.effectDuration, this.animation);
+        ChargedStunAttack atk = new ChargedStunAttack(this.duration, this.damage, this.chargeLimit, this.effectDuration, this.animation);
         atk.charge = this.charge;
         return atk;
     }
@@ -612,7 +616,8 @@ public class StunAttack : FighterAction
     {
         if (charge < chargeLimit)
         {
-            this.charge++;
+            if (onExecute != null)
+                onExecute.Invoke();
             yield return true;
         } else
         {
@@ -623,7 +628,6 @@ public class StunAttack : FighterAction
                 targ.AddToHealth(this.damage * -1, this.originator.GetComponent<Fighter>());
                 targ.AddEffect(targ, stun);
             }
-            this.charge = 0;
             yield return true;
         }
     }

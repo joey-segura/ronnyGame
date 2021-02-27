@@ -31,20 +31,13 @@ public class Zerker : Enemy
     {
         base.Interact();
     }
-    public override void RecalculateActions()
-    {
-        this.actionList = new List<FighterAction>();
-        this.actionList.Add(new Attack(3, this.damage, null));
-        this.actionList.Add(new Berserker(3, 10, 2, null));
-        base.RecalculateActions();
-    }
     public override FighterAction TurnAction(ListBeingData allFighters)
     {
         this.RecalculateActions();
         GameObject joey = battleMasterScript.GetAllyObject();
         if (!HasEffect("Berserk"))
         {
-            FighterAction action = this.actionList.Find(x => x.name == "Berserker");
+            FighterAction action = new Berserker(3, 10, 2, null);
             action.targets = new GameObject[] { this.gameObject };
             action.originator = this.gameObject;
             this.currentAction = action;
@@ -53,7 +46,7 @@ public class Zerker : Enemy
         {
             if (joey != null)
             {
-                FighterAction action = this.actionList.Find(x => x.name == "Attack");
+                FighterAction action = new Attack(3, this.damage, null);
                 action.targets = new GameObject[] { joey };
                 action.originator = this.gameObject;
                 this.currentAction = action;

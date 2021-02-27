@@ -36,7 +36,6 @@ public class Joey : Human
     }
     public override FighterAction TurnAction(ListBeingData allFighters)
     {
-        this.RecalculateActions();
         GameObject target = null;
         for (int i = 0; i < allFighters.BeingDatas.Count; i++)
         {
@@ -46,11 +45,11 @@ public class Joey : Human
                 break;
             }
         }
-        FighterAction act = this.actionList[0];
-        act.originator = this.gameObject;
-        act.targets = new GameObject[] { target };
-        this.currentAction = act;
-        return act;
+        FighterAction action = new Attack(3, this.damage, null);
+        action.originator = this.gameObject;
+        action.targets = new GameObject[] { target };
+        this.currentAction = action;
+        return action;
     }
     private void FollowRonny()
     {
@@ -117,39 +116,6 @@ public class Joey : Human
         /*this.damage += 5;
         SpriteRenderer spr = this.GetComponent<SpriteRenderer>();
         spr.color = Color.red;*/
-    }
-    public override void RecalculateActions()
-    {
-        this.actionList = new List<FighterAction>();
-        this.actionList.Add(new Attack(3, Mathf.FloorToInt(this.damage * this.damageMultiplier), null));
-        /*switch (GetLevel())
-        {
-            case 0:
-                
-                break;
-            case 1:
-                this.actionList.Add(new Attack(3, Mathf.FloorToInt(this.damage * this.damageMultiplier), null));
-                this.actionList.Add(new Cleave(3, Mathf.FloorToInt(this.damage * this.damageMultiplier), null));
-                break;
-            case 2:
-                break;
-            case 3:
-                break;
-            case 4:
-                break;
-            case 5:
-                break;
-        }*/
-        
-        //this.actionList.Add(new Cleave(3, this.damage * this.damageMultiplier, null));
-        //this.actionList.Add(new ApplyThorns(3, 3, .5f, null));
-        /*
-        this.actionList.Add(new WeakAttack(3, 3, 2, null));
-        this.actionList.Add(new BuffAttack(3, 3, 2, null));
-        this.actionList.Add(new BolsterDefense(3, 3, 2, null));
-        this.actionList.Add(new VulnerableAttack(3, 3, 2, null));
-        */
-        base.RecalculateActions();
     }
     public override string UpdateBeingJsonData()
     {

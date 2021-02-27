@@ -14,6 +14,7 @@ public class Ronny : Human
     //turn data
     public GameObject turnTarget = null;
     public int lastActionSelected = 0, wLevel, dLevel, sLevel, aLevel;
+    protected List<FighterAction> actionList = new List<FighterAction>();
     //end turn data
 
     public Material Outline;
@@ -57,6 +58,22 @@ public class Ronny : Human
             this.target = null;
         }
         return this.target;
+    }
+    public List<FighterAction> GetActions()
+    {
+        return this.actionList;
+    }
+    public FighterAction GetActionByName(string name)
+    {
+        FighterAction action = null;
+        foreach (FighterAction act in actionList)
+        {
+            if (act.name.Contains(name))
+            {
+                action = act;
+            }
+        }
+        return action;
     }
     public override void InitializeBattle()
     {
@@ -103,10 +120,6 @@ public class Ronny : Human
     public override void RecalculateActions()
     {
         this.actionList = new List<FighterAction>();
-        //this.actionList.Add(new BlockAll(3, null));
-        //this.actionList.Add(new CommandToBlock(3, null));
-        //this.actionList.Add(new Attack(3, this.damage * this.damageMultiplier, null));
-        //this.actionList.Add(new Heal(3, 5, null));
         this.actionList.Add(new Mark(1, null));
         this.actionList.Add(new WeakAttack(3, 3, 1, null));
         this.actionList.Add(new BuffAttack(3, 3, 1, null));
@@ -114,9 +127,18 @@ public class Ronny : Human
         this.actionList.Add(new VulnerableAttack(3, 3, 1, null));
         this.actionList.Add(new Taunt(3, null));
         this.actionList.Add(new Skip(1, null));
-        //this.actionList.Add(new Cleave(3, this.damage * this.damageMultiplier, null));
-        //this.actionList.Add(new TauntAll(3, null));
-        //base.RecalculateActions();
+        if (currentAction != null)
+        {
+            foreach (FighterAction action in this.actionList)
+            {
+                if (action.name == currentAction.name)
+                {
+                    action.originator = currentAction.originator;
+                    action.targets = currentAction.targets;
+                    currentAction = action;
+                }
+            }
+        }
     }
     public GameObject ReturnChoosenGameObject()
     {

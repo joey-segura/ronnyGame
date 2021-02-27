@@ -34,10 +34,6 @@ public class SavageBaby : Enemy
     {
         this.Sacrifice(shadow);
     }
-    public override void RecalculateActions()
-    {
-        this.actionList = new List<FighterAction>();
-    }
     private void Sacrifice(bool shadow)
     {
         if (battleMasterScript == null)
@@ -63,7 +59,6 @@ public class SavageBaby : Enemy
             sacrifice.originator = this.gameObject;
             atk.targets = sacrifice.targets;
             atk.originator = this.gameObject;
-            //battleMasterScript.StartCoroutine(sacrifice.Execute());
 
             battleMasterScript.StartCoroutine(battleMasterScript.ProcessAction(sacrifice));
             battleMasterScript.StartCoroutine(battleMasterScript.ProcessAction(atk));

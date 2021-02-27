@@ -88,19 +88,6 @@ public class Ritter : Human
     {
         //say something!
     }
-    public override void RecalculateActions()
-    {
-        this.actionList = new List<FighterAction>();
-        this.actionList.Add(new Attack(3, Mathf.FloorToInt(this.damage * this.damageMultiplier), null));
-        //this.actionList.Add(new ApplyThorns(3, 3, .5f, null));
-        /*
-        this.actionList.Add(new WeakAttack(3, 3, 2, null));
-        this.actionList.Add(new BuffAttack(3, 3, 2, null));
-        this.actionList.Add(new BolsterDefense(3, 3, 2, null));
-        this.actionList.Add(new VulnerableAttack(3, 3, 2, null));
-        */
-        base.RecalculateActions();
-    }
     public override string UpdateBeingJsonData()
     {
         RitterJson ritter = new RitterJson();

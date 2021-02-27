@@ -7,7 +7,7 @@ public class SoundMaster : Kami
     public AudioSource source;
     public int currentSongMeasures = 0;
     public float masterVolume = 100;
-    public float[] volumeTypes = { 50, 50, 50 }; //effectVolume[0], UIVolume[1] musicVolume[2]
+    public float[] volumeTypes = { 100, 50, 50 }; //effectVolume[0], UIVolume[1] musicVolume[2]
 
     /*public new void Awake()
     {
@@ -30,31 +30,9 @@ public class SoundMaster : Kami
         }
         yield return true;
     }
-    public bool ChangeSong(int Measures = 4, AudioClip song = null, string songName = "")
+    public bool ChangeSong(AudioClip song = null, string songName = "")
     {
-        AudioClip audio = null;
-        if (Measures < 1)
-        {
-            Debug.LogError($"Less than 1 beats per measure assigned to song {song} or songName {songName}, can't alternate between variations if any");
-            return false;
-        }
-        if (!song)
-        {
-            if (songName == string.Empty)
-            {
-                Debug.LogError("song parameter null and songName empty");
-            }
-            audio = FindSong(songName);
-            if (!audio)
-            {
-                Debug.LogError($"Song name {songName} in resources not found");
-                return false;
-            }
-        } else
-        {
-            audio = song;
-        }
-        currentSongMeasures = Measures;
+        AudioClip audio = song ? song : FindSong(songName);
         source.clip = audio;
         source.volume = (volumeTypes[2] / 100);
         source.Play();

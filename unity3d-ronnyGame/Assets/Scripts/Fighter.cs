@@ -20,11 +20,15 @@ public class Fighter : Being
     public FighterAction currentAction = null;
     public Dictionary<int, Effect> currentEffects = new Dictionary<int, Effect>();
     //private List<Effect> currentEffects = new List<Effect>();
-    protected List<FighterAction> actionList = new List<FighterAction>();
+    
 
     public Vector3 battlePosition;
     public Dictionary<int, Func<int, Fighter, int>> onHitEffects = new Dictionary<int, Func<int, Fighter, int>>();
     public Dictionary<int, Func<int, Fighter, int>> onAttackEffects = new Dictionary<int, Func<int, Fighter, int>>();
+
+    private AudioClip[] onHitSounds;
+    private AudioClip[] attackSounds;
+    private AudioClip[] idleSounds; // don't know if we will need these ones but maybe like if they are fishing or something mumbling or something
 
     public void AddEffect(Fighter fighter, Effect effect)
     {
@@ -51,6 +55,7 @@ public class Fighter : Being
         Debug.Log($"{this.name}'s health just got changed by {change}");
         if (change < 0)
         {
+            this.PlayOnHitSound();
             StartCoroutine(GetHitJiggle());
         }
         this.health += change;
@@ -139,32 +144,24 @@ public class Fighter : Being
         }
         yield return true;
     }
-    public FighterAction GetActionByName(string name)
-    {
-        FighterAction action = null;
-        foreach (FighterAction act in actionList)
-        {
-            if (act.name.Contains(name))
-            {
-                action = act;
-            }
-        }
-        return action;
-    }
+    
     public void TickEffects() // happens every fighters turn
     {
+        Dictionary<int, Effect> newEffects = new Dictionary<int, Effect>();
         for (int i = 0; i < currentEffects.Count; i++)
         {
-
             KeyValuePair<int, Effect> effect = currentEffects.ElementAt(i);
             effect.Value.OnTick(this);
             effect.Value.duration -= 1;
-            if (effect.Value.duration <= 0)
+            if (effect.Value.duration > 0)
+            {
+                newEffects.Add(effect.Key, effect.Value);
+            } else
             {
                 effect.Value.Cleanse(this);
-                RemoveEffect(effect.Key);
             }
         }
+        currentEffects = newEffects;
     }
     public virtual GameObject ChooseTarget(ListBeingData allFighters) //chooses a target at random!
     {
@@ -197,10 +194,7 @@ public class Fighter : Being
         yield return new WaitForSeconds(seconds);
         self.material.shader = defaultShader;
     }
-    public List<FighterAction> GetActions()
-    {
-        return this.actionList;
-    }
+
     public IEnumerator GetHitJiggle()
     {
         Vector3 pos = this.transform.position;
@@ -260,7 +254,21 @@ public class Fighter : Being
         this.battlePosition = this.transform.position;
         this.RemoveAllEffects();
         this.defaultShader = this.GetComponent<SpriteRenderer>().material.shader;
+        this.LoadAttackSounds();
+        this.LoadOnHitSounds();
         return; // this is for any enemy script to disable their movement script once the battle starts
+    }
+    public virtual void LoadOnHitSounds()
+    {
+        this.onHitSounds = new AudioClip[4]; // default sounds, the path of files might change
+        this.onHitSounds[0] = Resources.Load($"Sounds/Scenes/Joey/Fighters/Grunt_1", typeof(AudioClip)) as AudioClip; 
+        this.onHitSounds[1] = Resources.Load($"Sounds/Scenes/Joey/Fighters/Grunt_2", typeof(AudioClip)) as AudioClip;
+        this.onHitSounds[2] = Resources.Load($"Sounds/Scenes/Joey/Fighters/Grunt_3", typeof(AudioClip)) as AudioClip;
+        this.onHitSounds[3] = Resources.Load($"Sounds/Scenes/Joey/Fighters/Grunt_4", typeof(AudioClip)) as AudioClip;
+    }
+    public virtual void LoadAttackSounds()
+    {
+
     }
     private new void OnGUI()
     {
@@ -312,6 +320,10 @@ public class Fighter : Being
         }
         base.OnGUI();
     }
+    public void PlayOnHitSound()
+    {
+        soundMasterScript.PlaySound(this.onHitSounds[UnityEngine.Random.Range(0, this.onHitSounds.Length - 1)], 0);
+    }
     public IEnumerator PlayWalkingSound (AudioClip sound)
     {
         if (!playingWalkingSound && sound)
@@ -325,21 +337,27 @@ public class Fighter : Being
     }
     public virtual void RecalculateActions()
     {
-        //This function should be instantiated by each individual fighter with their unique actions
-        //Recalculating actions is important to apply certain affects
+        //Recalculating actions is important to re apply certain buffs (buffs of damage that other fighters apply to you before your turn starts)
         //(E.G) if you apply a damage buff we need to apply that affect to the persons attack damage
-        if (currentAction != null)
+        if (this.currentAction != null)
         {
-            foreach (FighterAction action in this.actionList)
+            if (this.currentAction.name == "Attack")
             {
-                if (action.name == currentAction.name)
-                {
-                    action.originator = currentAction.originator;
-                    action.targets = currentAction.targets;
-                    currentAction = action;
-                }
+                Attack atk = (Attack)this.currentAction;
+                atk.damage = this.damage;
+            }
+            if (this.currentAction.name == "Double Attack")
+            {
+                DoubleAttack atk = (DoubleAttack)this.currentAction;
+                atk.damage = this.damage;
+            }
+            if (this.currentAction.name == "Charged Stun Attack")
+            {
+                ChargedStunAttack atk = (ChargedStunAttack)this.currentAction;
+                atk.damage = this.damage;
             }
         }
+        
         return;
     }
     public void RemoveAllEffects()//strong cleanse (used after a battle is concluded?)
@@ -419,48 +437,7 @@ public class Fighter : Being
     }
     public virtual FighterAction TurnAction(ListBeingData allFighters)
     {
-        this.RecalculateActions();
-        FighterAction action = null;
-        string relation = null;
-        bool valid = false;
-        while (!valid)
-        {
-            int actionIndex = UnityEngine.Random.Range(0, this.actionList.Count);
-            action = this.actionList[actionIndex]; //random action for enemy and friendly units
-            action.originator = this.gameObject;
-            if (action.IsActionAOE())
-            {
-                action.targets = action.GetAOETargets(allFighters);
-                this.currentAction = action;
-                valid = true;
-            }
-            else
-            {
-                GameObject target = null;
-                bool validTarget = false;
-                int attempts = 0;
-                while (!validTarget)
-                {
-                    target = this.ChooseTarget(allFighters);
-                    relation = this.TargetRelationToSelf(target);
-                    if (action.IsValidAction(relation))
-                    {
-                        validTarget = true;
-                    }
-                    if (attempts >= 10) //If no target could be found with valid actions (E.G., a buffer type unit who only has buff friendlies has no more teammates left)
-                    {
-                        return null;
-                    }
-                    else
-                    {
-                        attempts++;
-                    }
-                }
-                action.targets = new GameObject[] { target };
-                this.currentAction = action;
-                valid = true;
-            }
-        }
-        return action;
+        //should 100% be instantiated by child
+        return null;
     }
 } 

@@ -31,39 +31,28 @@ public class Savage : Enemy
     {
         base.Interact();
     }
-    public override void RecalculateActions()
-    {
-        this.actionList = new List<FighterAction>();
-        this.actionList.Add(new Attack(3, Mathf.FloorToInt(this.damage * this.damageMultiplier), null));
-        base.RecalculateActions();
-    }
     public override FighterAction TurnAction(ListBeingData allFighters)
     {
         this.RecalculateActions();
         GameObject baby = null;
-        GameObject joey = null;
+        GameObject joey = battleMasterScript.GetAllyObject();
         for (int i = 0; i < allFighters.BeingDatas.Count; i++)
         {
             if (allFighters.BeingDatas[i].gameObject != null && allFighters.BeingDatas[i].gameObject.name.Contains("Baby"))
             {
                 baby = allFighters.BeingDatas[i].gameObject;
             }
-            if (allFighters.BeingDatas[i].gameObject != null && allFighters.BeingDatas[i].gameObject.name.Contains("Joey"))
-            {
-                joey = allFighters.BeingDatas[i].gameObject;
-            }
         }
-        if (baby != null)
+        if (baby == null && joey == null)
         {
-            FighterAction action = this.actionList.Find(x => x.name == "Attack");
-            action.targets = new GameObject[] { baby };
-            action.originator = this.gameObject;
-            this.currentAction = action;
-            return action;
+            FighterAction skip = new Skip(1, null);
+            skip.originator = this.gameObject;
+            this.currentAction = skip;
+            return skip;
         } else
         {
-            FighterAction action = this.actionList.Find(x => x.name == "Attack");
-            action.targets = new GameObject[] { joey };
+            FighterAction action = new Attack(3, this.damage, null);
+            action.targets = baby == null ? new GameObject[] { joey } : new GameObject[] { baby };
             action.originator = this.gameObject;
             this.currentAction = action;
             return action;

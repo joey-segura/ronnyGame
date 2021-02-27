@@ -31,11 +31,9 @@ public class Rogue : Enemy
     {
         base.Interact();
     }
-    public override void RecalculateActions()
+    public override FighterAction TurnAction(ListBeingData allFighters)
     {
-        this.actionList = new List<FighterAction>();
-        this.actionList.Add(new AttackAndBuff(3, Mathf.FloorToInt(this.damage * this.damageMultiplier), 2, 2, null));
-        base.RecalculateActions();
+        return base.TurnAction(allFighters);
     }
     public override string UpdateBeingJsonData()
     {

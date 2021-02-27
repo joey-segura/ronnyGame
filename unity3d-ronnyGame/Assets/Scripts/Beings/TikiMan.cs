@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class TikiMan : Enemy
 {
+    public int charge = 0;
     public override void InjectData(string jsonData)
     {
         if (JsonUtility.FromJson<BeingData>(jsonData) != null)
@@ -31,33 +32,29 @@ public class TikiMan : Enemy
     {
         base.Interact();
     }
-    public override void RecalculateActions()
+    public int ChargeUp()
     {
-        if (this.actionList.Count == 0)
-        {
-            this.actionList = new List<FighterAction>();
-            this.actionList.Add(new StunAttack(3, this.damage, 1, null));
-        } else
-        {
-            StunAttack action = (StunAttack)this.actionList.Find(x => x.name == "Stun Attack");
-            action.damage = this.damage;
-        }
-        base.RecalculateActions();
+        return this.charge++;
     }
+
     public override FighterAction TurnAction(ListBeingData allFighters)
     {
         this.RecalculateActions();
         GameObject joey = battleMasterScript.GetAllyObject();
         if (joey != null)
         {
-            StunAttack action = (StunAttack)this.actionList.Find(x => x.name == "Stun Attack");
-            action.targets = new GameObject[] { action.charge == 1 ? joey : this.gameObject };
+            ChargedStunAttack action = new ChargedStunAttack(3, this.damage, 1, 1, null);
+            action.onExecute = (() => ChargeUp());
+            action.charge = this.charge;
+            action.targets = new GameObject[] { this.charge == 1 ? joey : this.gameObject };
+            if (charge >= 1)
+                charge = 0;
             action.originator = this.gameObject;
             this.currentAction = action;
             return action;
         } else
         {
-            FighterAction skip = this.actionList.Find(x => x.name == "Skip");
+            FighterAction skip = new Skip(1, null);
             skip.originator = this.gameObject;
             this.currentAction = skip;
             return skip;

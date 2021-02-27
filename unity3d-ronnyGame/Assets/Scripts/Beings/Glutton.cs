@@ -1,13 +1,14 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class Glutton : Enemy
 {
     public List<Effect> effects = new List<Effect>();
-    public override void DeathTrigger(bool shadow)
+    /*public override void DeathTrigger(bool shadow) // temporarily removed aura effect for balance purposes
     {
-        foreach(Effect effect in effects)
+        foreach (Effect effect in effects)
         {
             if (effect.self != null)
             {
@@ -32,7 +33,7 @@ public class Glutton : Enemy
             fighter.AddEffect(fighter, def);
             effects.Add(def);
         }
-    }
+    }*/
     public override void InjectData(string jsonData)
     {
         if (JsonUtility.FromJson<BeingData>(jsonData) != null)
@@ -60,30 +61,35 @@ public class Glutton : Enemy
     {
         base.Interact();
     }
-    public override void RecalculateActions()
-    {
-        this.actionList = new List<FighterAction>();
-        this.actionList.Add(new Attack(3, this.damage, null));
-        base.RecalculateActions();
-    }
     public override FighterAction TurnAction(ListBeingData allFighters)
     {
         this.RecalculateActions();
         GameObject joey = battleMasterScript.GetAllyObject();
-        if (joey != null)
+        if (battleMasterScript.turnCounter % 2 != 0)
         {
-            FighterAction action = this.actionList.Find(x => x.name == "Attack");
-            action.targets = new GameObject[] { joey };
+            FighterAction action = new Heal(3, 4, null);
+            action.targets = new GameObject[] { this.gameObject };
             action.originator = this.gameObject;
             this.currentAction = action;
             return action;
         } else
         {
-            Debug.LogError("Can't find Joey target, returning skip action!");
-            FighterAction skip = new Skip(1, null);
-            skip.originator = this.gameObject;
-            this.currentAction = skip;
-            return skip;
+            if (joey != null)
+            {
+                FighterAction action = new Attack(3, this.damage, null);
+                action.targets = new GameObject[] { joey };
+                action.originator = this.gameObject;
+                this.currentAction = action;
+                return action;
+            }
+            else
+            {
+                Debug.LogError("Can't find Joey target, returning skip action!");
+                FighterAction skip = new Skip(1, null);
+                skip.originator = this.gameObject;
+                this.currentAction = skip;
+                return skip;
+            }
         }
     }
     public override string UpdateBeingJsonData()

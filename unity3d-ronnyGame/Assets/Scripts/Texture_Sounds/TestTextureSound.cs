@@ -26,13 +26,15 @@ public class TestTextureSound : TextureSound
     public void LoadRectSoundLinks()
     {
         this.rectSounds = new int[1][];
-        this.rectSounds[0] = new int[3] { 0, 1, 2 };
+        this.rectSounds[0] = new int[5] { 0, 1, 2, 3, 4 };
     }
     public void LoadSounds()
     {
-        this.sounds = new AudioClip[3];
-        this.sounds[0] = Resources.Load($"Sounds/Scenes/Ritter/Test1", typeof(AudioClip)) as AudioClip;
-        this.sounds[1] = Resources.Load($"Sounds/Scenes/Ritter/Test2", typeof(AudioClip)) as AudioClip;
-        this.sounds[2] = Resources.Load($"Sounds/Scenes/Ritter/Test3", typeof(AudioClip)) as AudioClip;
+        this.sounds = new AudioClip[5];
+        this.sounds[0] = Resources.Load($"Sounds/Scenes/Ritter/Grass_1", typeof(AudioClip)) as AudioClip;
+        this.sounds[1] = Resources.Load($"Sounds/Scenes/Ritter/Grass_2", typeof(AudioClip)) as AudioClip;
+        this.sounds[2] = Resources.Load($"Sounds/Scenes/Ritter/Grass_3", typeof(AudioClip)) as AudioClip;
+        this.sounds[3] = Resources.Load($"Sounds/Scenes/Ritter/Grass_4", typeof(AudioClip)) as AudioClip;
+        this.sounds[4] = Resources.Load($"Sounds/Scenes/Ritter/Grass_5", typeof(AudioClip)) as AudioClip;
     }
 }
