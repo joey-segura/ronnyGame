@@ -43,7 +43,7 @@ public class TikiMan : Enemy
         GameObject joey = battleMasterScript.GetAllyObject();
         if (joey != null)
         {
-            ChargedStunAttack action = new ChargedStunAttack(3, this.damage, 1, 1, null);
+            ChargedStunAttack action = new ChargedStunAttack(3, 3, this.damage, 1, 1, null);
             action.onExecute = (() => ChargeUp());
             action.charge = this.charge;
             action.targets = new GameObject[] { this.charge == 1 ? joey : this.gameObject };

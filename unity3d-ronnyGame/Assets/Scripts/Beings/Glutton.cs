@@ -67,7 +67,7 @@ public class Glutton : Enemy
         GameObject joey = battleMasterScript.GetAllyObject();
         if (battleMasterScript.turnCounter % 2 != 0)
         {
-            FighterAction action = new Heal(3, 4, null);
+            FighterAction action = new Heal(3, 3, 4, null);
             action.targets = new GameObject[] { this.gameObject };
             action.originator = this.gameObject;
             this.currentAction = action;
@@ -76,7 +76,7 @@ public class Glutton : Enemy
         {
             if (joey != null)
             {
-                FighterAction action = new Attack(3, this.damage, null);
+                FighterAction action = new Attack(3, 3, this.damage, null);
                 action.targets = new GameObject[] { joey };
                 action.originator = this.gameObject;
                 this.currentAction = action;

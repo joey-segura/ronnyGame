@@ -33,7 +33,6 @@ public class Savage : Enemy
     }
     public override FighterAction TurnAction(ListBeingData allFighters)
     {
-        this.RecalculateActions();
         GameObject baby = null;
         GameObject joey = battleMasterScript.GetAllyObject();
         for (int i = 0; i < allFighters.BeingDatas.Count; i++)
@@ -51,7 +50,7 @@ public class Savage : Enemy
             return skip;
         } else
         {
-            FighterAction action = new Attack(3, this.damage, null);
+            FighterAction action = new Attack(3, 3, this.damage, null);
             action.targets = baby == null ? new GameObject[] { joey } : new GameObject[] { baby };
             action.originator = this.gameObject;
             this.currentAction = action;

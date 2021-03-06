@@ -26,9 +26,9 @@ public class Fighter : Being
     public Dictionary<int, Func<int, Fighter, int>> onHitEffects = new Dictionary<int, Func<int, Fighter, int>>();
     public Dictionary<int, Func<int, Fighter, int>> onAttackEffects = new Dictionary<int, Func<int, Fighter, int>>();
 
-    private AudioClip[] onHitSounds;
-    private AudioClip[] attackSounds;
-    private AudioClip[] idleSounds; // don't know if we will need these ones but maybe like if they are fishing or something mumbling or something
+    protected AudioClip[] onHitSounds;
+    protected AudioClip[] attackSounds;
+    protected AudioClip[] idleSounds; // don't know if we will need these ones but maybe like if they are fishing or something mumbling or something
 
     public void AddEffect(Fighter fighter, Effect effect)
     {

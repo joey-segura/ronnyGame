@@ -8,11 +8,13 @@ public abstract class FighterAction
 {
     public GameObject originator { get; set; }
     public GameObject[] targets { get; set; }
-    public int duration, effectDuration, targetCount, skillLevel = 1, levelCap;
+    public int effectDuration, targetCount, skillLevel = 1, levelCap;
+    public float duration, executeDuration;
     public Animation animation;
     public string name { get; set; }
     public string description;
     public string[] validTargets;
+    public AudioClip soundEffect;
 
     public abstract FighterAction Clone();
     public GameObject[] GetAOETargets(ListBeingData list)
@@ -134,19 +136,21 @@ public class CoroutineWithData
 public class Attack : FighterAction
 {
     public int damage;
-    public Attack (int _duration, int _damage, Animation _animation)
+    public Attack (float _duration, float _executeDuration, int _damage, Animation _animation, AudioClip _sound = null)
     {
         this.name = "Attack";
         this.description = $"Attack for {_damage}";
         this.duration = _duration;
+        this.executeDuration = _executeDuration;
         this.damage = _damage;
         this.animation = _animation;
         this.targetCount = 1;
         this.validTargets = new string[] { "Foe" };
+        this.soundEffect = _sound ? _sound : null;
     }
     public override FighterAction Clone()
     {
-        return new Attack(this.duration, this.damage, this.animation);
+        return new Attack(this.duration, this.executeDuration, this.damage, this.animation);
     }
     public override IEnumerator Execute()
     {
@@ -168,7 +172,7 @@ public class AttackAndBuff : FighterAction
 {
     public int buffValue;
     public int damage;
-    public AttackAndBuff(int _duration, int _damage, int _effectDuration, int _buffValue, Animation _animation)
+    public AttackAndBuff(float _duration, float _executeDuration, int _damage, int _effectDuration, int _buffValue, Animation _animation)
     {
         this.name = "Attack and Buff";
         this.description = $"Attack for {_damage} and buff target for {_buffValue}";
@@ -182,7 +186,7 @@ public class AttackAndBuff : FighterAction
     }
     public override FighterAction Clone()
     {
-        return new AttackAndBuff(this.duration, this.damage, this.effectDuration, this.buffValue, this.animation);
+        return new AttackAndBuff(this.duration, this.executeDuration, this.damage, this.effectDuration, this.buffValue, this.animation);
     }
     public override IEnumerator Execute()
     {
@@ -207,7 +211,7 @@ public class AttackAndBuff : FighterAction
 public class ApplyThorns : FighterAction
 {
     public float percentValue;
-    public ApplyThorns(int _duration, int _effectDuration, float _percentValue, Animation _animation)
+    public ApplyThorns(float _duration, float _executeDuration, int _effectDuration, float _percentValue, Animation _animation)
     {
         this.name = "Thorns";
         this.description = $"Reflect incoming damage by {_percentValue}";
@@ -220,7 +224,7 @@ public class ApplyThorns : FighterAction
     }
     public override FighterAction Clone()
     {
-        return new ApplyThorns(this.duration, this.effectDuration, this.percentValue, this.animation);
+        return new ApplyThorns(this.duration, this.executeDuration, this.effectDuration, this.percentValue, this.animation);
     }
     public override IEnumerator Execute()
     {
@@ -236,7 +240,7 @@ public class ApplyThorns : FighterAction
 public class Berserker : FighterAction
 {
     public int tollValue;
-    public Berserker(int _duration, int _effectDuration, int _tollValue, Animation _animation)
+    public Berserker(float _duration, float _executeDuration, int _effectDuration, int _tollValue, Animation _animation)
     {
         this.name = "Berserker";
         this.description = $"Gain +{_tollValue} damage by paying {_tollValue} per turn for {_effectDuration} turns";
@@ -249,7 +253,7 @@ public class Berserker : FighterAction
     }
     public override FighterAction Clone()
     {
-        return new Berserker(this.duration, this.effectDuration, this.tollValue, this.animation);
+        return new Berserker(this.duration, this.executeDuration, this.effectDuration, this.tollValue, this.animation);
     }
     public override IEnumerator Execute()
     {
@@ -268,7 +272,7 @@ public class Berserker : FighterAction
 }
 public class BlockAll : FighterAction
 {
-    public BlockAll(int _duration, Animation _animation)
+    public BlockAll(float _duration , float _executeDuration, Animation _animation)
     {
         this.name = "Block";
         this.description = $"Cause target to become invulnerable!";
@@ -280,7 +284,7 @@ public class BlockAll : FighterAction
     }
     public override FighterAction Clone()
     {
-        return new BlockAll(this.duration, this.animation);
+        return new BlockAll(this.duration, this.executeDuration, this.animation);
     }
     public override IEnumerator Execute()
     {
@@ -296,7 +300,7 @@ public class BlockAll : FighterAction
 public class BolsterDefense : FighterAction
 {
     public int buffValue, baseValue, baseDuration, cost;
-    public BolsterDefense(int _duration, int _effectDuration , int _buffValue, Animation _animation)
+    public BolsterDefense(float _duration, float _executeDuration, int _effectDuration , int _buffValue, Animation _animation)
     {
         this.name = "Bolster Defense";
         this.description = $"Increase defense by {_buffValue} for {_effectDuration} turns";
@@ -313,7 +317,7 @@ public class BolsterDefense : FighterAction
     }
     public override FighterAction Clone()
     {
-        return new BolsterDefense(this.duration, this.effectDuration, this.buffValue, this.animation);
+        return new BolsterDefense(this.duration, this.executeDuration, this.effectDuration, this.buffValue, this.animation);
     }
     public override IEnumerator Execute()
     {
@@ -361,7 +365,7 @@ public class BolsterDefense : FighterAction
 public class BuffAttack : FighterAction
 {
     public int buffValue, baseValue, baseDuration, cost;
-    public BuffAttack(int _duration, int _effectDuration , int _buffValue, Animation _animation)
+    public BuffAttack(float _duration, float _executeDuration, int _effectDuration , int _buffValue, Animation _animation)
     {
         this.name = "Buff Attack";
         this.description = $"Buff Attack for {_buffValue} for {_effectDuration} turns";
@@ -378,7 +382,7 @@ public class BuffAttack : FighterAction
     }
     public override FighterAction Clone()
     {
-        return new BuffAttack(this.duration, this.effectDuration, this.buffValue, this.animation);
+        return new BuffAttack(this.duration, this.executeDuration, this.effectDuration, this.buffValue, this.animation);
     }
     public override IEnumerator Execute()
     {
@@ -426,7 +430,7 @@ public class BuffAttack : FighterAction
 public class Cleave : FighterAction
 {
     public int damage;
-    public Cleave(int _duration, int _damage, Animation _animation)
+    public Cleave(float _duration, float _executeDuration, int _damage, Animation _animation)
     {
         this.name = "Cleave";
         this.description = $"Attack all targets for {_damage}";
@@ -438,7 +442,7 @@ public class Cleave : FighterAction
     }
     public override FighterAction Clone()
     {
-        return new Cleave(this.duration, this.damage, this.animation);
+        return new Cleave(this.duration, this.executeDuration, this.damage, this.animation);
     }
     public override IEnumerator Execute()
     {
@@ -456,7 +460,7 @@ public class Cleave : FighterAction
 public class CommandToAttack : FighterAction
 {
     public GameObject attackTarget;
-    public CommandToAttack(int _duration, Animation _animation)
+    public CommandToAttack(float _duration, float _executeDuration, Animation _animation)
     {
         this.name = "Command to Attack";
         this.description = $"Command a target to attack following selected unit";
@@ -467,7 +471,7 @@ public class CommandToAttack : FighterAction
     }
     public override FighterAction Clone()
     {
-        return new CommandToAttack(this.duration, this.animation);
+        return new CommandToAttack(this.duration, this.executeDuration, this.animation);
     }
     public override IEnumerator Execute()
     {
@@ -481,7 +485,7 @@ public class CommandToAttack : FighterAction
                 fighter = targets[i].GetComponent<Fighter>();
                 targ = targets[i];
             }
-            Attack attack = new Attack(3, Mathf.FloorToInt(fighter.damage * fighter.damageMultiplier), null);
+            Attack attack = new Attack(3, 3, Mathf.FloorToInt(fighter.damage * fighter.damageMultiplier), null);
             GameObject selectedTarget = null;
             Debug.Log("Please select a fighter!");
             while (selectedTarget == null)
@@ -505,7 +509,7 @@ public class CommandToAttack : FighterAction
 }
 public class CommandToBlock : FighterAction
 {
-    public CommandToBlock(int _duration, Animation _animation)
+    public CommandToBlock(float _duration, float _executeDuration, Animation _animation)
     {
         this.name = "Command to Block";
         this.description = $"Command target to block on their turn";
@@ -516,7 +520,7 @@ public class CommandToBlock : FighterAction
     }
     public override FighterAction Clone()
     {
-        return new CommandToBlock(this.duration, this.animation);
+        return new CommandToBlock(this.duration, this.executeDuration, this.animation);
     }
     public override IEnumerator Execute()
     {
@@ -525,7 +529,7 @@ public class CommandToBlock : FighterAction
         {
             fighter = targets[i].GetComponent<Fighter>();
         }
-        BlockAll block = new BlockAll(3, null);
+        BlockAll block = new BlockAll(3, 3, null);
         block.targets = this.targets;
         block.originator = fighter.gameObject;
         fighter.SetAction(block);
@@ -539,7 +543,7 @@ public class CommandToBlock : FighterAction
 public class DoubleAttack : FighterAction
 {
     public int damage;
-    public DoubleAttack(int _duration, int _damage, Animation _animation)
+    public DoubleAttack(float _duration, float _executeDuration, int _damage, Animation _animation)
     {
         this.name = "Double Attack";
         this.description = $"Attack twice for {_damage}";
@@ -551,7 +555,7 @@ public class DoubleAttack : FighterAction
     }
     public override FighterAction Clone()
     {
-        return new DoubleAttack(this.duration, this.damage, this.animation);
+        return new DoubleAttack(this.duration, this.executeDuration, this.damage, this.animation);
     }
     public override IEnumerator Execute()
     {
@@ -570,7 +574,7 @@ public class DoubleAttack : FighterAction
 }
 public class Skip : FighterAction
 {
-    public Skip(int _duration, Animation _animation)
+    public Skip(float _duration, Animation _animation)
     {
         this.name = "Skip";
         this.description = "Skip your turn";
@@ -593,7 +597,7 @@ public class Skip : FighterAction
 public class ChargedStunAttack : FighterAction
 {
     public int damage, charge, chargeLimit;
-    public ChargedStunAttack(int _duration, int _damage, int _chargeLimit, int _effectDuration, Animation _animation)
+    public ChargedStunAttack(float _duration, float _executeDuration, int _damage, int _chargeLimit, int _effectDuration, Animation _animation)
     {
         this.name = "Charged Stun Attack";
         this.description = "Stun enemy and attack them for {}";
@@ -608,7 +612,7 @@ public class ChargedStunAttack : FighterAction
     }
     public override FighterAction Clone()
     {
-        ChargedStunAttack atk = new ChargedStunAttack(this.duration, this.damage, this.chargeLimit, this.effectDuration, this.animation);
+        ChargedStunAttack atk = new ChargedStunAttack(this.duration, this.executeDuration, this.damage, this.chargeLimit, this.effectDuration, this.animation);
         atk.charge = this.charge;
         return atk;
     }
@@ -636,7 +640,7 @@ public class Heal : FighterAction
 {
     public int healValue;
     public string prefabPath = "Prefabs/Effects/Heal";
-    public Heal(int _duration, int _healValue, Animation _animation)
+    public Heal(float _duration, float _executeDuration, int _healValue, Animation _animation)
     {
         this.name = "Heal";
         this.description = $"Heal target for {_healValue}";
@@ -648,7 +652,7 @@ public class Heal : FighterAction
     }
     public override FighterAction Clone()
     {
-        return new Heal(this.duration, this.healValue, this.animation);
+        return new Heal(this.duration, this.executeDuration, this.healValue, this.animation);
     }
     public override IEnumerator Execute()
     {
@@ -672,7 +676,7 @@ public class Mark : FighterAction
 {
     public GameObject attackTarget;
     public int cost;
-    public Mark(int _duration, Animation _animation)
+    public Mark(float _duration, float _executeDuration, Animation _animation)
     {
         this.name = "Mark";
         this.description = $"Mark a target for Joey to attack";
@@ -685,7 +689,7 @@ public class Mark : FighterAction
     }
     public override FighterAction Clone()
     {
-        return new Mark(this.duration, this.animation);
+        return new Mark(this.duration, this.executeDuration, this.animation);
     }
     public override IEnumerator Execute()
     {
@@ -701,7 +705,7 @@ public class Mark : FighterAction
             joey = ronny.battleMasterScript.GetShadow(ronny.battleMasterScript.GetAllyObject());
         }
         Fighter fighter = joey.GetComponent<Fighter>();
-        Attack attack = new Attack(3, Mathf.FloorToInt(fighter.damage * fighter.damageMultiplier), null);
+        Attack attack = new Attack(3, 3, Mathf.FloorToInt(fighter.damage * fighter.damageMultiplier), null);
         attack.originator = joey;
         attack.targets = this.targets;
         fighter.SetAction(attack);
@@ -735,7 +739,7 @@ public class Mark : FighterAction
 public class PoisonAttack : FighterAction
 {
     public int poisonDamage;
-    public PoisonAttack (int _duration, int _effectDuration ,int _poisonDamage, Animation _animation)
+    public PoisonAttack (float _duration, float _executeDuration, int _effectDuration ,int _poisonDamage, Animation _animation)
     {
         this.name = "Poison Attack";
         this.description = $"Deal {_poisonDamage} each turn for {_effectDuration} turns";
@@ -748,7 +752,7 @@ public class PoisonAttack : FighterAction
     }
     public override FighterAction Clone()
     {
-        return new PoisonAttack(this.duration, this.effectDuration, this.poisonDamage, this.animation);
+        return new PoisonAttack(this.duration, this.executeDuration, this.effectDuration, this.poisonDamage, this.animation);
     }
     public override IEnumerator Execute()
     {
@@ -765,7 +769,7 @@ public class Taunt : FighterAction
 {
     public GameObject attackTarget;
     public int cost;
-    public Taunt(int _duration, Animation _animation)
+    public Taunt(float _duration, Animation _animation)
     {
         this.name = "Taunt";
         this.description = $"Causes target to attack you";
@@ -785,7 +789,7 @@ public class Taunt : FighterAction
         for (int i = 0; i < targets.Length; i++)
         {
             Fighter fighter = targets[i].GetComponent<Fighter>();
-            Attack attack = new Attack(3, Mathf.FloorToInt(fighter.damage * fighter.damageMultiplier), null);
+            Attack attack = new Attack(3, 3, Mathf.FloorToInt(fighter.damage * fighter.damageMultiplier), null);
             attack.originator = targets[i];
             attack.targets = new GameObject[] { originator };
             fighter.SetAction(attack);
@@ -821,7 +825,7 @@ public class Taunt : FighterAction
 public class TauntAll :FighterAction
 {
     public GameObject attackTarget;
-    public TauntAll(int _duration, Animation _animation)
+    public TauntAll(float _duration, Animation _animation)
     {
         this.name = "Taunt_All";
         this.description = $"Causes all enemies to attack you";
@@ -839,7 +843,7 @@ public class TauntAll :FighterAction
         for (int i = 0; i < targets.Length; i++)
         {
             Fighter fighter = targets[i].GetComponent<Fighter>();
-            Attack attack = new Attack(3, Mathf.FloorToInt(fighter.damage * fighter.damageMultiplier), null);
+            Attack attack = new Attack(3, 3, Mathf.FloorToInt(fighter.damage * fighter.damageMultiplier), null);
             attack.originator = targets[i];
             attack.targets = new GameObject[] { originator };
             fighter.SetAction(attack);
@@ -855,7 +859,7 @@ public class TauntAll :FighterAction
 public class VulnerableAttack : FighterAction
 {
     public int vulnerableValue, baseValue, baseDuration, cost;
-    public VulnerableAttack(int _duration, int _effectDuration , int _vulnerableValue, Animation _animation)
+    public VulnerableAttack(float _duration, float _executeDuration, int _effectDuration , int _vulnerableValue, Animation _animation)
     {
         this.name = "Vulnerable Attack";
         this.description = $"Lowers targets defense by {_vulnerableValue} for {_effectDuration} turns";
@@ -872,7 +876,7 @@ public class VulnerableAttack : FighterAction
     }
     public override FighterAction Clone()
     {
-        return new VulnerableAttack(this.duration, this.effectDuration, this.vulnerableValue, this.animation);
+        return new VulnerableAttack(this.duration, this.executeDuration, this.effectDuration, this.vulnerableValue, this.animation);
     }
     public override IEnumerator Execute()
     {
@@ -920,7 +924,7 @@ public class VulnerableAttack : FighterAction
 public class WeakAttack : FighterAction
 {
     public int weakValue, baseValue, baseDuration, cost;
-    public WeakAttack (int _duration, int _effectDuration , int _weakValue, Animation _animation)
+    public WeakAttack (float _duration, float _executeDuration, int _effectDuration , int _weakValue, Animation _animation)
     {
         this.name = "Weak Attack";
         this.description = $"Minus targets attack by {_weakValue} for {_effectDuration} turns";
@@ -937,7 +941,7 @@ public class WeakAttack : FighterAction
     }
     public override FighterAction Clone()
     {
-        return new WeakAttack(this.duration, this.effectDuration, this.weakValue, this.animation);
+        return new WeakAttack(this.duration, this.executeDuration, this.effectDuration, this.weakValue, this.animation);
     }
     public override IEnumerator Execute()
     {

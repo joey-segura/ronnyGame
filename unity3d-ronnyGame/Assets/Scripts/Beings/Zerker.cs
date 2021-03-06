@@ -33,11 +33,10 @@ public class Zerker : Enemy
     }
     public override FighterAction TurnAction(ListBeingData allFighters)
     {
-        this.RecalculateActions();
         GameObject joey = battleMasterScript.GetAllyObject();
         if (!HasEffect("Berserk"))
         {
-            FighterAction action = new Berserker(3, 10, 2, null);
+            FighterAction action = new Berserker(3, 3, 10, 2, null);
             action.targets = new GameObject[] { this.gameObject };
             action.originator = this.gameObject;
             this.currentAction = action;
@@ -46,7 +45,7 @@ public class Zerker : Enemy
         {
             if (joey != null)
             {
-                FighterAction action = new Attack(3, this.damage, null);
+                FighterAction action = new Attack(3, 3, this.damage, null);
                 action.targets = new GameObject[] { joey };
                 action.originator = this.gameObject;
                 this.currentAction = action;

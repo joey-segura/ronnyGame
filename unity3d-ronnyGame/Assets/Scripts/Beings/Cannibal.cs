@@ -38,19 +38,12 @@ public class Cannibal : Enemy
         this.AddEffect(this, lifeSteal);
         return;
     }
-    /*public override void RecalculateActions()
-    {
-        this.actionList = new List<FighterAction>();
-        this.actionList.Add(new DoubleAttack(3, this.damage, null));
-        //this.actionList.Add(new LifeSteal(3, this.damage, null));
-        base.RecalculateActions();
-    }*/
     public override FighterAction TurnAction(ListBeingData allFighters)
     {
         GameObject joey = battleMasterScript.GetAllyObject();
         if (joey != null)
         {
-            DoubleAttack action = new DoubleAttack(3, this.damage, null);
+            DoubleAttack action = new DoubleAttack(3, 3, this.damage, null);
             action.targets = new GameObject[] { joey };
             action.originator = this.gameObject;
             this.currentAction = action;

@@ -441,6 +441,7 @@ public class BattleMaster : Kami
         //ronny.ToggleCanvas();
         ronny.StartCoroutine(ronny.BattleMove());
         this.PlayAnimation(action.animation);
+        soundMaster.PlaySound(action.soundEffect, 0);
         yield return new WaitForSeconds(action.duration);
         CoroutineWithData cd = new CoroutineWithData(this, this.ProcessAction(action));
         while (!cd.finished)
@@ -495,14 +496,13 @@ public class BattleMaster : Kami
                             yield return new WaitForEndOfFrame();
                         }
                         this.PlayAnimation(action.animation);
-                        yield return new WaitForSeconds(action.duration);
+                        soundMaster.PlaySound(action.soundEffect, 0);
                         fighter.RecalculateActions();
+                        yield return new WaitForSeconds(action.executeDuration);
                         action = fighter.currentAction;
-                        CoroutineWithData act = new CoroutineWithData(this, this.ProcessAction(action));
-                        while (!act.finished)
-                        {
-                            yield return new WaitForEndOfFrame();
-                        }
+                        this.StartCoroutine(this.ProcessAction(action));
+                        action.duration = action.executeDuration > action.duration ? 0 : action.duration - action.executeDuration;
+                        yield return new WaitForSeconds(action.duration);
                         CoroutineWithData moveBack = new CoroutineWithData(this, fighter.MoveToBattlePosition());
                         while (!moveBack.finished)
                         {

@@ -120,11 +120,11 @@ public class Ronny : Human
     public override void RecalculateActions()
     {
         this.actionList = new List<FighterAction>();
-        this.actionList.Add(new Mark(1, null));
-        this.actionList.Add(new WeakAttack(3, 3, 1, null));
-        this.actionList.Add(new BuffAttack(3, 3, 1, null));
-        this.actionList.Add(new BolsterDefense(3, 3, 1, null));
-        this.actionList.Add(new VulnerableAttack(3, 3, 1, null));
+        this.actionList.Add(new Mark(1, 1, null));
+        this.actionList.Add(new WeakAttack(3, 3, 3, 1, null));
+        this.actionList.Add(new BuffAttack(3, 3, 3, 1, null));
+        this.actionList.Add(new BolsterDefense(3, 3, 3, 1, null));
+        this.actionList.Add(new VulnerableAttack(3, 3, 3, 1, null));
         this.actionList.Add(new Taunt(3, null));
         this.actionList.Add(new Skip(1, null));
         if (currentAction != null)

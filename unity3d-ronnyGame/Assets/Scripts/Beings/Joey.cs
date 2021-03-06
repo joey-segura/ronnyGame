@@ -45,7 +45,7 @@ public class Joey : Human
                 break;
             }
         }
-        FighterAction action = new Attack(3, this.damage, null);
+        FighterAction action = new Attack(3, 1, this.damage, null, this.attackSounds[0]);
         action.originator = this.gameObject;
         action.targets = new GameObject[] { target };
         this.currentAction = action;
@@ -109,6 +109,11 @@ public class Joey : Human
     {
         this.member = true;
         this.follow = true;
+    }
+    public override void LoadAttackSounds()
+    {
+        this.attackSounds = new AudioClip[1];
+        this.attackSounds[0] = Resources.Load($"Sounds/Scenes/Joey/Fighters/Joey/Firehit_1", typeof(AudioClip)) as AudioClip;
     }
     public void RageMode()
     {
