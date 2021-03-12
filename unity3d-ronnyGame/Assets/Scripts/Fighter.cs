@@ -13,6 +13,7 @@ public class Fighter : Being
     public int damage, defense = 0;
     public bool isStunned = false, isPoisoned = false, playingWalkingSound = false;
     protected bool isBattle = false;
+    public const string SYMBOLS = "αβγδεζηθικλμνξοπρστυφχψω!@#$%^.,&*ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
     private Shader defaultShader;
 
@@ -20,7 +21,6 @@ public class Fighter : Being
     public FighterAction currentAction = null;
     public Dictionary<int, Effect> currentEffects = new Dictionary<int, Effect>();
     //private List<Effect> currentEffects = new List<Effect>();
-    
 
     public Vector3 battlePosition;
     public Dictionary<int, Func<int, Fighter, int>> onHitEffects = new Dictionary<int, Func<int, Fighter, int>>();
@@ -91,6 +91,11 @@ public class Fighter : Being
         {
             
             this.DeathTrigger(false);
+            if (this.name == "Joey")
+            {
+                this.GetComponent<Joey>().RageMode();
+                return;
+            }
             BattleMaster battleMaster = this.transform.parent.GetComponentInParent<BattleMaster>();
             if (causer.tag == "Party")
             {
@@ -146,8 +151,8 @@ public class Fighter : Being
     }
     
     public void TickEffects() // happens every fighters turn
-    {
-        Dictionary<int, Effect> newEffects = new Dictionary<int, Effect>();
+    { // do we want effects to tick and to be removed?
+        /*Dictionary<int, Effect> newEffects = new Dictionary<int, Effect>();
         for (int i = 0; i < currentEffects.Count; i++)
         {
             KeyValuePair<int, Effect> effect = currentEffects.ElementAt(i);
@@ -161,7 +166,7 @@ public class Fighter : Being
                 effect.Value.Cleanse(this);
             }
         }
-        currentEffects = newEffects;
+        currentEffects = newEffects;*/
     }
     public virtual GameObject ChooseTarget(ListBeingData allFighters) //chooses a target at random!
     {
@@ -286,7 +291,19 @@ public class Fighter : Being
             {
                 rect = new Rect((Screen.width / 5) - width, (Screen.height - fighterScreenPos.y) - height / 2, width, height);
             }
-            GUI.Box(rect, $"Name: {name}\n HP: {health}\n Damage: {damage}\n Defense: {defense}\n Action: {(this.currentAction != null ? this.currentAction.name : string.Empty)}");
+            if (this.name == "Joey" && this.GetComponent<Joey>().rage)
+            {
+                string rName = null;
+                for (int i = 0; i < 8; i++)
+                {
+                    rName += SYMBOLS.Substring(UnityEngine.Random.Range(0, SYMBOLS.Length), 1);
+                }
+                GUI.Box(rect, $"Name: {rName}\n HP: ???\n Damage: ???\n Defense: ???\n Action: Wrath");
+            } else
+            {
+                GUI.Box(rect, $"Name: {name}\n HP: {health}\n Damage: {damage}\n Defense: {defense}\n Action: {(this.currentAction != null ? this.currentAction.name : string.Empty)}");
+            }
+            
 
             int effectIndex = 0;
             foreach (Effect effect in currentEffects.Values)

@@ -50,21 +50,6 @@ public class BattleMaster : Kami
     {
         Debug.Log($"Local virtue changed by {virt}");
         this.virtueValue += virt;
-        if (virtueValue >= virtueMax)
-        {
-            AllyVirtueFail();
-        }
-    }
-    public void AllyVirtueFail()
-    {
-        GameObject ally = GetAllyObject();
-        if (ally.name == "Joey")
-        {
-            ally.GetComponent<Joey>().RageMode();
-        } else if (ally.name == "Ritter")
-        {
-
-        }
     }
     private void AssignScenes()
     {

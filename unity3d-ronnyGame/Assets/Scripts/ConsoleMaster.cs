@@ -51,6 +51,7 @@ namespace Console
             CommandChangeScene.CreateCommand();
             CommandGenerateObjectJson.CreateCommand();
             CommandChangeSong.CreateCommand();
+            CommandTimeScale.CreateCommand();
 
             CommandHelp.CreateCommand();
         }

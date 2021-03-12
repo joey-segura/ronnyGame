@@ -98,6 +98,7 @@
     <Compile Include="Assets\Scripts\Console_Commands\CommandGenerateObjectJson.cs" />
     <Compile Include="Assets\Scripts\Console_Commands\CommandHelp.cs" />
     <Compile Include="Assets\Scripts\Console_Commands\CommandInstantiatePrefab.cs" />
+    <Compile Include="Assets\Scripts\Console_Commands\CommandTimeScale.cs" />
     <Compile Include="Assets\Scripts\DataMaster.cs" />
     <Compile Include="Assets\Scripts\Effects.cs" />
     <Compile Include="Assets\Scripts\Enemy.cs" />

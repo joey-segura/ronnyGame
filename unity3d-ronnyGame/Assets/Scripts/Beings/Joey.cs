@@ -12,7 +12,7 @@ public class JoeyJson
 public class Joey : Human
 {
     public GameObject ronny;
-    public bool member = true, follow = true;
+    public bool member = true, follow = true, rage = false;
     private new void Update()
     {
         if (ronny != null && follow)
@@ -45,7 +45,7 @@ public class Joey : Human
                 break;
             }
         }
-        FighterAction action = new Attack(3, 1, this.damage, null, this.attackSounds[0]);
+        FighterAction action = new Attack(2, .5f, this.damage, null, this.attackSounds[0]);
         action.originator = this.gameObject;
         action.targets = new GameObject[] { target };
         this.currentAction = action;
@@ -117,10 +117,11 @@ public class Joey : Human
     }
     public void RageMode()
     {
-        Debug.Log("RageMode function called");
-        /*this.damage += 5;
+        this.rage = true;
+        this.damage = 9999;
+        this.health = 9999;
         SpriteRenderer spr = this.GetComponent<SpriteRenderer>();
-        spr.color = Color.red;*/
+        spr.color = Color.red;
     }
     public override string UpdateBeingJsonData()
     {
